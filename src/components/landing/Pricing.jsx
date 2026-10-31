@@ -27,6 +27,15 @@ export default function Pricing({ onSelect }) {
                     : "border-petrol/15 bg-white text-petrol hover:border-gold"
                 )}
               >
+                <div className="relative -mx-8 -mt-8 mb-7 aspect-[16/9] overflow-hidden">
+                  <img
+                    src={formule.image}
+                    alt={`Circuit ${formule.name}, Guinée`}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                </div>
+
                 {formule.highlight ? (
                   <span className="label-caps mb-5 inline-flex w-fit rounded-full bg-gold px-3 py-1.5 text-petrol-deep">
                     Le plus choisi

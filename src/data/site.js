@@ -137,10 +137,20 @@ export const STEPS = [
   },
 ];
 
+export const CONTACT = {
+  phone: "+224 620 00 00 00",
+  phoneHref: "tel:+224620000000",
+  email: "contact@sysitravel.com",
+  address: "Immeuble Kebe, Kaloum — Conakry, Guinée",
+  hours: "Lundi au samedi, 9h – 19h (GMT)",
+  whatsapp: "https://wa.me/224620000000",
+};
+
 export const FORMULES = [
   {
     id: "escapade",
     name: "Escapade Loos",
+    image: IMAGES.loos,
     price: "390",
     duration: "3 jours / 2 nuits",
     tagline: "La première bouffée d'air, juste à côté de Conakry.",
@@ -154,6 +164,7 @@ export const FORMULES = [
   {
     id: "signature",
     name: "Signature Fouta",
+    image: IMAGES.fouta,
     price: "1 190",
     duration: "8 jours / 7 nuits",
     tagline: "Le voyage que l'on raconte pendant des années.",
@@ -169,6 +180,7 @@ export const FORMULES = [
   {
     id: "traversee",
     name: "Grande Traversée",
+    image: IMAGES.nimba,
     price: "2 490",
     duration: "14 jours / 13 nuits",
     tagline: "La Guinée dans toute sa diversité, d'ouest en est.",

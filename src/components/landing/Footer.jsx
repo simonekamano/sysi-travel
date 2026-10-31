@@ -1,4 +1,4 @@
-import { LOGO } from "@/data/site";
+import { CONTACT, LOGO } from "@/data/site";
 
 const EXPLORER = [
   { label: "Destinations", href: "#destinations" },
@@ -14,13 +14,15 @@ const SEJOURS = [
   { label: "Séjour sur mesure", href: "#contact" },
 ];
 
-const CONTACT = [
-  { label: "Nous écrire", href: "#contact" },
+const LIENS = [
+  { label: "Page de contact", href: "/contact" },
   { label: "Réserver mon séjour", href: "#contact" },
   { label: "Revenir en haut", href: "#accueil" },
 ];
 
-export default function Footer() {
+export default function Footer({ isHome = true }) {
+  const resolve = (href) => (href.startsWith("#") && !isHome ? `/${href}` : href);
+
   return (
     <footer className="bg-petrol-deep text-ivory">
       <div className="mx-auto max-w-[1180px] px-6 py-16 lg:py-20">
@@ -42,7 +44,7 @@ export default function Footer() {
               {EXPLORER.map((link) => (
                 <li key={link.label}>
                   <a
-                    href={link.href}
+                    href={resolve(link.href)}
                     className="text-[0.9rem] text-ivory/65 transition-colors hover:text-ivory"
                   >
                     {link.label}
@@ -58,7 +60,7 @@ export default function Footer() {
               {SEJOURS.map((link) => (
                 <li key={link.label}>
                   <a
-                    href={link.href}
+                    href={resolve(link.href)}
                     className="text-[0.9rem] text-ivory/65 transition-colors hover:text-ivory"
                   >
                     {link.label}
@@ -71,10 +73,26 @@ export default function Footer() {
           <div>
             <p className="label-caps text-gold">Contact</p>
             <ul className="mt-5 space-y-3">
-              {CONTACT.map((link) => (
+              <li>
+                <a
+                  href={CONTACT.phoneHref}
+                  className="text-[0.9rem] text-ivory/65 transition-colors hover:text-ivory"
+                >
+                  {CONTACT.phone}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${CONTACT.email}`}
+                  className="text-[0.9rem] text-ivory/65 transition-colors hover:text-ivory"
+                >
+                  {CONTACT.email}
+                </a>
+              </li>
+              {LIENS.map((link) => (
                 <li key={link.label}>
                   <a
-                    href={link.href}
+                    href={resolve(link.href)}
                     className="text-[0.9rem] text-ivory/65 transition-colors hover:text-ivory"
                   >
                     {link.label}

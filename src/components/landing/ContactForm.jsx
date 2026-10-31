@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import Reveal from "@/components/landing/Reveal";
+import ContactDetails from "@/components/landing/ContactDetails";
 import { DESTINATIONS, FORMULES, IMAGES } from "@/data/site";
 
 const EMPTY = {
@@ -19,7 +20,7 @@ const fieldClass =
   "w-full border-b border-petrol/20 bg-transparent py-2.5 text-[0.95rem] text-petrol outline-none transition-colors placeholder:text-petrol/35 focus:border-gold-deep";
 const labelClass = "label-caps text-petrol/45";
 
-export default function ContactForm({ formule, setFormule }) {
+export default function ContactForm({ formule, setFormule, showDetails = true }) {
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
@@ -76,6 +77,8 @@ export default function ContactForm({ formule, setFormule }) {
               <li>Réponse personnalisée, jamais un message automatique.</li>
               <li>Vos coordonnées restent confidentielles.</li>
             </ul>
+
+            {showDetails ? <ContactDetails className="mt-10" /> : null}
 
             <div className="mt-10 hidden lg:block">
               <div className="relative aspect-[16/10] overflow-hidden">
