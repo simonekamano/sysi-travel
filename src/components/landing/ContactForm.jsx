@@ -16,8 +16,8 @@ const EMPTY = {
 };
 
 const fieldClass =
-  "w-full border-b border-petrol/20 bg-transparent py-2.5 text-[0.95rem] text-petrol outline-none transition-colors placeholder:text-petrol/35 focus:border-gold-deep";
-const labelClass = "label-caps text-petrol/45";
+  "w-full border-b border-petrol/35 bg-transparent py-2.5 text-[0.98rem] text-petrol outline-none transition-colors placeholder:text-petrol/60 focus:border-gold-deep";
+const labelClass = "label-caps text-petrol/75";
 
 export default function ContactForm({ formule, setFormule, showContactDetails = true }) {
   const [form, setForm] = useState(EMPTY);
@@ -286,7 +286,7 @@ export default function ContactForm({ formule, setFormule, showContactDetails = 
                       "Recevoir mon itinéraire"
                     )}
                   </button>
-                  <p className="mt-4 text-center text-[0.75rem] leading-relaxed text-petrol/50">
+                  <p className="mt-4 text-center text-[0.78rem] leading-relaxed text-petrol/65">
                     En envoyant ce formulaire, vous acceptez d'être contacté par SYSI TRAVEL au
                     sujet de votre voyage.
                   </p>
