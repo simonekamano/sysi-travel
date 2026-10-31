@@ -3,19 +3,25 @@ import { useRouter } from "@tanstack/react-router";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import FormuleForm from "@/components/admin/FormuleForm";
+import ConfirmDialog from "@/components/admin/ConfirmDialog";
 
 export default function FormulesPanel({ formules = [] }) {
   const router = useRouter();
   const [editing, setEditing] = useState(null);
+  const [pending, setPending] = useState(null);
+  const [busy, setBusy] = useState(false);
 
   const saved = () => {
     setEditing(null);
     router.invalidate();
   };
 
-  const remove = async (formule) => {
-    if (!window.confirm(`Supprimer la formule « ${formule.name} » ?`)) return;
-    await base44.entities.Formule.delete(formule.id);
+  const remove = async () => {
+    if (!pending) return;
+    setBusy(true);
+    await base44.entities.Formule.delete(pending.id);
+    setBusy(false);
+    setPending(null);
     router.invalidate();
   };
 
@@ -74,7 +80,7 @@ export default function FormulesPanel({ formules = [] }) {
               </button>
               <button
                 type="button"
-                onClick={() => remove(formule)}
+                onClick={() => setPending(formule)}
                 className="inline-flex items-center gap-2 border border-transparent px-3 py-2 text-petrol/50 transition-colors hover:text-destructive"
                 aria-label={`Supprimer ${formule.name}`}
               >
@@ -89,6 +95,15 @@ export default function FormulesPanel({ formules = [] }) {
           </li>
         ) : null}
       </ul>
+
+      <ConfirmDialog
+        open={Boolean(pending)}
+        title="Supprimer cette formule ?"
+        description={pending ? `« ${pending.name} » disparaîtra du site. Cette action est définitive.` : ""}
+        busy={busy}
+        onCancel={() => setPending(null)}
+        onConfirm={remove}
+      />
     </div>
   );
 }

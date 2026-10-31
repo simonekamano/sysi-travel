@@ -3,19 +3,25 @@ import { useRouter } from "@tanstack/react-router";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import FaqForm from "@/components/admin/FaqForm";
+import ConfirmDialog from "@/components/admin/ConfirmDialog";
 
 export default function FaqsPanel({ faqs = [] }) {
   const router = useRouter();
   const [editing, setEditing] = useState(null);
+  const [pending, setPending] = useState(null);
+  const [busy, setBusy] = useState(false);
 
   const saved = () => {
     setEditing(null);
     router.invalidate();
   };
 
-  const remove = async (item) => {
-    if (!window.confirm(`Supprimer la question « ${item.question} » ?`)) return;
-    await base44.entities.Faq.delete(item.id);
+  const remove = async () => {
+    if (!pending) return;
+    setBusy(true);
+    await base44.entities.Faq.delete(pending.id);
+    setBusy(false);
+    setPending(null);
     router.invalidate();
   };
 
@@ -63,7 +69,7 @@ export default function FaqsPanel({ faqs = [] }) {
               </button>
               <button
                 type="button"
-                onClick={() => remove(item)}
+                onClick={() => setPending(item)}
                 className="inline-flex items-center gap-2 border border-transparent px-3 py-2 text-petrol/50 transition-colors hover:text-destructive"
                 aria-label="Supprimer la question"
               >
@@ -78,6 +84,15 @@ export default function FaqsPanel({ faqs = [] }) {
           </li>
         ) : null}
       </ul>
+
+      <ConfirmDialog
+        open={Boolean(pending)}
+        title="Supprimer cette question ?"
+        description={pending ? `« ${pending.question} » sera retirée de la FAQ du site. Cette action est définitive.` : ""}
+        busy={busy}
+        onCancel={() => setPending(null)}
+        onConfirm={remove}
+      />
     </div>
   );
 }

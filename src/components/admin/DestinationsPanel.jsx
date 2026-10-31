@@ -3,19 +3,25 @@ import { useRouter } from "@tanstack/react-router";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import DestinationForm from "@/components/admin/DestinationForm";
+import ConfirmDialog from "@/components/admin/ConfirmDialog";
 
 export default function DestinationsPanel({ destinations = [] }) {
   const router = useRouter();
   const [editing, setEditing] = useState(null);
+  const [pending, setPending] = useState(null);
+  const [busy, setBusy] = useState(false);
 
   const saved = () => {
     setEditing(null);
     router.invalidate();
   };
 
-  const remove = async (destination) => {
-    if (!window.confirm(`Supprimer « ${destination.name} » ?`)) return;
-    await base44.entities.Destination.delete(destination.id);
+  const remove = async () => {
+    if (!pending) return;
+    setBusy(true);
+    await base44.entities.Destination.delete(pending.id);
+    setBusy(false);
+    setPending(null);
     router.invalidate();
   };
 
@@ -72,7 +78,7 @@ export default function DestinationsPanel({ destinations = [] }) {
               </button>
               <button
                 type="button"
-                onClick={() => remove(destination)}
+                onClick={() => setPending(destination)}
                 className="inline-flex items-center gap-2 border border-transparent px-3 py-2 text-petrol/50 transition-colors hover:text-destructive"
                 aria-label={`Supprimer ${destination.name}`}
               >
@@ -87,6 +93,15 @@ export default function DestinationsPanel({ destinations = [] }) {
           </li>
         ) : null}
       </ul>
+
+      <ConfirmDialog
+        open={Boolean(pending)}
+        title="Supprimer cette destination ?"
+        description={pending ? `« ${pending.name} » disparaîtra du site. Cette action est définitive.` : ""}
+        busy={busy}
+        onCancel={() => setPending(null)}
+        onConfirm={remove}
+      />
     </div>
   );
 }
