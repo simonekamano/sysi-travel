@@ -9,6 +9,7 @@ import HowItWorks from "@/components/landing/HowItWorks";
 import Pricing from "@/components/landing/Pricing";
 import Testimonials from "@/components/landing/Testimonials";
 import Faq from "@/components/landing/Faq";
+import Partner from "@/components/landing/Partner";
 import ContactForm from "@/components/landing/ContactForm";
 import Footer from "@/components/landing/Footer";
 
@@ -36,6 +37,7 @@ function LandingPage() {
         <Pricing onSelect={selectFormule} />
         <Testimonials />
         <Faq />
+        <Partner />
         <ContactForm formule={formule} setFormule={setFormule} />
       </main>
       <Footer />
