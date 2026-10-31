@@ -4,8 +4,10 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import ContactForm from "@/components/landing/ContactForm";
 import Footer from "@/components/landing/Footer";
 import { CONTACT, LOGO } from "@/data/site";
+import { getSiteContent } from "@/lib/server-fns";
 
 export const Route = createFileRoute("/contact")({
+  loader: () => getSiteContent(),
   head: () => ({
     meta: [
       { title: "Contact — SYSI TRAVEL Guinée" },
@@ -37,6 +39,7 @@ const CHANNELS = [
 ];
 
 function ContactPage() {
+  const { destinations, formules } = Route.useLoaderData();
   const [formule, setFormule] = useState("");
 
   return (
@@ -100,7 +103,13 @@ function ContactPage() {
           </div>
         </section>
 
-        <ContactForm formule={formule} setFormule={setFormule} showContactDetails={false} />
+        <ContactForm
+          formule={formule}
+          setFormule={setFormule}
+          destinations={destinations}
+          formules={formules}
+          showContactDetails={false}
+        />
       </main>
 
       <Footer />

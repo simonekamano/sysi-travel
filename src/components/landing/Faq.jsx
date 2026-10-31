@@ -3,9 +3,7 @@ import { ChevronDown } from "lucide-react";
 import Reveal from "@/components/landing/Reveal";
 import SectionHeading from "@/components/landing/SectionHeading";
 import { cn } from "@/lib/utils";
-import { FAQ } from "@/data/site";
-
-export default function Faq() {
+export default function Faq({ faqs = [] }) {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
@@ -24,17 +22,17 @@ export default function Faq() {
 
         <Reveal delay={100}>
           <div>
-            {FAQ.map((item, index) => {
+            {faqs.map((item, index) => {
               const isOpen = openIndex === index;
               return (
-                <div key={item.q} className="border-b border-petrol/12 first:border-t">
+                <div key={item.id || item.question} className="border-b border-petrol/12 first:border-t">
                   <button
                     type="button"
                     onClick={() => setOpenIndex(isOpen ? -1 : index)}
                     aria-expanded={isOpen}
                     className="flex w-full items-center justify-between gap-6 py-6 text-left"
                   >
-                    <span className="text-[1.02rem] font-medium text-petrol">{item.q}</span>
+                    <span className="text-[1.02rem] font-medium text-petrol">{item.question}</span>
                     <ChevronDown
                       className={cn(
                         "h-5 w-5 shrink-0 text-gold-deep transition-transform duration-300",
@@ -50,7 +48,9 @@ export default function Faq() {
                     )}
                   >
                     <div className="overflow-hidden">
-                      <p className="max-w-xl pb-6 text-[0.95rem] leading-relaxed text-petrol/70">{item.a}</p>
+                      <p className="max-w-xl pb-6 text-[0.95rem] leading-relaxed text-petrol/70">
+                        {item.answer}
+                      </p>
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { getSiteContent } from "@/lib/server-fns";
 import Nav from "@/components/landing/Nav";
 import Hero from "@/components/landing/Hero";
 import Problem from "@/components/landing/Problem";
@@ -14,10 +15,12 @@ import ContactForm from "@/components/landing/ContactForm";
 import Footer from "@/components/landing/Footer";
 
 export const Route = createFileRoute("/")({
+  loader: () => getSiteContent(),
   component: LandingPage,
 });
 
 function LandingPage() {
+  const { destinations, formules, faqs } = Route.useLoaderData();
   const [formule, setFormule] = useState("");
 
   const selectFormule = (id) => {
@@ -32,13 +35,18 @@ function LandingPage() {
         <Hero />
         <Problem />
         <Solution />
-        <Destinations />
+        <Destinations destinations={destinations} />
         <HowItWorks />
-        <Pricing onSelect={selectFormule} />
+        <Pricing formules={formules} onSelect={selectFormule} />
         <Testimonials />
-        <Faq />
+        <Faq faqs={faqs} />
         <Partner />
-        <ContactForm formule={formule} setFormule={setFormule} />
+        <ContactForm
+          formule={formule}
+          setFormule={setFormule}
+          destinations={destinations}
+          formules={formules}
+        />
       </main>
       <Footer />
     </div>

@@ -1,8 +1,6 @@
 import Reveal from "@/components/landing/Reveal";
 import SectionHeading from "@/components/landing/SectionHeading";
-import { DESTINATIONS } from "@/data/site";
-
-export default function Destinations() {
+export default function Destinations({ destinations = [] }) {
   return (
     <section id="destinations" className="bg-background py-24 lg:py-32">
       <div className="mx-auto max-w-[1180px] px-6">
@@ -15,8 +13,8 @@ export default function Destinations() {
         </Reveal>
 
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {DESTINATIONS.map((destination, index) => (
-            <Reveal key={destination.name} delay={(index % 3) * 90}>
+          {destinations.map((destination, index) => (
+            <Reveal key={destination.id || destination.name} delay={(index % 3) * 90}>
               <a href="#contact" className="group block">
                 <div className="relative aspect-[4/5] overflow-hidden bg-petrol">
                   <img
@@ -35,7 +33,7 @@ export default function Destinations() {
                       {destination.text}
                     </p>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {destination.tags.map((tag) => (
+                      {(destination.tags || []).map((tag) => (
                         <span
                           key={tag}
                           className="rounded-full border border-ivory/25 px-3 py-1 text-[0.66rem] uppercase tracking-[0.18em] text-ivory/70"
@@ -44,6 +42,11 @@ export default function Destinations() {
                         </span>
                       ))}
                     </div>
+                    {destination.price ? (
+                      <p className="mt-4 border-t border-ivory/20 pt-3 text-[0.78rem] uppercase tracking-[0.16em] text-gold">
+                        {destination.price}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
               </a>

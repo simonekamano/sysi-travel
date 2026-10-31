@@ -1,0 +1,63 @@
+{
+  "name": "Formule",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom de la formule"
+    },
+    "price": {
+      "type": "string",
+      "description": "Prix affich\u00e9, par exemple \u00ab 1 190 \u20ac \u00bb"
+    },
+    "duration": {
+      "type": "string",
+      "description": "Dur\u00e9e du s\u00e9jour, par exemple \u00ab 8 jours / 7 nuits \u00bb"
+    },
+    "tagline": {
+      "type": "string",
+      "description": "Phrase d'accroche sous le nom"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Prestations incluses, une par ligne"
+    },
+    "image": {
+      "type": "string",
+      "description": "URL de la photo de la formule"
+    },
+    "highlight": {
+      "type": "boolean",
+      "default": false,
+      "description": "Mettre la formule en avant (carte sombre)"
+    },
+    "order": {
+      "type": "number",
+      "description": "Ordre d'affichage sur le site"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

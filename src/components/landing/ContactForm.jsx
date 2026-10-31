@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CheckCircle2, Loader2, Mail, Phone } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import Reveal from "@/components/landing/Reveal";
-import { CONTACT, DESTINATIONS, FORMULES, IMAGES } from "@/data/site";
+import { CONTACT, IMAGES } from "@/data/site";
 
 const EMPTY = {
   nom: "",
@@ -19,7 +19,13 @@ const fieldClass =
   "w-full border-b border-petrol/35 bg-transparent py-2.5 text-[0.98rem] text-petrol outline-none transition-colors placeholder:text-petrol/60 focus:border-gold-deep";
 const labelClass = "label-caps text-petrol/75";
 
-export default function ContactForm({ formule, setFormule, showContactDetails = true }) {
+export default function ContactForm({
+  formule,
+  setFormule,
+  destinations = [],
+  formules = [],
+  showContactDetails = true,
+}) {
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
@@ -32,7 +38,7 @@ export default function ContactForm({ formule, setFormule, showContactDetails = 
     setStatus("sending");
     setError("");
     try {
-      const selected = FORMULES.find((item) => item.id === formule);
+      const selected = formules.find((item) => item.id === formule);
       await base44.entities.DemandeSejour.create({
         nom: form.nom.trim(),
         email: form.email.trim(),
@@ -212,7 +218,7 @@ export default function ContactForm({ formule, setFormule, showContactDetails = 
                     className={fieldClass}
                   >
                     <option value="">Je ne sais pas encore</option>
-                    {DESTINATIONS.map((destination) => (
+                    {destinations.map((destination) => (
                       <option key={destination.name} value={destination.name}>
                         {destination.name}
                       </option>
@@ -232,7 +238,7 @@ export default function ContactForm({ formule, setFormule, showContactDetails = 
                     className={fieldClass}
                   >
                     <option value="">À définir ensemble</option>
-                    {FORMULES.map((item) => (
+                    {formules.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.name} — {item.duration}
                       </option>

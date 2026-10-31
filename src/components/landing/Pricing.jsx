@@ -2,9 +2,8 @@ import { Check } from "lucide-react";
 import Reveal from "@/components/landing/Reveal";
 import SectionHeading from "@/components/landing/SectionHeading";
 import { cn } from "@/lib/utils";
-import { FORMULES } from "@/data/site";
 
-export default function Pricing({ onSelect }) {
+export default function Pricing({ formules = [], onSelect }) {
   return (
     <section id="offre" className="bg-background py-24 lg:py-32">
       <div className="mx-auto max-w-[1180px] px-6">
@@ -17,7 +16,7 @@ export default function Pricing({ onSelect }) {
         </Reveal>
 
         <div className="mt-14 grid gap-6 lg:grid-cols-3">
-          {FORMULES.map((formule, index) => (
+          {formules.map((formule, index) => (
             <Reveal key={formule.id} delay={index * 90} className="h-full">
               <div
                 className={cn(
@@ -27,14 +26,16 @@ export default function Pricing({ onSelect }) {
                     : "border-petrol/15 bg-white text-petrol hover:border-gold"
                 )}
               >
-                <div className="-mx-8 -mt-8 mb-6 aspect-[16/10] overflow-hidden">
-                  <img
-                    src={formule.image}
-                    alt={formule.name}
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
+                {formule.image ? (
+                  <div className="-mx-8 -mt-8 mb-6 aspect-[16/10] overflow-hidden">
+                    <img
+                      src={formule.image}
+                      alt={formule.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                ) : null}
 
                 {formule.highlight ? (
                   <span className="label-caps mb-5 inline-flex w-fit rounded-full bg-gold px-3 py-1.5 text-petrol-deep">
@@ -57,7 +58,7 @@ export default function Pricing({ onSelect }) {
                 </p>
 
                 <div className="mt-6 flex items-end gap-2">
-                  <span className="font-display text-[2.5rem] leading-none">{formule.price} €</span>
+                  <span className="font-display text-[2.5rem] leading-none">{formule.price}</span>
                   <span
                     className={cn(
                       "pb-1 text-[0.78rem]",
@@ -77,7 +78,7 @@ export default function Pricing({ onSelect }) {
                 </p>
 
                 <ul className="mt-7 flex-1 space-y-3">
-                  {formule.features.map((feature) => (
+                  {(formule.features || []).map((feature) => (
                     <li key={feature} className="flex gap-3 text-[0.9rem] leading-snug">
                       <Check
                         className={cn("mt-0.5 h-4 w-4 shrink-0", formule.highlight ? "text-gold" : "text-gold-deep")}
