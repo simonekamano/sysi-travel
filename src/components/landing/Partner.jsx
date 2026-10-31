@@ -22,7 +22,7 @@ const LINKS = [
 
 export default function Partner() {
   return (
-    <section id="ambassadeur" className="bg-white py-20 lg:py-28">
+    <section id="ambassadeur" className="bg-white py-12 lg:py-16">
       <div className="mx-auto max-w-[1180px] px-6">
         <div className="grid gap-6 lg:grid-cols-2">
           {LINKS.map((item, index) => (

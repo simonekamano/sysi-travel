@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export default function Pricing({ formules = [], onSelect }) {
   return (
-    <section id="offre" className="bg-background py-24 lg:py-32">
+    <section id="offre" className="bg-background py-14 lg:py-20">
       <div className="mx-auto max-w-[1180px] px-6">
         <Reveal>
           <SectionHeading
@@ -15,7 +15,7 @@ export default function Pricing({ formules = [], onSelect }) {
           />
         </Reveal>
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
+        <div className="mt-10 grid gap-6 lg:grid-cols-3">
           {formules.map((formule, index) => (
             <Reveal key={formule.id} delay={index * 90} className="h-full">
               <div

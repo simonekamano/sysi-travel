@@ -7,8 +7,8 @@ export default function Faq({ faqs = [] }) {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <section id="faq" className="bg-background py-24 lg:py-32">
-      <div className="mx-auto grid max-w-[1180px] gap-12 px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+    <section id="faq" className="bg-background py-14 lg:py-20">
+      <div className="mx-auto grid max-w-[1180px] gap-10 px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
         <Reveal>
           <div className="lg:sticky lg:top-32">
             <SectionHeading

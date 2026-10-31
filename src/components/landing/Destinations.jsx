@@ -2,7 +2,7 @@ import Reveal from "@/components/landing/Reveal";
 import SectionHeading from "@/components/landing/SectionHeading";
 export default function Destinations({ destinations = [] }) {
   return (
-    <section id="destinations" className="bg-background py-24 lg:py-32">
+    <section id="destinations" className="bg-background py-14 lg:py-20">
       <div className="mx-auto max-w-[1180px] px-6">
         <Reveal>
           <SectionHeading
@@ -12,7 +12,7 @@ export default function Destinations({ destinations = [] }) {
           />
         </Reveal>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {destinations.map((destination, index) => (
             <Reveal key={destination.id || destination.name} delay={(index % 3) * 90}>
               <a href="#contact" className="group block">

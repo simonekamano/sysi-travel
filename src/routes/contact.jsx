@@ -63,7 +63,7 @@ function ContactPage() {
       </header>
 
       <main>
-        <section className="bg-background py-16 lg:py-24">
+        <section className="bg-background py-12 lg:py-16">
           <div className="mx-auto max-w-[1180px] px-6">
             <p className="script-accent text-gold-deep">Nous sommes joignables</p>
             <h1 className="mt-4 max-w-3xl text-[clamp(2rem,4vw,3.2rem)] font-medium uppercase leading-[1.08] tracking-[0.05em] text-petrol">
@@ -75,7 +75,7 @@ function ContactPage() {
               répond sous 24 heures ouvrées.
             </p>
 
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {CHANNELS.map(({ icon: Icon, label, value, href }) => {
                 const content = (
                   <>

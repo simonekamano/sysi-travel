@@ -17,8 +17,8 @@ const SEJOURS = [
 export default function Footer() {
   return (
     <footer className="bg-petrol-deep text-ivory">
-      <div className="mx-auto max-w-[1180px] px-6 py-16 lg:py-20">
-        <div className="grid gap-12 border-b border-ivory/12 pb-12 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
+      <div className="mx-auto max-w-[1180px] px-6 py-12 lg:py-14">
+        <div className="grid gap-10 border-b border-ivory/12 pb-9 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
           <div>
             <Link
               to="/"

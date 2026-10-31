@@ -7,8 +7,8 @@ const ICONS = { compass: Compass, badge: BadgeCheck, clock: Clock, headset: Life
 
 export default function Solution() {
   return (
-    <section id="solution" className="bg-ivory-soft py-24 lg:py-32">
-      <div className="mx-auto grid max-w-[1180px] items-center gap-16 px-6 lg:grid-cols-2 lg:gap-20">
+    <section id="solution" className="bg-ivory-soft py-14 lg:py-20">
+      <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-6 lg:grid-cols-2 lg:gap-16">
         <div>
           <Reveal>
             <SectionHeading
@@ -19,7 +19,7 @@ export default function Solution() {
             />
           </Reveal>
 
-          <div className="mt-12 grid gap-x-8 gap-y-9 sm:grid-cols-2">
+          <div className="mt-8 grid gap-x-8 gap-y-7 sm:grid-cols-2">
             {FEATURES.map((feature, index) => {
               const Icon = ICONS[feature.icon];
               return (

@@ -4,7 +4,7 @@ import { TESTIMONIALS } from "@/data/site";
 
 export default function Testimonials() {
   return (
-    <section className="bg-ivory-soft py-24 lg:py-32">
+    <section className="bg-ivory-soft py-14 lg:py-20">
       <div className="mx-auto max-w-[1180px] px-6">
         <Reveal>
           <SectionHeading
@@ -14,7 +14,7 @@ export default function Testimonials() {
           />
         </Reveal>
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
+        <div className="mt-10 grid gap-6 lg:grid-cols-3">
           {TESTIMONIALS.map((item, index) => (
             <Reveal key={item.name} delay={index * 90} className="h-full">
               <figure className="flex h-full flex-col justify-between border border-petrol/12 bg-white p-8">

@@ -4,7 +4,7 @@ import { STEPS } from "@/data/site";
 
 export default function HowItWorks() {
   return (
-    <section className="bg-petrol py-24 text-ivory lg:py-32">
+    <section className="bg-petrol py-14 text-ivory lg:py-20">
       <div className="mx-auto max-w-[1180px] px-6">
         <Reveal>
           <SectionHeading
@@ -15,7 +15,7 @@ export default function HowItWorks() {
           />
         </Reveal>
 
-        <div className="mt-16 grid gap-12 sm:grid-cols-3 sm:gap-8">
+        <div className="mt-10 grid gap-10 sm:grid-cols-3 sm:gap-8">
           {STEPS.map((step, index) => (
             <Reveal key={step.n} delay={index * 110}>
               <div className="relative">

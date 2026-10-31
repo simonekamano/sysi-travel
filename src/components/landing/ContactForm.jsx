@@ -62,8 +62,8 @@ export default function ContactForm({
   };
 
   return (
-    <section id="contact" className="bg-petrol py-24 text-ivory lg:py-32">
-      <div className="mx-auto grid max-w-[1180px] gap-14 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+    <section id="contact" className="bg-petrol py-14 text-ivory lg:py-20">
+      <div className="mx-auto grid max-w-[1180px] gap-10 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <Reveal>
           <div>
             <p className="script-accent text-gold">Prochaine étape</p>
@@ -102,7 +102,7 @@ export default function ContactForm({
               </div>
             ) : null}
 
-            <div className="mt-10 hidden lg:block">
+            <div className="mt-8 hidden lg:block">
               <div className="relative aspect-[16/10] overflow-hidden">
                 <img
                   src={IMAGES.sunset}
