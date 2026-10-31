@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LOGO, NAV_LINKS } from "@/data/site";
+
+const LINK_CLASS =
+  "label-caps text-ivory/80 transition-colors duration-300 hover:text-gold";
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -25,33 +29,33 @@ export default function Nav() {
               : "bg-petrol/20 backdrop-blur-[2px]"
           )}
         >
-          <a href="#accueil" className="flex shrink-0 items-center rounded-sm bg-black px-3 py-1.5">
+          <Link
+            to="/"
+            aria-label="SYSI TRAVEL — retour à l'accueil"
+            className="flex shrink-0 items-center rounded-sm bg-black px-3 py-1.5"
+          >
             <img
               src={LOGO}
               alt="SYSI TRAVEL Guinée"
               className="block h-9 w-[84px] object-cover sm:h-11 sm:w-[104px]"
             />
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-8 lg:flex">
             {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="label-caps text-ivory/80 transition-colors duration-300 hover:text-gold"
-              >
+              <Link key={link.label} to={link.to} hash={link.hash} className={LINK_CLASS}>
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
           <div className="flex items-center gap-2">
-            <a
-              href="#contact"
+            <Link
+              to="/contact"
               className="label-caps hidden rounded-full bg-gold px-6 py-3 text-petrol-deep transition-all duration-300 hover:bg-ivory sm:inline-flex"
             >
               Réserver mon séjour
-            </a>
+            </Link>
             <button
               type="button"
               onClick={() => setOpen((value) => !value)}
@@ -69,23 +73,24 @@ export default function Nav() {
         <div className="mx-3 mt-2 rounded-3xl bg-petrol px-6 py-7 shadow-2xl lg:hidden">
           <nav className="flex flex-col gap-5">
             {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
+              <Link
+                key={link.label}
+                to={link.to}
+                hash={link.hash}
                 onClick={() => setOpen(false)}
-                className="label-caps text-ivory/80 transition-colors hover:text-gold"
+                className={LINK_CLASS}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
-          <a
-            href="#contact"
+          <Link
+            to="/contact"
             onClick={() => setOpen(false)}
             className="label-caps mt-7 flex w-full items-center justify-center rounded-full bg-gold px-6 py-3.5 text-petrol-deep"
           >
             Réserver mon séjour
-          </a>
+          </Link>
         </div>
       ) : null}
     </header>
