@@ -1,18 +1,23 @@
-import { Link } from "@tanstack/react-router";
-import { CONTACT_INFO, LOGO } from "@/data/site";
+import { LOGO } from "@/data/site";
 
 const EXPLORER = [
-  { label: "Destinations", to: "/", hash: "destinations" },
-  { label: "Circuits", to: "/", hash: "offre" },
-  { label: "La plateforme", to: "/", hash: "solution" },
-  { label: "Questions", to: "/", hash: "faq" },
+  { label: "Destinations", href: "#destinations" },
+  { label: "La plateforme", href: "#solution" },
+  { label: "Notre offre", href: "#offre" },
+  { label: "Questions", href: "#faq" },
 ];
 
 const SEJOURS = [
-  { label: "Escapade Loos", to: "/", hash: "offre" },
-  { label: "Signature Fouta", to: "/", hash: "offre" },
-  { label: "Grande Traversée", to: "/", hash: "offre" },
-  { label: "Page contact", to: "/contact" },
+  { label: "Escapade Loos", href: "#offre" },
+  { label: "Signature Fouta", href: "#offre" },
+  { label: "Grande Traversée", href: "#offre" },
+  { label: "Séjour sur mesure", href: "#contact" },
+];
+
+const CONTACT = [
+  { label: "Nous écrire", href: "#contact" },
+  { label: "Réserver mon séjour", href: "#contact" },
+  { label: "Revenir en haut", href: "#accueil" },
 ];
 
 export default function Footer() {
@@ -36,30 +41,28 @@ export default function Footer() {
             <ul className="mt-5 space-y-3">
               {EXPLORER.map((link) => (
                 <li key={link.label}>
-                  <Link
-                    to={link.to}
-                    hash={link.hash}
+                  <a
+                    href={link.href}
                     className="text-[0.9rem] text-ivory/65 transition-colors hover:text-ivory"
                   >
                     {link.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <p className="label-caps text-gold">Nos circuits</p>
+            <p className="label-caps text-gold">Nos séjours</p>
             <ul className="mt-5 space-y-3">
               {SEJOURS.map((link) => (
                 <li key={link.label}>
-                  <Link
-                    to={link.to}
-                    hash={link.hash}
+                  <a
+                    href={link.href}
                     className="text-[0.9rem] text-ivory/65 transition-colors hover:text-ivory"
                   >
                     {link.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -68,30 +71,16 @@ export default function Footer() {
           <div>
             <p className="label-caps text-gold">Contact</p>
             <ul className="mt-5 space-y-3">
-              <li>
-                <a
-                  href={CONTACT_INFO.phoneHref}
-                  className="text-[0.9rem] text-ivory/65 transition-colors hover:text-ivory"
-                >
-                  {CONTACT_INFO.phone}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${CONTACT_INFO.email}`}
-                  className="text-[0.9rem] text-ivory/65 transition-colors hover:text-ivory"
-                >
-                  {CONTACT_INFO.email}
-                </a>
-              </li>
-              <li>
-                <Link
-                  to="/contact"
-                  className="text-[0.9rem] text-ivory/65 transition-colors hover:text-ivory"
-                >
-                  Formulaire de contact
-                </Link>
-              </li>
+              {CONTACT.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="text-[0.9rem] text-ivory/65 transition-colors hover:text-ivory"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

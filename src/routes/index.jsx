@@ -6,7 +6,7 @@ import Problem from "@/components/landing/Problem";
 import Solution from "@/components/landing/Solution";
 import Destinations from "@/components/landing/Destinations";
 import HowItWorks from "@/components/landing/HowItWorks";
-import Circuits from "@/components/landing/Circuits";
+import Pricing from "@/components/landing/Pricing";
 import Testimonials from "@/components/landing/Testimonials";
 import Faq from "@/components/landing/Faq";
 import ContactForm from "@/components/landing/ContactForm";
@@ -33,7 +33,7 @@ function LandingPage() {
         <Solution />
         <Destinations />
         <HowItWorks />
-        <Circuits onSelect={selectFormule} />
+        <Pricing onSelect={selectFormule} />
         <Testimonials />
         <Faq />
         <ContactForm formule={formule} setFormule={setFormule} />

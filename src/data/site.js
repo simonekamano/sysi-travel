@@ -13,20 +13,12 @@ export const IMAGES = {
   sunset: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/6878ea223_generated_d5361e93.png",
 };
 
-export const CONTACT_INFO = {
-  phone: "+224 620 00 00 00",
-  phoneHref: "tel:+224620000000",
-  email: "contact@sysitravel.com",
-  address: "Kaloum, Conakry — Guinée",
-  hours: "Lundi – samedi, 9h – 19h (GMT)",
-};
-
 export const NAV_LINKS = [
-  { label: "Destinations", to: "/", hash: "destinations" },
-  { label: "Circuits", to: "/", hash: "offre" },
-  { label: "La plateforme", to: "/", hash: "solution" },
-  { label: "Questions", to: "/", hash: "faq" },
-  { label: "Contact", to: "/contact" },
+  { label: "Destinations", href: "#destinations" },
+  { label: "La plateforme", href: "#solution" },
+  { label: "Notre offre", href: "#offre" },
+  { label: "Questions", href: "#faq" },
+  { label: "Contact", href: "#contact" },
 ];
 
 export const HERO_BADGES = [
@@ -150,10 +142,7 @@ export const FORMULES = [
     id: "escapade",
     name: "Escapade Loos",
     price: "390",
-    image: IMAGES.loos,
     duration: "3 jours / 2 nuits",
-    description:
-      "Trois jours sur l'archipel : traversée en bateau depuis le port de Conakry, plages de sable blanc, mangrove et snorkeling. Nuits en écolodge face à l'océan, avec un dîner les pieds dans le sable.",
     tagline: "La première bouffée d'air, juste à côté de Conakry.",
     features: [
       "Transfert port et bateau",
@@ -166,10 +155,7 @@ export const FORMULES = [
     id: "signature",
     name: "Signature Fouta",
     price: "1 190",
-    image: IMAGES.fouta,
     duration: "8 jours / 7 nuits",
-    description:
-      "Huit jours de Conakry au Fouta Djallon : hauts plateaux, chutes de Kinkon, villages peuls et marchés de montagne, avec guide privé et chauffeur. Le circuit le plus demandé par la diaspora.",
     tagline: "Le voyage que l'on raconte pendant des années.",
     features: [
       "Conakry, Dalaba et le Fouta",
@@ -184,10 +170,7 @@ export const FORMULES = [
     id: "traversee",
     name: "Grande Traversée",
     price: "2 490",
-    image: IMAGES.nimba,
     duration: "14 jours / 13 nuits",
-    description:
-      "Deux semaines d'ouest en est : Conakry, le Fouta, la Guinée forestière et les contreforts du mont Nimba. Vols intérieurs inclus, nuits chez l'habitant et deux journées avec un photographe.",
     tagline: "La Guinée dans toute sa diversité, d'ouest en est.",
     features: [
       "Conakry, Fouta, forêt et Nimba",
