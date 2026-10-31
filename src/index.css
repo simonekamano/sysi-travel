@@ -53,6 +53,7 @@
 }
 
 html {
+  font-size: 17.5px;
   scroll-behavior: smooth;
   scroll-padding-top: 6rem;
   -webkit-font-smoothing: antialiased;
@@ -62,7 +63,7 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
   font-family: var(--font-body);
-  font-size: 17px;
+  font-size: 18.5px;
   line-height: 1.65;
   margin: 0;
 }
@@ -90,15 +91,15 @@ h4 {
 .label-caps {
   font-family: var(--font-body);
   text-transform: uppercase;
-  font-size: 0.7rem;
-  letter-spacing: 0.22em;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
   font-weight: 600;
 }
 
 .script-accent {
   font-family: var(--font-script);
   font-style: italic;
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   line-height: 1.2;
 }
 
