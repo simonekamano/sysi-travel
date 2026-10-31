@@ -12,11 +12,28 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Base44 App" },
-      { name: "description", content: "A full-stack Base44 app built with TanStack Start." },
+      {
+        title: "SYSI TRAVEL — La Guinée comme vous ne l'avez jamais vécue",
+      },
+      {
+        name: "description",
+        content:
+          "SYSI TRAVEL : plateforme touristique dédiée à la Guinée. Découvrez les plus beaux sites, réservez un circuit authentique et organisez votre séjour avec des partenaires locaux vérifiés.",
+      },
+      { property: "og:title", content: "SYSI TRAVEL — Voyagez en Guinée autrement" },
+      {
+        property: "og:description",
+        content: "Sites incontournables, circuits authentiques et partenaires locaux vérifiés.",
+      },
     ],
     // No icon link: the platform adds the app's logo when serving.
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&family=Source+Sans+3:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap",
+      },
       { rel: "stylesheet", href: appCss },
     ],
   }),
@@ -38,7 +55,7 @@ function RootComponent() {
 // The document. There is no index.html: the server renders <html> from here.
 function RootDocument({ children }) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <head>
         <HeadContent />
       </head>
