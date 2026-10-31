@@ -20,8 +20,11 @@ export default function Footer() {
       <div className="mx-auto max-w-[1180px] px-6 py-16 lg:py-20">
         <div className="grid gap-12 border-b border-ivory/12 pb-12 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
           <div>
-            <Link to="/" className="inline-flex items-center rounded-sm bg-black px-3 py-2">
-              <img src={LOGO} alt="SYSI TRAVEL Guinée" className="block h-11 w-[106px] object-cover" />
+            <Link
+              to="/"
+              className="inline-flex items-center rounded-full bg-ivory px-3 py-2 transition-colors hover:bg-white"
+            >
+              <img src={LOGO} alt="SYSI TRAVEL Guinée" className="block h-11 w-auto object-contain" />
             </Link>
             <p className="mt-6 max-w-xs text-[0.9rem] leading-relaxed text-ivory/60">
               Plateforme touristique dédiée à la Guinée. Des sites d'exception, des guides locaux

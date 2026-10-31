@@ -25,11 +25,14 @@ export default function Nav() {
               : "bg-petrol/20 backdrop-blur-[2px]"
           )}
         >
-          <a href="#accueil" className="flex shrink-0 items-center rounded-sm bg-black px-3 py-1.5">
+          <a
+            href="#accueil"
+            className="flex shrink-0 items-center rounded-full bg-ivory px-3 py-2 transition-colors hover:bg-white"
+          >
             <img
               src={LOGO}
               alt="SYSI TRAVEL Guinée"
-              className="block h-9 w-[84px] object-cover sm:h-11 sm:w-[104px]"
+              className="block h-9 w-auto object-contain sm:h-11"
             />
           </a>
 

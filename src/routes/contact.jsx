@@ -43,11 +43,11 @@ function ContactPage() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-petrol/12 bg-background">
         <div className="mx-auto flex max-w-[1180px] items-center justify-between gap-4 px-6 py-5">
-          <Link to="/" className="flex items-center rounded-sm bg-black px-3 py-1.5">
+          <Link to="/" className="flex items-center">
             <img
               src={LOGO}
               alt="SYSI TRAVEL Guinée"
-              className="block h-9 w-[84px] object-cover sm:h-10 sm:w-[95px]"
+              className="block h-10 w-auto object-contain sm:h-12"
             />
           </Link>
           <Link
