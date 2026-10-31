@@ -100,7 +100,7 @@ function ContactPage() {
           </div>
         </section>
 
-        <ContactForm formule={formule} setFormule={setFormule} />
+        <ContactForm formule={formule} setFormule={setFormule} showContactDetails={false} />
       </main>
 
       <Footer />

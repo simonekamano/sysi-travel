@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2, Mail, Phone } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import Reveal from "@/components/landing/Reveal";
-import { DESTINATIONS, FORMULES, IMAGES } from "@/data/site";
+import { CONTACT, DESTINATIONS, FORMULES, IMAGES } from "@/data/site";
 
 const EMPTY = {
   nom: "",
@@ -19,7 +19,7 @@ const fieldClass =
   "w-full border-b border-petrol/20 bg-transparent py-2.5 text-[0.95rem] text-petrol outline-none transition-colors placeholder:text-petrol/35 focus:border-gold-deep";
 const labelClass = "label-caps text-petrol/45";
 
-export default function ContactForm({ formule, setFormule }) {
+export default function ContactForm({ formule, setFormule, showContactDetails = true }) {
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
@@ -76,6 +76,25 @@ export default function ContactForm({ formule, setFormule }) {
               <li>Réponse personnalisée, jamais un message automatique.</li>
               <li>Vos coordonnées restent confidentielles.</li>
             </ul>
+
+            {showContactDetails ? (
+              <div className="mt-9 space-y-3 border-t border-ivory/15 pt-7 text-[0.95rem]">
+                <a
+                  href={CONTACT.phoneHref}
+                  className="flex items-center gap-3 text-ivory/85 transition-colors hover:text-gold"
+                >
+                  <Phone className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.8} />
+                  {CONTACT.phone}
+                </a>
+                <a
+                  href={`mailto:${CONTACT.email}`}
+                  className="flex items-center gap-3 text-ivory/85 transition-colors hover:text-gold"
+                >
+                  <Mail className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.8} />
+                  {CONTACT.email}
+                </a>
+              </div>
+            ) : null}
 
             <div className="mt-10 hidden lg:block">
               <div className="relative aspect-[16/10] overflow-hidden">
