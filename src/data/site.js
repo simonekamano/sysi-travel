@@ -1,6 +1,14 @@
 export const LOGO =
   "https://media.base44.com/images/public/user_6ae5e94e512bbbf749af8999/7d9d75fb6_LogodiviaggioSYSITravelGuinea.png";
 
+export const CONTACT = {
+  phone: "+224 622 00 00 00",
+  phoneHref: "tel:+224622000000",
+  email: "contact@sysitravel.com",
+  address: "Kaloum — Conakry, Guinée",
+  hours: "Lundi – samedi, 9h – 19h (GMT)",
+};
+
 export const IMAGES = {
   hero: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/8001a4000_generated_4eab33cf.png",
   loos: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/241672d56_generated_e5e835c9.png",
@@ -141,6 +149,7 @@ export const FORMULES = [
   {
     id: "escapade",
     name: "Escapade Loos",
+    image: IMAGES.loos,
     price: "390",
     duration: "3 jours / 2 nuits",
     tagline: "La première bouffée d'air, juste à côté de Conakry.",
@@ -154,6 +163,7 @@ export const FORMULES = [
   {
     id: "signature",
     name: "Signature Fouta",
+    image: IMAGES.fouta,
     price: "1 190",
     duration: "8 jours / 7 nuits",
     tagline: "Le voyage que l'on raconte pendant des années.",
@@ -169,6 +179,7 @@ export const FORMULES = [
   {
     id: "traversee",
     name: "Grande Traversée",
+    image: IMAGES.nimba,
     price: "2 490",
     duration: "14 jours / 13 nuits",
     tagline: "La Guinée dans toute sa diversité, d'ouest en est.",

@@ -27,6 +27,15 @@ export default function Pricing({ onSelect }) {
                     : "border-petrol/15 bg-white text-petrol hover:border-gold"
                 )}
               >
+                <div className="-mx-8 -mt-8 mb-6 aspect-[16/10] overflow-hidden">
+                  <img
+                    src={formule.image}
+                    alt={formule.name}
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+
                 {formule.highlight ? (
                   <span className="label-caps mb-5 inline-flex w-fit rounded-full bg-gold px-3 py-1.5 text-petrol-deep">
                     Le plus choisi
