@@ -2,9 +2,9 @@ export const LOGO =
   "https://media.base44.com/images/public/user_6ae5e94e512bbbf749af8999/7d9d75fb6_LogodiviaggioSYSITravelGuinea.png";
 
 export const CONTACT = {
-  phone: "+224 622 00 00 00",
-  phoneHref: "tel:+224622000000",
-  email: "contact@sysitravel.com",
+  phone: "+33 6 41 96 01 01",
+  phoneHref: "tel:+33641960101",
+  email: "simone.kamano@yahoo.fr",
   address: "Kaloum — Conakry, Guinée",
   hours: "Lundi – samedi, 9h – 19h (GMT)",
 };
