@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LOGO, NAV_LINKS } from "@/data/site";
@@ -7,9 +6,6 @@ import { LOGO, NAV_LINKS } from "@/data/site";
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const { pathname } = useLocation();
-  const isHome = pathname === "/";
-  const resolve = (href) => (href.startsWith("#") && !isHome ? `/${href}` : href);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -29,10 +25,7 @@ export default function Nav() {
               : "bg-petrol/20 backdrop-blur-[2px]"
           )}
         >
-          <a
-            href={isHome ? "#accueil" : "/"}
-            className="flex shrink-0 items-center rounded-sm bg-black px-3 py-1.5"
-          >
+          <a href="#accueil" className="flex shrink-0 items-center rounded-sm bg-black px-3 py-1.5">
             <img
               src={LOGO}
               alt="SYSI TRAVEL Guinée"
@@ -44,7 +37,7 @@ export default function Nav() {
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
-                href={resolve(link.href)}
+                href={link.href}
                 className="label-caps text-ivory/80 transition-colors duration-300 hover:text-gold"
               >
                 {link.label}
@@ -54,7 +47,7 @@ export default function Nav() {
 
           <div className="flex items-center gap-2">
             <a
-              href={isHome ? "#contact" : "/contact"}
+              href="#contact"
               className="label-caps hidden rounded-full bg-gold px-6 py-3 text-petrol-deep transition-all duration-300 hover:bg-ivory sm:inline-flex"
             >
               Réserver mon séjour
@@ -78,7 +71,7 @@ export default function Nav() {
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
-                href={resolve(link.href)}
+                href={link.href}
                 onClick={() => setOpen(false)}
                 className="label-caps text-ivory/80 transition-colors hover:text-gold"
               >
@@ -87,7 +80,7 @@ export default function Nav() {
             ))}
           </nav>
           <a
-            href={isHome ? "#contact" : "/contact"}
+            href="#contact"
             onClick={() => setOpen(false)}
             className="label-caps mt-7 flex w-full items-center justify-center rounded-full bg-gold px-6 py-3.5 text-petrol-deep"
           >
