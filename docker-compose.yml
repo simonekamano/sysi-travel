@@ -1,5 +1,6 @@
-# L'application SYSI TRAVEL. Supabase tourne à part (dépôt supabase/docker), voir DEPLOIEMENT.md.
-#   docker compose up -d --build
+# L'application SYSI TRAVEL sur le VPS. Supabase tourne à part (/opt/supabase, projet
+# Docker « supabase »), voir DEPLOIEMENT.md. Lancé par deploy/deploy.sh :
+#   docker compose --project-name sysi-travel --env-file /opt/sysi-travel/.env up -d --build
 services:
   web:
     build:
@@ -9,12 +10,19 @@ services:
         VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
         VITE_SUPABASE_GOOGLE_ENABLED: ${VITE_SUPABASE_GOOGLE_ENABLED:-false}
     restart: unless-stopped
-    env_file: .env
     environment:
-      SUPABASE_URL: ${SUPABASE_URL:-${VITE_SUPABASE_URL}}
+      # Supabase vu depuis le conteneur : la passerelle Kong sur le réseau Docker de Supabase.
+      SUPABASE_URL: ${SUPABASE_URL:-http://kong:8000}
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-${VITE_SUPABASE_ANON_KEY}}
+      SITE_URL: ${SITE_URL:-}
     # Seulement en local : Nginx est la seule porte d'entrée publique.
     ports:
       - "127.0.0.1:3000:3000"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    networks:
+      - default
+      - supabase
+
+networks:
+  supabase:
+    external: true
+    name: supabase_default
