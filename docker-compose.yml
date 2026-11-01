@@ -18,7 +18,7 @@ services:
       # E-mails des demandes (notification à l'agence et accusé de réception) via Resend.
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       MAIL_FROM: ${MAIL_FROM:-SYSI TRAVEL <no-reply@sysitravel.com>}
-      MAIL_NOTIFY_TO: ${MAIL_NOTIFY_TO:-simonekamano91@gmail.com}
+      MAIL_NOTIFY_TO: ${MAIL_NOTIFY_TO:-}
     # Seulement en local : Nginx est la seule porte d'entrée publique.
     ports:
       - "127.0.0.1:3000:3000"

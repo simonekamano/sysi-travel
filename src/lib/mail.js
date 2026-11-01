@@ -61,7 +61,7 @@ export async function sendDemandeEmails(demande) {
     console.warn("RESEND_API_KEY absente : e-mails de la demande non envoyés.");
     return;
   }
-  const agency = process.env.MAIL_NOTIFY_TO || "simonekamano91@gmail.com";
+  const agency = process.env.MAIL_NOTIFY_TO || CONTACT.email;
 
   const trip = [
     ["Destination", demande.destination || "À définir"],
