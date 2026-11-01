@@ -6,6 +6,7 @@ import Hero from "@/components/landing/Hero";
 import Problem from "@/components/landing/Problem";
 import Solution from "@/components/landing/Solution";
 import Destinations from "@/components/landing/Destinations";
+import LocalProducts from "@/components/landing/LocalProducts";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Pricing from "@/components/landing/Pricing";
 import Testimonials from "@/components/landing/Testimonials";
@@ -45,6 +46,7 @@ function LandingPage() {
         <Problem />
         <Solution />
         <Destinations destinations={destinations} />
+        <LocalProducts />
         <HowItWorks />
         <Pricing formules={formules} onSelect={selectFormule} />
         <Testimonials />

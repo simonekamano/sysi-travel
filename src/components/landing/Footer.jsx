@@ -4,6 +4,7 @@ import { CONTACT, LOGO_INVERSE } from "@/data/site";
 
 const EXPLORER = [
   { label: "Destinations", hash: "destinations" },
+  { label: "Produits locaux", hash: "produits" },
   { label: "La plateforme", hash: "solution" },
   { label: "Nos formules", hash: "offre" },
   { label: "Questions fréquentes", hash: "faq" },

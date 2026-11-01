@@ -7,6 +7,7 @@ export const SYMBOL = "/brand/sysi-travel-symbole.png"; // favicon, avatar
 export const CONTACT = {
   phone: "+33 6 41 96 01 01",
   phoneHref: "tel:+33641960101",
+  whatsappNumber: "33641960101",
   whatsappHref: `https://wa.me/33641960101?text=${encodeURIComponent(
     "Bonjour SYSI TRAVEL, je souhaite organiser un séjour en Guinée.",
   )}`,
@@ -29,6 +30,7 @@ export const IMAGES = {
 
 export const NAV_LINKS = [
   { label: "Destinations", href: "#destinations" },
+  { label: "Produits", href: "#produits" },
   { label: "La plateforme", href: "#solution" },
   { label: "Notre offre", href: "#offre" },
   { label: "Questions", href: "#faq" },
@@ -243,5 +245,46 @@ export const FAQ = [
   {
     q: "Je ne sais pas encore quelles dates choisir, puis-je vous écrire ?",
     a: "Bien sûr. Décrivez simplement la période envisagée : nous vous proposerons les meilleures fenêtres selon la saison, les fêtes locales et votre budget.",
+  },
+];
+// Local crafts (section « Produits locaux »). Photos in public/images/produits/; products
+// without a photo yet show their icon (see LocalProducts.jsx).
+export const PRODUCT_PHOTOS = [
+  { src: "/images/produits/pagnes-teints.jpg", alt: "Pagnes teints aux motifs orange et indigo" },
+  { src: "/images/produits/pagnes-tisses.jpg", alt: "Pile de pagnes tissés à rayures" },
+  { src: "/images/produits/sacs-pagne.jpg", alt: "Sacs en pagne aux finitions cousues main" },
+  { src: "/images/produits/pagnes-pochettes.jpg", alt: "Étal de pagnes et de pochettes colorées" },
+];
+
+export const LOCAL_PRODUCTS = [
+  {
+    icon: "shirt",
+    name: "Pagnes",
+    text: "Tissés à la main ou teints, aux motifs et aux couleurs de chaque région.",
+  },
+  {
+    icon: "bag",
+    name: "Sacs",
+    text: "Sacs et pochettes en pagne, cousus et finis à la main.",
+  },
+  {
+    icon: "leaf",
+    name: "Beurre de karité",
+    text: "Beurre de karité artisanal, pour la peau et les cheveux.",
+  },
+  {
+    icon: "amphora",
+    name: "Jarres",
+    text: "Jarres en terre cuite façonnées par des potières locales.",
+  },
+  {
+    icon: "bowl",
+    name: "Calebasses",
+    text: "Calebasses travaillées pour la cuisine, le service ou la décoration.",
+  },
+  {
+    icon: "footprints",
+    name: "Chaussures traditionnelles",
+    text: "Confectionnées à la main par des artisans guinéens.",
   },
 ];

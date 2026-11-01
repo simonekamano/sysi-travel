@@ -70,18 +70,18 @@ export default function Nav({ home = true, solid = false }) {
               alt="SYSI TRAVEL Guinée"
               width={1000}
               height={463}
-              className="block h-[66px] w-auto object-contain lg:h-[76px]"
+              className="block h-[66px] w-auto object-contain lg:h-[76px] xl:h-[66px] 2xl:h-[76px]"
             />
           </a>
 
-          <nav className="hidden items-center gap-8 xl:flex">
+          <nav className="hidden items-center gap-4 xl:flex 2xl:gap-8">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={hrefOf(link)}
                 aria-current={isActive(link) ? "location" : undefined}
                 className={cn(
-                  "label-caps relative py-1 transition-colors duration-300 hover:text-gold",
+                  "label-caps relative whitespace-nowrap py-1 transition-colors xl:!tracking-[0.1em] 2xl:!tracking-[0.16em] duration-300 hover:text-gold",
                   "after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:bg-gold after:transition-transform after:duration-500",
                   isActive(link) ? "text-gold after:scale-x-100" : "text-ivory/80 after:scale-x-0 hover:after:scale-x-100"
                 )}
