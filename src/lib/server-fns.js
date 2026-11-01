@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth-middleware";
+import { sendDemandeEmails } from "@/lib/mail";
 
 // Supabase answers { data, error }; a server function must throw a plain Error to reach the caller.
 const unwrap = ({ data, error }) => {
@@ -81,6 +82,7 @@ export const createDemande = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     unwrap(await context.getSupabase().from("demandes_sejour").insert({ ...data, statut: "nouveau" }));
+    await sendDemandeEmails(data);
     return { ok: true };
   });
 
