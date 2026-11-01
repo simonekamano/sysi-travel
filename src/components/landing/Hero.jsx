@@ -1,4 +1,4 @@
-import { Clock, LifeBuoy, MapPin, ShieldCheck } from "lucide-react";
+import { ArrowRight, BriefcaseBusiness, Clock, LifeBuoy, MapPin, ShieldCheck } from "lucide-react";
 import { HERO_BADGES, IMAGES } from "@/data/site";
 
 const ICONS = [MapPin, Clock, ShieldCheck, LifeBuoy];
@@ -52,9 +52,21 @@ export default function Hero() {
             </a>
           </div>
 
-          <p className="label-caps mt-8 text-ivory/45">
-            Séjours sur mesure · Guinée · Depuis l'étranger
-          </p>
+          {/* Secondary audience: the travel business opportunity, under the travel calls to action. */}
+          <a
+            href="#ambassadeur"
+            className="group mt-8 flex w-full animate-fade-up items-center gap-3 rounded-full border border-gold/45 bg-petrol-deep/50 py-2 pl-2 pr-4 text-left sm:pr-5 backdrop-blur-sm transition-colors duration-300 [animation-delay:360ms] hover:border-gold hover:bg-petrol-deep/70 sm:inline-flex sm:w-auto">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold text-petrol-deep sm:h-11 sm:w-11">
+              <BriefcaseBusiness className="h-5 w-5" />
+            </span>
+            <span className="flex-1">
+              <span className="label-caps block text-[0.66rem] text-gold">Business voyage</span>
+              <span className="mt-0.5 block text-[0.9rem] font-semibold leading-snug text-ivory [text-wrap:balance] sm:text-[0.98rem]">
+                Recommande et gagne de l'argent
+              </span>
+            </span>
+            <ArrowRight className="hidden h-4 w-4 shrink-0 text-gold transition-transform duration-300 group-hover:translate-x-0.5 min-[400px]:block" />
+          </a>
         </div>
       </div>
 
