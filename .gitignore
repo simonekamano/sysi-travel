@@ -27,3 +27,7 @@ src/routeTree.gen.ts
 .DS_Store
 *.sw?
 
+
+# Claude Code : configuration locale de chaque poste
+.claude/launch.json
+.claude/settings.local.json

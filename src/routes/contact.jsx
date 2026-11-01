@@ -17,7 +17,7 @@ export const Route = createFileRoute("/contact")({
       {
         name: "description",
         content:
-          "Contactez SYSI TRAVEL : téléphone, WhatsApp, e-mail et adresse à Conakry. Réponse sous 24 heures ouvrées pour votre séjour en Guinée.",
+          "Contactez SYSI TRAVEL : téléphone, WhatsApp, e-mail et adresse à Conakry. Réponse sous 72 heures pour votre séjour en Guinée.",
       },
     ],
   }),
@@ -60,7 +60,7 @@ function ContactPage() {
             <p className="mt-6 max-w-2xl text-[1rem] leading-relaxed text-petrol/70">
               Une question sur un circuit, un projet de séjour en famille ou un retour au pays à
               organiser ? Appelez-nous, écrivez-nous ou remplissez le formulaire : un expert vous
-              répond sous 24 heures ouvrées.
+              répond sous 72 heures.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

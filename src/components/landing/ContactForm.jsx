@@ -81,7 +81,7 @@ export default function ContactForm({
             </h2>
             <p className="mt-5 max-w-md text-[0.98rem] leading-relaxed text-ivory/70">
               Décrivez votre projet en trois minutes. Un expert SYSI TRAVEL vous répond sous
-              24 heures ouvrées avec un premier itinéraire et une estimation de budget claire.
+              72 heures avec un premier itinéraire et une estimation de budget claire.
             </p>
 
             <div className="mt-9 h-px w-16 bg-gold/60" />
@@ -134,7 +134,7 @@ export default function ContactForm({
                 </h3>
                 <p className="max-w-md text-[0.95rem] leading-relaxed text-petrol/70">
                   Votre demande est bien enregistrée. Un expert SYSI TRAVEL revient vers vous sous
-                  24 heures ouvrées avec un premier itinéraire et une estimation de budget.
+                  72 heures avec un premier itinéraire et une estimation de budget.
                 </p>
                 <button
                   type="button"
