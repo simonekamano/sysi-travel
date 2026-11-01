@@ -21,6 +21,12 @@ for migration in supabase/migrations/*.sql; do
   docker exec -i supabase-db psql -v ON_ERROR_STOP=1 -q -U postgres -d postgres < "$migration"
 done
 
+echo "==> Sauvegarde quotidienne de la base (3 h 15)"
+BACKUP_JOB="15 3 * * * bash $APP/deploy/backup-db.sh >> $ROOT/backups.log 2>&1"
+( crontab -l 2>/dev/null | grep -vF "deploy/backup-db.sh" || true; echo "$BACKUP_JOB" ) | crontab -
+# Une première sauvegarde tout de suite, si aucune n'existe encore.
+ls "$ROOT"/backups/supabase-*.dump > /dev/null 2>&1 || bash "$APP/deploy/backup-db.sh"
+
 echo "==> Construction et redémarrage ($REVISION)"
 "${COMPOSE[@]}" up -d --build --remove-orphans
 

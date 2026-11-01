@@ -13,6 +13,7 @@ const EMPTY = {
   periode: "",
   voyageurs: "2",
   message: "",
+  site_web: "",
 };
 
 const fieldClass =
@@ -58,6 +59,7 @@ export default function ContactForm({
           voyageurs: String(form.voyageurs),
           message: form.message.trim(),
           formule: selected ? selected.name : formule === "sur-mesure" ? "Séjour sur mesure" : "",
+          site_web: form.site_web,
         },
       });
       setSentName(form.nom.trim());
@@ -65,7 +67,11 @@ export default function ContactForm({
       setFormule("");
       setStatus("done");
     } catch (err) {
-      setError("Votre demande n'a pas pu être envoyée. Merci de réessayer dans un instant.");
+      setError(
+        err?.message?.startsWith("Trop de demandes")
+          ? err.message
+          : "Votre demande n'a pas pu être envoyée. Merci de réessayer dans un instant.",
+      );
       setStatus("idle");
     }
   };
@@ -146,6 +152,18 @@ export default function ContactForm({
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="grid gap-6 sm:grid-cols-2">
+                {/* Trap for spam robots: hidden from people, filled in by bots, ignored by the server. */}
+                <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+                  <label htmlFor="site_web">Site web</label>
+                  <input
+                    id="site_web"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={form.site_web}
+                    onChange={update("site_web")}
+                  />
+                </div>
                 <div className="sm:col-span-2">
                   <label className={labelClass} htmlFor="nom">
                     Nom complet

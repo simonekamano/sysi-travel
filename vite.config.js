@@ -8,5 +8,14 @@ import { defineConfig } from "vite";
 export default defineConfig({
   resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
   server: { port: 3000 },
-  plugins: [tanstackStart({ srcDirectory: "src" }), react()],
+  plugins: [
+    tanstackStart({
+      srcDirectory: "src",
+      // No CSRF middleware needed: server functions authenticate with a Bearer token that the
+      // page's own script adds (src/lib/auth-middleware.js), never with cookies, so another
+      // site cannot act as a signed-in user.
+      serverFns: { disableCsrfMiddlewareWarning: true },
+    }),
+    react(),
+  ],
 });

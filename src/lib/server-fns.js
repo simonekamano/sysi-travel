@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth-middleware";
 import { sendDemandeEmails } from "@/lib/mail";
@@ -66,6 +67,26 @@ export const getDestinationPage = createServerFn({ method: "GET" })
 
 // --- Contact form: anyone may create a request, only admins read them ---
 
+// Each request sends two e-mails, so a visitor may send at most DEMANDE_LIMIT requests per
+// DEMANDE_WINDOW_MS. In memory: one Node process serves the site (docker-compose.yml).
+const DEMANDE_LIMIT = 5;
+const DEMANDE_WINDOW_MS = 15 * 60 * 1000;
+const recentDemandes = new Map();
+
+function checkDemandeRate() {
+  // Nginx sets X-Real-IP to the client address and overwrites any value the client sent.
+  const ip = getRequestHeader("x-real-ip") || getRequestIP() || "inconnu";
+  const now = Date.now();
+  const times = (recentDemandes.get(ip) ?? []).filter((time) => now - time < DEMANDE_WINDOW_MS);
+  if (times.length >= DEMANDE_LIMIT) {
+    throw new Error("Trop de demandes envoyées. Réessayez dans quelques minutes ou écrivez-nous sur WhatsApp.");
+  }
+  recentDemandes.set(ip, [...times, now]);
+  if (recentDemandes.size > 5000) {
+    for (const [key, list] of recentDemandes) if (list.every((time) => now - time >= DEMANDE_WINDOW_MS)) recentDemandes.delete(key);
+  }
+}
+
 export const createDemande = createServerFn({ method: "POST" })
   .validator(
     z.object({
@@ -78,11 +99,15 @@ export const createDemande = createServerFn({ method: "POST" })
       periode: text(200),
       voyageurs: text(10),
       message: text(5000),
+      // Hidden field of the form (spam trap): only robots fill it in.
+      site_web: text(500).optional(),
     }),
   )
-  .handler(async ({ data, context }) => {
-    unwrap(await context.getSupabase().from("demandes_sejour").insert({ ...data, statut: "nouveau" }));
-    await sendDemandeEmails(data);
+  .handler(async ({ data: { site_web, ...demande }, context }) => {
+    if (site_web) return { ok: true };
+    checkDemandeRate();
+    unwrap(await context.getSupabase().from("demandes_sejour").insert({ ...demande, statut: "nouveau" }));
+    await sendDemandeEmails(demande);
     return { ok: true };
   });
 
