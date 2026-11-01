@@ -70,7 +70,23 @@ Si ce script n'existe pas dans votre version, générez `JWT_SECRET` (`openssl r
 | `SUPABASE_PUBLIC_URL` | `https://api.sysitravel.com` |
 | `ENABLE_EMAIL_SIGNUP` | `true` |
 | `ENABLE_EMAIL_AUTOCONFIRM` | `false` (l'e-mail doit être confirmé) |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_ADMIN_EMAIL`, `SMTP_SENDER_NAME` | un vrai serveur SMTP (Hostinger Mail, Brevo, Resend…) : **obligatoire** pour les e-mails de confirmation et de mot de passe oublié |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_ADMIN_EMAIL`, `SMTP_SENDER_NAME` | Resend, voir § 2.2 bis : **obligatoire** pour les e-mails de confirmation et de mot de passe oublié |
+
+### 2.2 bis E-mails avec Resend
+
+1. Sur [resend.com](https://resend.com) : **Domains** → **Add domain** → `sysitravel.com`.
+2. Dans hPanel → DNS, ajoutez **exactement** les enregistrements affichés par Resend
+   (DKIM `resend._domainkey` en TXT, puis MX et TXT SPF sur `send`), puis cliquez sur **Verify**.
+3. **API Keys** → **Create API key**, permission *Sending access*, domaine `sysitravel.com`.
+4. Sur le VPS, en root (la clé est demandée sans s'afficher) :
+
+   ```bash
+   bash /opt/sysi-travel/app/deploy/configure-resend.sh            # expéditeur no-reply@sysitravel.com
+   bash /opt/sysi-travel/app/deploy/configure-resend.sh contact@sysitravel.com
+   ```
+
+Le script règle `smtp.resend.com:465`, l'utilisateur `resend`, la clé comme mot de passe, puis
+redémarre le service Auth. En cas d'échec : `docker logs supabase-auth --tail 50`.
 
 ### 2.3 Ne rien exposer directement sur Internet
 
