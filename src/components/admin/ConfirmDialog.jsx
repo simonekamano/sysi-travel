@@ -26,7 +26,7 @@ export default function ConfirmDialog({
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-destructive/10 text-destructive">
             <Trash2 className="h-5 w-5" strokeWidth={1.7} />
           </span>
-          <AlertDialogTitle className="font-display text-[1.35rem] font-medium leading-snug text-petrol">
+          <AlertDialogTitle className="font-display text-[1.35rem] font-bold leading-snug text-petrol">
             {title}
           </AlertDialogTitle>
           {description ? (

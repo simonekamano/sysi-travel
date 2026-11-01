@@ -80,7 +80,6 @@ export default {
   			heading: ['var(--font-heading)'],
   			body: ['var(--font-body)'],
   			display: ['var(--font-display)'],
-  			script: ['var(--font-script)'],
   			mono: ['var(--font-mono)']
   		},
   		keyframes: {

@@ -32,7 +32,7 @@ export default function Faq({ faqs = [] }) {
                     aria-expanded={isOpen}
                     className="flex w-full items-center justify-between gap-6 py-6 text-left"
                   >
-                    <span className="text-[1.02rem] font-medium text-petrol">{item.question}</span>
+                    <span className="text-[1.02rem] font-semibold text-petrol">{item.question}</span>
                     <ChevronDown
                       className={cn(
                         "h-5 w-5 shrink-0 text-gold-deep transition-transform duration-300",

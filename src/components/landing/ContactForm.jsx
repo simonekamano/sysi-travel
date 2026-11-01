@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle2, Loader2, Mail, Phone } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { createDemande } from "@/lib/server-fns";
 import Reveal from "@/components/landing/Reveal";
 import { CONTACT, IMAGES } from "@/data/site";
 
@@ -25,8 +25,16 @@ export default function ContactForm({
   destinations = [],
   formules = [],
   showContactDetails = true,
+  destinationChoice = null,
 }) {
   const [form, setForm] = useState(EMPTY);
+
+  // A destination card clicked higher up the page presets the field.
+  useEffect(() => {
+    if (!destinationChoice) return;
+    setForm((prev) => ({ ...prev, destination: destinationChoice.name }));
+    setStatus("idle");
+  }, [destinationChoice]);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
   const [sentName, setSentName] = useState("");
@@ -39,17 +47,18 @@ export default function ContactForm({
     setError("");
     try {
       const selected = formules.find((item) => item.id === formule);
-      await base44.entities.DemandeSejour.create({
-        nom: form.nom.trim(),
-        email: form.email.trim(),
-        telephone: form.telephone.trim(),
-        pays: form.pays.trim(),
-        destination: form.destination,
-        periode: form.periode.trim(),
-        voyageurs: form.voyageurs,
-        message: form.message.trim(),
-        formule: selected ? selected.name : "",
-        statut: "nouveau",
+      await createDemande({
+        data: {
+          nom: form.nom.trim(),
+          email: form.email.trim(),
+          telephone: form.telephone.trim(),
+          pays: form.pays.trim(),
+          destination: form.destination,
+          periode: form.periode.trim(),
+          voyageurs: String(form.voyageurs),
+          message: form.message.trim(),
+          formule: selected ? selected.name : formule === "sur-mesure" ? "Séjour sur mesure" : "",
+        },
       });
       setSentName(form.nom.trim());
       setForm(EMPTY);
@@ -66,8 +75,8 @@ export default function ContactForm({
       <div className="mx-auto grid max-w-[1180px] gap-10 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <Reveal>
           <div>
-            <p className="script-accent text-gold">Prochaine étape</p>
-            <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.9rem)] font-medium uppercase leading-[1.1] tracking-[0.06em] text-ivory">
+            <p className="eyebrow text-gold">Prochaine étape</p>
+            <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.9rem)] font-bold leading-[1.1] tracking-[-0.015em] text-ivory">
               Parlons de votre retour au pays
             </h2>
             <p className="mt-5 max-w-md text-[0.98rem] leading-relaxed text-ivory/70">
@@ -120,7 +129,7 @@ export default function ContactForm({
             {status === "done" ? (
               <div className="flex min-h-[420px] flex-col items-start justify-center gap-4">
                 <CheckCircle2 className="h-11 w-11 text-gold-deep" strokeWidth={1.4} />
-                <h3 className="text-[1.4rem] font-medium text-petrol">
+                <h3 className="text-[1.4rem] font-semibold text-petrol">
                   Merci {sentName || "à vous"}.
                 </h3>
                 <p className="max-w-md text-[0.95rem] leading-relaxed text-petrol/70">

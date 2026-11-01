@@ -12,11 +12,11 @@ export default function SectionHeading({ eyebrow, title, text, tone = "dark", al
       )}
     >
       {eyebrow ? (
-        <p className={cn("script-accent", isLight ? "text-gold" : "text-gold-deep")}>{eyebrow}</p>
+        <p className={cn("eyebrow", isLight ? "text-gold" : "text-gold-deep")}>{eyebrow}</p>
       ) : null}
       <h2
         className={cn(
-          "text-[clamp(1.9rem,3.6vw,3.1rem)] font-medium uppercase leading-[1.08] tracking-[0.06em]",
+          "text-[clamp(1.9rem,3.6vw,3.1rem)] font-bold leading-[1.08] tracking-[-0.015em]",
           isLight ? "text-ivory" : "text-petrol"
         )}
       >

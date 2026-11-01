@@ -9,11 +9,15 @@ export default function Hero() {
       id="accueil"
       className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-petrol-deep">
       
-      <div
+      {/* An <img>, not a CSS background: the browser fetches it first (fetchpriority), with the HTML. */}
+      <img
+        src={IMAGES.hero}
+        alt=""
         aria-hidden="true"
-        className="absolute inset-0 -z-20 animate-kenburns bg-cover bg-center"
-        style={{ backgroundImage: `url(${IMAGES.hero})` }} />
-      
+        fetchPriority="high"
+        decoding="async"
+        className="absolute inset-0 -z-20 h-full w-full animate-kenburns object-cover object-center" />
+
       <div
         aria-hidden="true"
         className="absolute inset-0 -z-10 bg-gradient-to-b from-petrol-deep/90 via-petrol/40 to-petrol-deep/95" />
@@ -21,10 +25,10 @@ export default function Hero() {
 
       <div className="flex flex-1 items-center justify-center px-6 pb-10 pt-32 lg:pt-36">
         <div className="mx-auto max-w-[1100px] text-center">
-          <p className="script-accent animate-fade-in text-gold">Bienvenue chez vous.</p>
+          <p className="eyebrow animate-fade-in text-gold">Bienvenue chez vous.</p>
 
-          <h1 className="mt-6 animate-fade-up text-[clamp(2rem,5vw,4.3rem)] font-medium uppercase leading-[1.06] tracking-[0.045em] text-ivory">La GuiNée comme vous ne l'avez jamais vécue.
-
+          <h1 className="mt-6 animate-fade-up text-[clamp(2rem,5vw,4.3rem)] font-extrabold leading-[1.06] tracking-[-0.02em] text-ivory">
+            La Guinée comme vous ne l'avez jamais vécue.
           </h1>
 
           <p className="mx-auto mt-7 max-w-2xl animate-fade-up text-[1.02rem] leading-relaxed text-ivory/80 [animation-delay:120ms]">

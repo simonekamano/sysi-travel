@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { toast } from "sonner";
+import { deleteFormule } from "@/lib/server-fns";
 import FormuleForm from "@/components/admin/FormuleForm";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 
@@ -19,10 +20,15 @@ export default function FormulesPanel({ formules = [] }) {
   const remove = async () => {
     if (!pending) return;
     setBusy(true);
-    await base44.entities.Formule.delete(pending.id);
-    setBusy(false);
-    setPending(null);
-    router.invalidate();
+    try {
+      await deleteFormule({ data: { id: pending.id } });
+      setPending(null);
+      router.invalidate();
+    } catch {
+      toast.error("Suppression impossible. Vérifiez que vous êtes connecté en administrateur.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -64,12 +70,12 @@ export default function FormulesPanel({ formules = [] }) {
             </div>
             <div className="flex-1">
               <p className="label-caps text-gold-deep">{formule.duration}</p>
-              <h3 className="text-[1rem] font-medium text-petrol">
+              <h3 className="text-[1rem] font-semibold text-petrol">
                 {formule.name}
                 {formule.highlight ? " · en avant" : ""}
               </h3>
             </div>
-            <p className="font-display text-[1.4rem] leading-none text-petrol">{formule.price}</p>
+            <p className="font-display text-[1.4rem] font-extrabold leading-none text-petrol">{formule.price}</p>
             <div className="flex gap-2">
               <button
                 type="button"

@@ -35,7 +35,7 @@ export default function Partner() {
               >
                 <div>
                   <p className="label-caps text-gold-deep">{item.kicker}</p>
-                  <h3 className="mt-5 text-[clamp(1.25rem,2vw,1.7rem)] font-medium uppercase leading-[1.15] tracking-[0.05em] text-petrol">
+                  <h3 className="mt-5 text-[clamp(1.25rem,2vw,1.7rem)] font-bold leading-[1.15] tracking-[-0.015em] text-petrol">
                     {item.title}
                   </h3>
                   <p className="mt-4 text-[0.95rem] leading-relaxed text-petrol/65">{item.text}</p>

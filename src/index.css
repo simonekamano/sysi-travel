@@ -3,24 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --background: 43 31% 95%;
-  --foreground: 187 40% 13%;
+  --background: 43 30% 95%;
+  --foreground: 187 23% 14%;
   --card: 0 0% 100%;
-  --card-foreground: 187 40% 13%;
+  --card-foreground: 187 23% 14%;
   --popover: 0 0% 100%;
-  --popover-foreground: 187 40% 13%;
+  --popover-foreground: 187 23% 14%;
   --primary: 187 58% 17%;
   --primary-foreground: 43 31% 97%;
   --secondary: 43 24% 90%;
   --secondary-foreground: 187 58% 17%;
   --muted: 43 22% 91%;
-  --muted-foreground: 187 12% 35%;
+  --muted-foreground: 175 6% 39%;
   --accent: 38 73% 63%;
   --accent-foreground: 187 58% 12%;
   --destructive: 0 72% 45%;
   --destructive-foreground: 0 0% 98%;
-  --border: 40 17% 84%;
-  --input: 40 17% 84%;
+  --border: 41 22% 86%;
+  --input: 41 22% 86%;
   --ring: 38 73% 63%;
   --chart-1: 187 58% 17%;
   --chart-2: 38 73% 63%;
@@ -32,14 +32,14 @@
   --font-display: "Outfit", "Segoe UI", system-ui, sans-serif;
   --font-heading: "Outfit", "Segoe UI", system-ui, sans-serif;
   --font-body: "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
-  --font-script: "Cormorant Garamond", "Times New Roman", serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --petrol: 187 58% 17%;
+  --petrol-light: 187 53% 23%;
   --petrol-deep: 187 55% 10%;
   --gold: 38 73% 63%;
-  --gold-deep: 36 62% 38%;
-  --ivory: 43 31% 95%;
+  --gold-deep: 38 59% 45%;
+  --ivory: 43 30% 95%;
   --ivory-soft: 40 30% 97%;
 
   --sidebar-background: 43 31% 95%;
@@ -74,13 +74,29 @@ body {
   border-color: hsl(var(--border));
 }
 
+/* Typography — Sysi-Travel-Brand-Kit (v1, octobre 2026): two Google Fonts only.
+   Outfit (400 / 600 / 700 / 800): titles, logo, buttons, eyebrows.
+   Source Sans 3 (400 / 600): running text and interface. */
 h1,
 h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: 500;
   letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-weight: 800;
+}
+
+h2 {
+  font-weight: 700;
+}
+
+h3,
+h4 {
+  font-weight: 600;
 }
 
 ::selection {
@@ -88,19 +104,23 @@ h4 {
   color: hsl(var(--petrol-deep));
 }
 
+/* Buttons, small labels: Outfit 600, capitals. */
 .label-caps {
-  font-family: var(--font-body);
+  font-family: var(--font-display);
   text-transform: uppercase;
   font-size: 0.78rem;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
   font-weight: 600;
 }
 
-.script-accent {
-  font-family: var(--font-script);
-  font-style: italic;
-  font-size: 1.45rem;
-  line-height: 1.2;
+/* The kit's eyebrow above titles: Outfit 600, capitals, wide spacing (or foncé on light, or on pétrole). */
+.eyebrow {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -115,4 +135,122 @@ h4 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+/* --- Map (src/components/map) --- */
+
+.sysi-map .leaflet-container {
+  font-family: var(--font-body);
+  background: hsl(var(--ivory));
+}
+
+/* Leaflet's +/− buttons default to Lucida Console: brand font and colors instead. */
+.sysi-map .leaflet-bar a {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: hsl(var(--petrol));
+}
+
+.sysi-map .leaflet-bar a:hover {
+  color: hsl(var(--gold-deep));
+}
+
+/* Warmer, quieter tiles so the gold pins carry the eye. */
+.sysi-map .leaflet-tile-pane {
+  filter: grayscale(0.55) sepia(0.18) saturate(0.85) brightness(1.03);
+}
+
+.sysi-pin {
+  background: none;
+  border: 0;
+}
+
+.sysi-pin__drop {
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  width: 24px;
+  height: 24px;
+  margin-left: -12px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: hsl(var(--gold));
+  border: 3px solid hsl(var(--petrol));
+  box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.55);
+  transition: transform 0.3s ease;
+}
+
+.sysi-pin:hover .sysi-pin__drop {
+  transform: rotate(-45deg) scale(1.15);
+}
+
+.sysi-pin__pulse {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 18px;
+  height: 8px;
+  margin-left: -9px;
+  border-radius: 50%;
+  background: hsl(var(--gold) / 0.55);
+  animation: sysi-pin-pulse 2.4s ease-out infinite;
+}
+
+@keyframes sysi-pin-pulse {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+.sysi-popup .leaflet-popup-content-wrapper {
+  border-radius: 0;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 24px 50px -20px rgba(18, 61, 67, 0.6);
+}
+
+.sysi-popup .leaflet-popup-content {
+  margin: 0;
+  width: 220px !important;
+}
+
+.sysi-popup__image {
+  display: block;
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+}
+
+.sysi-popup__body {
+  padding: 12px 14px 14px;
+}
+
+.sysi-popup__region {
+  margin: 0;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: hsl(var(--gold-deep));
+}
+
+.sysi-popup__name {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 500;
+  color: hsl(var(--petrol));
+}
+
+.sysi-popup__link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: hsl(var(--petrol));
+  text-decoration: none;
+}
+
+.sysi-popup__link:hover {
+  color: hsl(var(--gold-deep));
 }

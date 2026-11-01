@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { toast } from "sonner";
+import { deleteFaq } from "@/lib/server-fns";
 import FaqForm from "@/components/admin/FaqForm";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 
@@ -19,10 +20,15 @@ export default function FaqsPanel({ faqs = [] }) {
   const remove = async () => {
     if (!pending) return;
     setBusy(true);
-    await base44.entities.Faq.delete(pending.id);
-    setBusy(false);
-    setPending(null);
-    router.invalidate();
+    try {
+      await deleteFaq({ data: { id: pending.id } });
+      setPending(null);
+      router.invalidate();
+    } catch {
+      toast.error("Suppression impossible. Vérifiez que vous êtes connecté en administrateur.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -54,7 +60,7 @@ export default function FaqsPanel({ faqs = [] }) {
         {faqs.map((item) => (
           <li key={item.id} className="flex flex-col gap-4 p-4 sm:flex-row sm:items-start">
             <div className="flex-1">
-              <h3 className="text-[0.98rem] font-medium text-petrol">{item.question}</h3>
+              <h3 className="text-[0.98rem] font-semibold text-petrol">{item.question}</h3>
               <p className="mt-1 line-clamp-2 text-[0.87rem] leading-relaxed text-petrol/60">
                 {item.answer}
               </p>

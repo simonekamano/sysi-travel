@@ -21,7 +21,7 @@ export default function Problem() {
                 <span className="font-display text-[0.7rem] tracking-[0.25em] text-gold-deep">
                   {pain.n}
                 </span>
-                <h3 className="mt-4 text-[1.06rem] font-medium text-petrol">{pain.title}</h3>
+                <h3 className="mt-4 text-[1.06rem] font-semibold text-petrol">{pain.title}</h3>
                 <p className="mt-3 text-[0.93rem] leading-relaxed text-petrol/65">{pain.text}</p>
               </div>
             </Reveal>

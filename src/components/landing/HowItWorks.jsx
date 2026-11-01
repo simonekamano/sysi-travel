@@ -23,7 +23,7 @@ export default function HowItWorks() {
                   <span className="font-display text-[1.05rem] tracking-[0.3em] text-gold">{step.n}</span>
                   <span className="h-px flex-1 bg-ivory/20" />
                 </div>
-                <h3 className="mt-5 text-[1.1rem] font-medium text-ivory">{step.title}</h3>
+                <h3 className="mt-5 text-[1.1rem] font-semibold text-ivory">{step.title}</h3>
                 <p className="mt-3 text-[0.93rem] leading-relaxed text-ivory/65">{step.text}</p>
               </div>
             </Reveal>

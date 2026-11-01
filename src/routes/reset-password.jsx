@@ -3,5 +3,6 @@ import { ResetPasswordPage } from "@/components/auth/ResetPasswordPage";
 
 export const Route = createFileRoute("/reset-password")({
   ssr: false,
+  head: () => ({ meta: [{ title: "Nouveau mot de passe — SYSI TRAVEL" }] }),
   component: ResetPasswordPage,
 });

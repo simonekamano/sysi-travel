@@ -47,7 +47,7 @@ export default function Pricing({ formules = [], onSelect }) {
                   </span>
                 )}
 
-                <h3 className="text-[1.15rem] font-medium uppercase tracking-[0.12em]">{formule.name}</h3>
+                <h3 className="text-[1.15rem] font-bold">{formule.name}</h3>
                 <p
                   className={cn(
                     "mt-2 text-[0.9rem] leading-relaxed",
@@ -58,7 +58,7 @@ export default function Pricing({ formules = [], onSelect }) {
                 </p>
 
                 <div className="mt-6 flex items-end gap-2">
-                  <span className="font-display text-[2.5rem] leading-none">{formule.price}</span>
+                  <span className="font-display text-[2.5rem] font-extrabold leading-none tracking-[-0.02em]">{formule.price}</span>
                   <span
                     className={cn(
                       "pb-1 text-[0.78rem]",

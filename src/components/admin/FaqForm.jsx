@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { saveFaq } from "@/lib/server-fns";
 import { Button } from "@/components/ui/button";
 import { TextAreaField, TextField } from "@/components/admin/fields";
 
@@ -23,11 +23,10 @@ export default function FaqForm({ initial, onCancel, onSaved }) {
     const payload = {
       question: form.question.trim(),
       answer: form.answer.trim(),
-      order: initial?.order ?? Date.now(),
+      sort_order: initial?.sort_order ?? Date.now(),
     };
     try {
-      if (initial?.id) await base44.entities.Faq.update(initial.id, payload);
-      else await base44.entities.Faq.create(payload);
+      await saveFaq({ data: { ...payload, id: initial?.id } });
       onSaved();
     } catch {
       setError("Enregistrement impossible. Vérifiez que vous êtes connecté en administrateur.");

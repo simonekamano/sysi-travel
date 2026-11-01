@@ -3,7 +3,7 @@ import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/AuthContext";
-import { Base44Scripts } from "base44:document";
+import { SYMBOL } from "@/data/site";
 import appCss from "@/index.css?url";
 
 export const Route = createRootRoute({
@@ -26,13 +26,14 @@ export const Route = createRootRoute({
         content: "Sites incontournables, circuits authentiques et partenaires locaux vérifiés.",
       },
     ],
-    // No icon link: the platform adds the app's logo when serving.
     links: [
+      { rel: "icon", type: "image/png", href: SYMBOL },
+      { rel: "apple-touch-icon", href: SYMBOL },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&family=Source+Sans+3:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Source+Sans+3:wght@400;600&display=swap",
       },
       { rel: "stylesheet", href: appCss },
     ],
@@ -59,10 +60,8 @@ function RootDocument({ children }) {
       <head>
         <HeadContent />
       </head>
-      {/* data-react-root: the builder's preview bridge looks for #root and falls back to this. */}
-      <body data-react-root="true">
+      <body>
         {children}
-        <Base44Scripts />
         <Scripts />
       </body>
     </html>
