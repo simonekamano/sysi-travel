@@ -24,7 +24,7 @@ export const IMAGES = {
   kinkon: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/86144e1f1_generated_df6aa439.png",
   conakry: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/3dfcf3a27_generated_fb507fb0.png",
   belair: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/1a022afe2_generated_081a0a42.png",
-  textile: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/189704885_generated_bfb5b1ac.png",
+  textile: "/images/produits/pagnes-tisses.jpg",
   sunset: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/6878ea223_generated_d5361e93.png",
 };
 

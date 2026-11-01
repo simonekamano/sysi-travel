@@ -42,7 +42,7 @@ export default function Solution() {
             <div className="relative aspect-[4/5] overflow-hidden">
               <img
                 src={IMAGES.textile}
-                alt="Tissu artisanal guinéen et carnet de voyage"
+                alt="Pile de pagnes tissés à la main en Guinée"
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover"
               />
