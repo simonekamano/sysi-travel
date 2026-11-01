@@ -1,27 +1,178 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+import { requireAdmin } from "@/lib/auth-middleware";
 
-export const getServerInfo = createServerFn({ method: "GET" }).handler(async () => ({
-  renderedAt: new Date().toISOString(),
-}));
+// Supabase answers { data, error }; a server function must throw a plain Error to reach the caller.
+const unwrap = ({ data, error }) => {
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+const listOrdered = (supabase, table, limit) =>
+  supabase.from(table).select("*").order("sort_order").limit(limit).then(unwrap);
+
+const saveRecord = async (supabase, table, { id, ...values }) => {
+  unwrap(id ? await supabase.from(table).update(values).eq("id", id) : await supabase.from(table).insert(values));
+  return { ok: true };
+};
+
+const deleteRecord = async (supabase, table, id) => {
+  unwrap(await supabase.from(table).delete().eq("id", id));
+  return { ok: true };
+};
+
+const idInput = z.object({ id: z.uuid() });
+const text = (max) => z.string().trim().max(max);
+
+// --- Public content: read by anyone (row level security: select for anon) ---
 
 export const listDestinations = createServerFn({ method: "GET" }).handler(({ context }) =>
-  context.getBase44().entities.Destination.list("order", 200)
+  listOrdered(context.getSupabase(), "destinations", 200),
 );
 
 export const listFormules = createServerFn({ method: "GET" }).handler(({ context }) =>
-  context.getBase44().entities.Formule.list("order", 50)
+  listOrdered(context.getSupabase(), "formules", 50),
 );
 
 export const listFaqs = createServerFn({ method: "GET" }).handler(({ context }) =>
-  context.getBase44().entities.Faq.list("order", 200)
+  listOrdered(context.getSupabase(), "faqs", 200),
 );
 
 export const getSiteContent = createServerFn({ method: "GET" }).handler(async ({ context }) => {
-  const db = context.getBase44();
+  const supabase = context.getSupabase();
   const [destinations, formules, faqs] = await Promise.all([
-    db.entities.Destination.list("order", 200),
-    db.entities.Formule.list("order", 50),
-    db.entities.Faq.list("order", 200),
+    listOrdered(supabase, "destinations", 200),
+    listOrdered(supabase, "formules", 50),
+    listOrdered(supabase, "faqs", 200),
   ]);
   return { destinations, formules, faqs };
 });
+
+// A destination's page: the destination, three others to suggest, and what the contact form lists.
+// `destination` is null for an unknown slug; the route answers 404.
+export const getDestinationPage = createServerFn({ method: "GET" })
+  .validator(z.object({ slug: text(200) }))
+  .handler(async ({ data, context }) => {
+    const supabase = context.getSupabase();
+    const [destinations, formules] = await Promise.all([
+      listOrdered(supabase, "destinations", 200),
+      listOrdered(supabase, "formules", 50),
+    ]);
+    const destination = destinations.find((item) => item.slug === data.slug) ?? null;
+    const others = destinations.filter((item) => item.slug !== data.slug).slice(0, 3);
+    return { destination, others, destinations, formules };
+  });
+
+// --- Contact form: anyone may create a request, only admins read them ---
+
+export const createDemande = createServerFn({ method: "POST" })
+  .validator(
+    z.object({
+      nom: text(200).min(1),
+      email: z.email().max(320),
+      telephone: text(50),
+      pays: text(100),
+      destination: text(200),
+      formule: text(200),
+      periode: text(200),
+      voyageurs: text(10),
+      message: text(5000),
+    }),
+  )
+  .handler(async ({ data, context }) => {
+    unwrap(await context.getSupabase().from("demandes_sejour").insert({ ...data, statut: "nouveau" }));
+    return { ok: true };
+  });
+
+// --- Administration: admin role checked here, and again by row level security ---
+
+const destinationInput = z.object({
+  id: z.uuid().optional(),
+  name: text(200).min(1),
+  region: text(200),
+  text: text(2000),
+  price: text(100),
+  image: text(2000),
+  tags: z.array(text(60)).max(20),
+  sort_order: z.number(),
+  // Empty: the database derives it from the name (supabase/migrations/0002_destination_pages.sql).
+  slug: text(120).regex(/^[a-z0-9-]*$/, "Lettres minuscules, chiffres et tirets uniquement"),
+  description: text(10000),
+  highlights: z.array(text(200)).max(20),
+  gallery: z.array(text(2000)).max(24),
+  best_period: text(200),
+  access: text(300),
+  latitude: z.number().min(-90).max(90).nullable(),
+  longitude: z.number().min(-180).max(180).nullable(),
+});
+
+const formuleInput = z.object({
+  id: z.uuid().optional(),
+  name: text(200).min(1),
+  price: text(100),
+  duration: text(100),
+  tagline: text(300),
+  image: text(2000),
+  highlight: z.boolean(),
+  features: z.array(text(300)).max(30),
+  sort_order: z.number(),
+});
+
+const faqInput = z.object({
+  id: z.uuid().optional(),
+  question: text(500).min(1),
+  answer: text(5000).min(1),
+  sort_order: z.number(),
+});
+
+export const saveDestination = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(destinationInput)
+  .handler(({ data, context }) => saveRecord(context.getSupabase(), "destinations", data));
+
+export const deleteDestination = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(idInput)
+  .handler(({ data, context }) => deleteRecord(context.getSupabase(), "destinations", data.id));
+
+export const saveFormule = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(formuleInput)
+  .handler(({ data, context }) => saveRecord(context.getSupabase(), "formules", data));
+
+export const deleteFormule = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(idInput)
+  .handler(({ data, context }) => deleteRecord(context.getSupabase(), "formules", data.id));
+
+export const saveFaq = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(faqInput)
+  .handler(({ data, context }) => saveRecord(context.getSupabase(), "faqs", data));
+
+export const deleteFaq = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(idInput)
+  .handler(({ data, context }) => deleteRecord(context.getSupabase(), "faqs", data.id));
+
+export const listDemandes = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(({ context }) =>
+    context
+      .getSupabase()
+      .from("demandes_sejour")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(500)
+      .then(unwrap),
+  );
+
+export const updateDemandeStatut = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(z.object({ id: z.uuid(), statut: z.enum(["nouveau", "en cours", "traite"]) }))
+  .handler(({ data, context }) => saveRecord(context.getSupabase(), "demandes_sejour", data));
+
+export const deleteDemande = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(idInput)
+  .handler(({ data, context }) => deleteRecord(context.getSupabase(), "demandes_sejour", data.id));

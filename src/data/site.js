@@ -1,9 +1,15 @@
-export const LOGO =
-  "https://media.base44.com/images/public/user_6ae5e94e512bbbf749af8999/7d9d75fb6_LogodiviaggioSYSITravelGuinea.png";
+// Logos from Sysi-Travel-Brand-Kit (public/brand/, 1000×463 and 326×360, transparent).
+// Kit rules: full logo at least 140 px wide, symbol at least 32 px; never stretched, recolored or given effects.
+export const LOGO = "/brand/sysi-travel-logo.png"; // on ivory or white
+export const LOGO_INVERSE = "/brand/sysi-travel-logo-inverse.png"; // on pétrole
+export const SYMBOL = "/brand/sysi-travel-symbole.png"; // favicon, avatar
 
 export const CONTACT = {
   phone: "+33 6 41 96 01 01",
   phoneHref: "tel:+33641960101",
+  whatsappHref: `https://wa.me/33641960101?text=${encodeURIComponent(
+    "Bonjour SYSI TRAVEL, je souhaite organiser un séjour en Guinée.",
+  )}`,
   email: "simone.kamano@yahoo.fr",
   address: "Kaloum — Conakry, Guinée",
   hours: "Lundi – samedi, 9h – 19h (GMT)",

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { saveFormule } from "@/lib/server-fns";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ImageField, TextAreaField, TextField } from "@/components/admin/fields";
@@ -43,11 +43,10 @@ export default function FormuleForm({ initial, onCancel, onSaved }) {
         .split("\n")
         .map((line) => line.trim())
         .filter(Boolean),
-      order: initial?.order ?? Date.now(),
+      sort_order: initial?.sort_order ?? Date.now(),
     };
     try {
-      if (initial?.id) await base44.entities.Formule.update(initial.id, payload);
-      else await base44.entities.Formule.create(payload);
+      await saveFormule({ data: { ...payload, id: initial?.id } });
       onSaved();
     } catch {
       setError("Enregistrement impossible. Vérifiez que vous êtes connecté en administrateur.");

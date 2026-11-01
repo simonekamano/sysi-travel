@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "@tanstack/react-router";
-import { Pencil, Plus, Trash2 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { deleteDestination } from "@/lib/server-fns";
 import DestinationForm from "@/components/admin/DestinationForm";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 
@@ -19,10 +20,15 @@ export default function DestinationsPanel({ destinations = [] }) {
   const remove = async () => {
     if (!pending) return;
     setBusy(true);
-    await base44.entities.Destination.delete(pending.id);
-    setBusy(false);
-    setPending(null);
-    router.invalidate();
+    try {
+      await deleteDestination({ data: { id: pending.id } });
+      setPending(null);
+      router.invalidate();
+    } catch {
+      toast.error("Suppression impossible. Vérifiez que vous êtes connecté en administrateur.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -65,10 +71,18 @@ export default function DestinationsPanel({ destinations = [] }) {
             </div>
             <div className="flex-1">
               <p className="label-caps text-gold-deep">{destination.region}</p>
-              <h3 className="text-[1rem] font-medium text-petrol">{destination.name}</h3>
+              <h3 className="text-[1rem] font-semibold text-petrol">{destination.name}</h3>
               <p className="text-[0.85rem] text-petrol/60">{destination.price}</p>
             </div>
             <div className="flex gap-2">
+              <a
+                href={`/destinations/${destination.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="label-caps inline-flex items-center gap-2 border border-transparent px-3 py-2 text-petrol/60 transition-colors hover:text-gold-deep"
+              >
+                <ExternalLink className="h-3.5 w-3.5" /> Voir
+              </a>
               <button
                 type="button"
                 onClick={() => setEditing(destination)}

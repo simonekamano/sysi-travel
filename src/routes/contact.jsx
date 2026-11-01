@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import BackButton from "@/components/BackButton";
+import Nav from "@/components/landing/Nav";
 import ContactForm from "@/components/landing/ContactForm";
 import Footer from "@/components/landing/Footer";
-import { CONTACT, LOGO } from "@/data/site";
+import WhatsAppButton from "@/components/landing/WhatsAppButton";
+import { CONTACT } from "@/data/site";
 import { getSiteContent } from "@/lib/server-fns";
 
 export const Route = createFileRoute("/contact")({
@@ -44,29 +47,14 @@ function ContactPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-petrol/12 bg-background">
-        <div className="mx-auto flex max-w-[1180px] items-center justify-between gap-4 px-6 py-5">
-          <Link to="/" className="flex items-center">
-            <img
-              src={LOGO}
-              alt="SYSI TRAVEL Guinée"
-              className="block h-10 w-auto object-contain sm:h-12"
-            />
-          </Link>
-          <Link
-            to="/"
-            className="label-caps text-petrol/60 transition-colors hover:text-petrol"
-          >
-            ← Retour à l'accueil
-          </Link>
-        </div>
-      </header>
+      <Nav home={false} solid />
 
       <main>
-        <section className="bg-background py-12 lg:py-16">
+        <section className="bg-background pb-12 pt-36 lg:pb-16 lg:pt-40">
           <div className="mx-auto max-w-[1180px] px-6">
-            <p className="script-accent text-gold-deep">Nous sommes joignables</p>
-            <h1 className="mt-4 max-w-3xl text-[clamp(2rem,4vw,3.2rem)] font-medium uppercase leading-[1.08] tracking-[0.05em] text-petrol">
+            <BackButton label="Retour" className="mb-8" />
+            <p className="eyebrow text-gold-deep">Nous sommes joignables</p>
+            <h1 className="mt-4 max-w-3xl text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
               Contactez SYSI TRAVEL
             </h1>
             <p className="mt-6 max-w-2xl text-[1rem] leading-relaxed text-petrol/70">
@@ -112,7 +100,8 @@ function ContactPage() {
         />
       </main>
 
-      <Footer />
+      <Footer destinations={destinations} />
+      <WhatsAppButton />
     </div>
   );
 }

@@ -1,20 +1,20 @@
 import { Lock, Mail, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { base44 } from "@/api/base44Client";
+import { browserSupabase } from "@/lib/supabase";
 import { AuthLayout } from "@/components/auth/AuthLayout";
-import { AuthError, AuthLink, GoogleButton, OrDivider, SubmitButton } from "@/components/auth/parts";
+import { AuthError, AuthLink, GoogleButton, OrDivider, SubmitButton, authErrorMessage } from "@/components/auth/parts";
 import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { safeReturnTo } from "@/lib/authReturnTo";
 
-const isAlreadyVerified = (err) => err?.status === 400 && /already verified/i.test(err?.message ?? "");
-
 /**
- * The /register page: register → OTP → verifyOtp → setToken. Registration alone
- * does not sign the user in (the account is unverified), so the code step is never
- * skipped and loginViaEmailPassword is never called right after register.
+ * The /register page: signUp → confirmation e-mail → verifyOtp. When Supabase
+ * auto-confirms e-mails (ENABLE_EMAIL_AUTOCONFIRM=true) signUp already returns a
+ * session and the visitor goes straight back. Otherwise the e-mail carries a link
+ * (handled on whichever page it opens) and, if the template includes {{ .Token }},
+ * a 6-digit code to type here.
  */
 export function RegisterPage() {
   const returnTo = safeReturnTo();
@@ -30,67 +30,58 @@ export function RegisterPage() {
     e.preventDefault();
     setError("");
     if (password !== confirm) {
-      setError("Passwords do not match");
+      setError("Les mots de passe ne correspondent pas.");
       return;
     }
     setBusy(true);
-    try {
-      await base44.auth.register({ email, password });
-      setStep("otp");
-    } catch (err) {
-      setError(err.message || "Registration failed");
-    } finally {
-      setBusy(false);
+    const { data, error: signUpError } = await browserSupabase().auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: window.location.origin + returnTo },
+    });
+    setBusy(false);
+    if (signUpError) {
+      setError(authErrorMessage(signUpError, "L'inscription a échoué. Réessayez."));
+      return;
     }
+    if (data.session) {
+      window.location.href = returnTo;
+      return;
+    }
+    setStep("otp");
   }
 
   async function verify(e) {
     e.preventDefault();
     setError("");
     setBusy(true);
-    try {
-      const result = await base44.auth.verifyOtp({ email, otpCode });
-      if (result?.access_token) base44.auth.setToken(result.access_token);
-      window.location.href = returnTo;
-    } catch (err) {
-      // Verified server-side but the answer never arrived: the code is spent and
-      // there is no token, so the only way forward is a normal sign-in.
-      if (isAlreadyVerified(err)) setStep("already_verified");
-      else setError(err.message || "Invalid verification code");
+    const { error: verifyError } = await browserSupabase().auth.verifyOtp({ email, token: otpCode, type: "email" });
+    if (verifyError) {
+      setError(authErrorMessage(verifyError, "Code invalide ou expiré."));
       setBusy(false);
+      return;
     }
+    window.location.href = returnTo;
   }
 
   async function resend() {
     setError("");
-    try {
-      await base44.auth.resendOtp(email);
-      toast("Code sent", { description: "Check your email for the new code." });
-    } catch (err) {
-      if (isAlreadyVerified(err)) setStep("already_verified");
-      else setError(err.message || "Failed to resend code");
-    }
-  }
-
-  if (step === "already_verified") {
-    return (
-      <AuthLayout icon={UserPlus} title="Create your account" subtitle="Sign up to get started">
-        <p className="mb-4 text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">{email}</span> is already verified. Sign in to continue.
-        </p>
-        <AuthLink to="/login" returnTo={returnTo} className="inline-flex h-12 w-full items-center justify-center rounded-md bg-primary text-sm font-medium text-primary-foreground hover:bg-primary/90">
-          Sign in
-        </AuthLink>
-      </AuthLayout>
-    );
+    const { error: resendError } = await browserSupabase().auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: window.location.origin + returnTo },
+    });
+    if (resendError) setError(authErrorMessage(resendError, "Impossible de renvoyer l'e-mail."));
+    else toast("E-mail renvoyé", { description: "Consultez votre boîte de réception." });
   }
 
   if (step === "otp") {
     return (
-      <AuthLayout icon={UserPlus} title="Create your account" subtitle="Sign up to get started">
+      <AuthLayout icon={UserPlus} title="Confirmez votre e-mail" subtitle="Dernière étape avant d'accéder à votre compte">
         <form onSubmit={verify}>
           <p className="mb-4 text-sm text-muted-foreground">
-            We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>.
+            Un e-mail a été envoyé à <span className="font-semibold text-foreground">{email}</span>. Cliquez sur le lien qu'il
+            contient ou saisissez le code à 6 chiffres ci-dessous.
           </p>
           <AuthError>{error}</AuthError>
           <div className="mb-6 flex justify-center">
@@ -102,13 +93,13 @@ export function RegisterPage() {
               </InputOTPGroup>
             </InputOTP>
           </div>
-          <SubmitButton busy={busy} busyLabel="Verifying..." disabled={busy || otpCode.length < 6}>
-            Verify
+          <SubmitButton busy={busy} busyLabel="Vérification…" disabled={busy || otpCode.length < 6}>
+            Valider
           </SubmitButton>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Didn't receive the code?{" "}
-            <button type="button" onClick={resend} className="font-medium text-primary hover:underline">
-              Resend
+            Rien reçu ?{" "}
+            <button type="button" onClick={resend} className="font-semibold text-gold-deep underline-offset-4 hover:underline">
+              Renvoyer l'e-mail
             </button>
           </p>
         </form>
@@ -117,40 +108,40 @@ export function RegisterPage() {
   }
 
   return (
-    <AuthLayout icon={UserPlus} title="Create your account" subtitle="Sign up to get started">
+    <AuthLayout icon={UserPlus} title="Créer un compte" subtitle="Inscrivez-vous pour commencer">
       <GoogleButton returnTo={returnTo} />
       <OrDivider />
       <AuthError>{error}</AuthError>
       <form onSubmit={register} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="register-email">Email</Label>
+          <Label htmlFor="register-email">E-mail</Label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-            <Input id="register-email" type="email" autoComplete="email" autoFocus placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-12 pl-10" disabled={busy} required />
+            <Input id="register-email" type="email" autoComplete="email" autoFocus placeholder="vous@exemple.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-12 pl-10" disabled={busy} required />
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="register-password">Password</Label>
+          <Label htmlFor="register-password">Mot de passe</Label>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-            <Input id="register-password" type="password" autoComplete="new-password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="h-12 pl-10" disabled={busy} required />
+            <Input id="register-password" type="password" autoComplete="new-password" placeholder="••••••••" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="h-12 pl-10" disabled={busy} required />
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="register-confirm">Confirm password</Label>
+          <Label htmlFor="register-confirm">Confirmer le mot de passe</Label>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-            <Input id="register-confirm" type="password" autoComplete="new-password" placeholder="••••••••" value={confirm} onChange={(e) => setConfirm(e.target.value)} className="h-12 pl-10" disabled={busy} required />
+            <Input id="register-confirm" type="password" autoComplete="new-password" placeholder="••••••••" minLength={6} value={confirm} onChange={(e) => setConfirm(e.target.value)} className="h-12 pl-10" disabled={busy} required />
           </div>
         </div>
-        <SubmitButton busy={busy} busyLabel="Creating account...">
-          Create account
+        <SubmitButton busy={busy} busyLabel="Création du compte…">
+          Créer mon compte
         </SubmitButton>
       </form>
       <p className="mt-6 text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        Déjà un compte ?{" "}
         <AuthLink to="/login" returnTo={returnTo}>
-          Log in
+          Se connecter
         </AuthLink>
       </p>
     </AuthLayout>

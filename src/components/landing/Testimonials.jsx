@@ -26,7 +26,7 @@ export default function Testimonials() {
                     {item.name.slice(0, 2).toUpperCase()}
                   </span>
                   <div>
-                    <p className="text-[0.9rem] font-medium text-petrol">
+                    <p className="text-[0.9rem] font-semibold text-petrol">
                       {item.name} · {item.city}
                     </p>
                     <p className="text-[0.76rem] uppercase tracking-[0.16em] text-petrol/45">

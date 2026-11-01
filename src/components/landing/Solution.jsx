@@ -28,7 +28,7 @@ export default function Solution() {
                     <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-petrol/15 bg-white text-gold-deep">
                       <Icon className="h-5 w-5" strokeWidth={1.5} />
                     </span>
-                    <h3 className="mt-4 text-[1.02rem] font-medium text-petrol">{feature.title}</h3>
+                    <h3 className="mt-4 text-[1.02rem] font-semibold text-petrol">{feature.title}</h3>
                     <p className="mt-2 text-[0.92rem] leading-relaxed text-petrol/65">{feature.text}</p>
                   </div>
                 </Reveal>
@@ -48,7 +48,7 @@ export default function Solution() {
               />
             </div>
             <div className="mt-6 bg-petrol p-6 text-ivory sm:absolute sm:-bottom-8 sm:-left-8 sm:mt-0 sm:max-w-[250px]">
-              <p className="script-accent text-gold">Un interlocuteur, pas une plateforme anonyme</p>
+              <p className="eyebrow text-gold">Un interlocuteur, pas une plateforme anonyme</p>
               <p className="mt-2 text-[0.84rem] leading-relaxed text-ivory/70">
                 Notre équipe est basée en Guinée, joignable avant, pendant et après votre séjour.
               </p>

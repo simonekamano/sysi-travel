@@ -6,7 +6,7 @@ export default function AccessDenied({ email }) {
     <div className="flex min-h-screen items-center justify-center bg-background px-6">
       <div className="max-w-md border border-petrol/15 bg-white p-8 text-petrol">
         <Lock className="h-8 w-8 text-gold-deep" strokeWidth={1.5} />
-        <h1 className="mt-4 text-[1.3rem] font-medium uppercase tracking-[0.06em]">
+        <h1 className="mt-4 text-[1.3rem] font-bold">
           Accès réservé
         </h1>
         <p className="mt-3 text-[0.92rem] leading-relaxed text-petrol/70">

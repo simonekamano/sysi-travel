@@ -1,30 +1,39 @@
 import { queryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createContext, useContext, useMemo } from "react";
-import { base44 } from "@/api/base44Client";
-import { currentUrl } from "@/lib/authReturnTo";
+import { createContext, useContext, useEffect, useMemo } from "react";
+import { browserSupabase } from "@/lib/supabase";
+import { currentPath, returnToSearch } from "@/lib/authReturnTo";
 
 /**
  * The visitor, resolved once per page load and cached in the router's QueryClient:
  * the login gate (src/components/auth/AuthGate.jsx) reads it with
  * `context.queryClient.ensureQueryData(authQuery)`, components with `useAuth()`.
- * Resolves to `{ user, error }`: an anonymous visitor (no token, or a 401/403) is `{ user: null, error: null }`.
- * Anything else, an outage (429, 503) or a request that never got an answer, rejects instead,
- * so it is never cached as "signed out" and the next read asks again.
+ * Resolves to `{ user, error }`, with `user` = { id, email, full_name, role } or null.
+ * A failed profile read rejects instead, so it is never cached as "signed out".
  */
 export const authQuery = queryOptions({
   queryKey: ["auth", "me"],
   queryFn: async () => {
-    // No token means no session; /me could only answer 401.
-    if (!base44.auth.hasToken()) return { user: null, error: null };
-    try {
-      return { user: await base44.auth.me(), error: null };
-    } catch (err) {
-      if (err?.data?.extra_data?.reason === "user_not_registered") {
-        return { user: null, error: { type: "user_not_registered", message: "Not registered" } };
-      }
-      if (err?.status === 401 || err?.status === 403) return { user: null, error: null };
-      throw err;
-    }
+    // The server renders every page anonymously; the session lives in the browser.
+    if (typeof window === "undefined") return { user: null, error: null };
+    const supabase = browserSupabase();
+    const { data } = await supabase.auth.getSession();
+    const session = data.session;
+    if (!session) return { user: null, error: null };
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("role, full_name")
+      .eq("id", session.user.id)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return {
+      user: {
+        id: session.user.id,
+        email: session.user.email,
+        full_name: profile?.full_name ?? session.user.user_metadata?.full_name ?? null,
+        role: profile?.role ?? "user",
+      },
+      error: null,
+    };
   },
   staleTime: Infinity,
   retry: false,
@@ -41,6 +50,22 @@ export function AuthProvider({ children }) {
   const queryClient = useQueryClient();
   const { data, error, isPending } = useQuery(authQuery);
 
+  // Sign-in from an email link (confirmation, password reset) or another tab.
+  // Deferred: Supabase holds a lock while it notifies, and the query calls back into it.
+  useEffect(() => {
+    let subscription;
+    try {
+      subscription = browserSupabase().auth.onAuthStateChange((event) => {
+        if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
+          setTimeout(() => queryClient.invalidateQueries({ queryKey: authQuery.queryKey }), 0);
+        }
+      }).data.subscription;
+    } catch (err) {
+      console.error(err);
+    }
+    return () => subscription?.unsubscribe();
+  }, [queryClient]);
+
   const value = useMemo(
     () => ({
       user: data?.user ?? null,
@@ -48,14 +73,16 @@ export function AuthProvider({ children }) {
       isLoadingAuth: isPending,
       authError: data?.error ?? (error ? { type: "unknown", message: error.message ?? "Failed to load session" } : null),
       refresh: () => queryClient.fetchQuery({ ...authQuery, staleTime: 0 }),
-      logout: () => {
+      logout: async () => {
         queryClient.setQueryData(authQuery.queryKey, { user: null, error: null });
-        base44.auth.logout(window.location.origin);
+        await browserSupabase().auth.signOut();
+        window.location.href = "/";
       },
-      // Full-page sign-in: /login with the current page as the way back. A hard
-      // navigation on purpose — on an app served behind the platform login the
-      // platform answers /login itself; an app with its own auth pages serves its /login route.
-      navigateToLogin: () => base44.auth.redirectToLogin(currentUrl()),
+      // Full-page sign-in: /login with the current page as the way back.
+      navigateToLogin: () => {
+        const search = new URLSearchParams(returnToSearch(currentPath())).toString();
+        window.location.href = search ? `/login?${search}` : "/login";
+      },
     }),
     [data, error, isPending, queryClient],
   );

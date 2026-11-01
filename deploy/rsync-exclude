@@ -1,0 +1,12 @@
+.git/
+.github/
+node_modules/
+dist/
+.tanstack/
+.wrangler/
+.env
+.env.*
+supabase/.temp/
+supabase/.branches/
+Sysi-Travel-Brand-Kit.*
+Logo di viaggio*

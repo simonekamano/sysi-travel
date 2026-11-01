@@ -15,6 +15,8 @@ export function getRouter() {
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
     scrollRestoration: true,
+    // A new page starts at its top at once; the CSS smooth scrolling is for in-page anchors.
+    scrollRestorationBehavior: "instant",
   });
   // Provides QueryClientProvider and ships queries fetched during SSR to the browser cache.
   setupRouterSsrQueryIntegration({ router, queryClient });

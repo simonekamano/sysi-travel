@@ -7,6 +7,7 @@ const TABS = [
   { to: "/admin", label: "Destinations", exact: true },
   { to: "/admin/formules", label: "Formules & prix", exact: false },
   { to: "/admin/faq", label: "FAQ", exact: false },
+  { to: "/admin/demandes", label: "Demandes", exact: false },
 ];
 
 export default function AdminFrame({ user, children }) {
@@ -17,7 +18,7 @@ export default function AdminFrame({ user, children }) {
       <header className="border-b border-petrol/15 bg-white">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-4">
-            <img src={LOGO} alt="SYSI TRAVEL" className="h-9 w-auto object-contain" />
+            <img src={LOGO} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="h-[66px] w-auto object-contain" />
             <div>
               <p className="label-caps text-gold-deep">Administration</p>
               <p className="text-[0.82rem] text-petrol/55">{user?.email}</p>
