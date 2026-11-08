@@ -11,7 +11,7 @@ import WhatsAppButton from "@/components/landing/WhatsAppButton";
 import Gallery from "@/components/destination/Gallery";
 import GuineaMap, { LEAFLET_CSS } from "@/components/map/GuineaMap";
 import { NotFound } from "@/components/NotFound";
-import { CONTACT } from "@/data/site";
+import { CONTACT, absoluteUrl } from "@/data/site";
 import { getDestinationPage } from "@/lib/server-fns";
 
 export const Route = createFileRoute("/destinations/$slug")({
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/destinations/$slug")({
         { name: "description", content: description },
         { property: "og:title", content: `${destination.name} — SYSI TRAVEL` },
         { property: "og:description", content: description },
-        ...(destination.image ? [{ property: "og:image", content: destination.image }] : []),
+        ...(destination.image ? [{ property: "og:image", content: absoluteUrl(destination.image) }] : []),
       ],
       links: [
         { rel: "stylesheet", href: LEAFLET_CSS },

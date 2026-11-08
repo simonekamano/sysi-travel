@@ -253,9 +253,10 @@ Une fois les comptes admin créés, vous pouvez fermer les inscriptions publique
 2. Dans le Studio Supabase → **Table Editor** → table correspondante → **Import data from CSV**.
    Correspondance des colonnes : `order` → `sort_order` ; `tags` et `features` sont des listes
    (format Postgres `{"Plage","Snorkeling"}`). Ne pas importer les colonnes `id`, `created_date`, `created_by`.
-3. **Photos** : les images actuelles sont hébergées sur `media.base44.com` (logo et photos dans `src/data/site.js`,
-   et photos des destinations/formules). Pour ne plus dépendre de Base44, ré-envoyez-les depuis
-   l'administration (bouton « Choisir une photo ») ou placez-les dans `public/` et mettez à jour `src/data/site.js`.
+3. **Photos** : les illustrations Base44 sont copiées dans `public/images/illustrations/`
+   (migration `0004_images_locales.sql`). Pour les remplacer par de vraies photos : depuis
+   l'administration pour les destinations et formules (bouton « Choisir une photo »), ou dans
+   `public/images/` puis `src/data/site.js` pour l'accueil, le formulaire et les pages de connexion.
 
 ---
 

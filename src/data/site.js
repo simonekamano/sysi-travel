@@ -16,17 +16,23 @@ export const CONTACT = {
   hours: "Lundi – samedi, 9h – 19h (GMT)",
 };
 
+// Illustrations generated on Base44, copied here (public/images/illustrations/) until the
+// client's own photos replace them (ORDRE.md, n° 3).
 export const IMAGES = {
-  hero: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/8001a4000_generated_4eab33cf.png",
-  loos: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/241672d56_generated_e5e835c9.png",
-  fouta: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/a96a29944_generated_d3eea4ba.png",
-  nimba: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/3d58d3f65_generated_e938acc8.png",
-  kinkon: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/86144e1f1_generated_df6aa439.png",
-  conakry: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/3dfcf3a27_generated_fb507fb0.png",
-  belair: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/1a022afe2_generated_081a0a42.png",
+  hero: "/images/illustrations/accueil.jpg",
+  loos: "/images/illustrations/iles-de-loos.jpg",
+  fouta: "/images/illustrations/fouta-djallon.jpg",
+  nimba: "/images/illustrations/mont-nimba.jpg",
+  kinkon: "/images/illustrations/chutes-de-kinkon.jpg",
+  conakry: "/images/illustrations/conakry.jpg",
+  belair: "/images/illustrations/plage-de-bel-air.jpg",
   textile: "/images/produits/pagnes-tisses.jpg",
-  sunset: "https://media.base44.com/images/public/6ae62efa0e580c1fab685af6/6878ea223_generated_d5361e93.png",
+  sunset: "/images/illustrations/coucher-de-soleil.jpg",
 };
+
+// Public address of the site, for links that must be absolute (og:image for social previews).
+export const SITE_ORIGIN = "https://sysitravel.com";
+export const absoluteUrl = (path) => (path?.startsWith("/") ? `${SITE_ORIGIN}${path}` : path);
 
 export const NAV_LINKS = [
   { label: "Destinations", href: "#destinations" },
