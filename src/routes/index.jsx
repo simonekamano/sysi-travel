@@ -30,7 +30,7 @@ export const Route = createFileRoute("/")({
 });
 
 function LandingPage() {
-  const { destinations, formules, faqs } = Route.useLoaderData();
+  const { destinations, formules, faqs, reseaux } = Route.useLoaderData();
   const [formule, setFormule] = useState("");
 
   const selectFormule = (id) => {
@@ -59,7 +59,7 @@ function LandingPage() {
           formules={formules}
         />
       </main>
-      <Footer destinations={destinations} />
+      <Footer destinations={destinations} reseaux={reseaux} />
       <WhatsAppButton />
     </div>
   );

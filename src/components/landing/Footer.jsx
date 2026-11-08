@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUp, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import SocialLinks from "@/components/SocialLinks";
 import { CONTACT, LOGO_INVERSE } from "@/data/site";
 
 const EXPLORER = [
@@ -23,7 +24,8 @@ function Column({ title, children, className }) {
 
 // `destinations` (optional): the pages that have them pass their list, so the footer links
 // to every destination page; without it, the column points at the home page's section.
-export default function Footer({ destinations = [] }) {
+// `reseaux` (optional): the social networks from the database; hidden while none is filled in.
+export default function Footer({ destinations = [], reseaux = [] }) {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
@@ -40,6 +42,11 @@ export default function Footer({ destinations = [] }) {
           <p className="mt-6 font-display text-[1.05rem] font-semibold text-gold">
             Redécouvrez la Guinée, en toute confiance.
           </p>
+          <SocialLinks
+            reseaux={reseaux}
+            className="mt-6"
+            linkClassName="border-ivory/20 text-ivory/80 hover:border-gold hover:text-gold"
+          />
         </div>
 
         <Column title="Destinations" className="col-span-1 lg:col-span-3">

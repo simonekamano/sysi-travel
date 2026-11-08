@@ -20,8 +20,8 @@ Ces fonctionnalités sont rapides et débloquent les suivantes.
 
 | N° | Fonctionnalité | Type | Éléments nécessaires | Statut |
 |---|---|---|---|---|
-| 1 | Activer l'espace d'administration : créer le compte administrateur | Contrat | simonekamano91@gmail.com (compte admin créé le 8 novembre 2026, e-mail de création du mot de passe envoyé) | 🔄 En cours : en attente de la première connexion |
-| 2 | Liens vers les réseaux sociaux (en-tête, pied de page, contact) | Contrat | Adresses des pages | ⬜ À faire |
+| 1 | Activer l'espace d'administration : créer le compte administrateur | Contrat | simonekamano91@gmail.com : compte admin créé, première connexion réussie | ✅ Terminé le 8 novembre 2026 |
+| 2 | Liens vers les réseaux sociaux : pied de page de toutes les pages et page contact, gérés dans Administration › Réseaux sociaux | Contrat | Adresses des pages, à saisir par la Cliente (un réseau vide reste masqué) | ✅ Terminé le 8 novembre 2026 |
 | 3 | Remplacer les images d'illustration par les vraies photos (destinations, accueil, produits locaux) | Contrat | Photos des lieux et des produits, avec droit de publication | ⬜ À faire |
 
 ## Phase 2 : L'offre de voyage

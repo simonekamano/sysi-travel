@@ -42,12 +42,13 @@ export const listFaqs = createServerFn({ method: "GET" }).handler(({ context }) 
 
 export const getSiteContent = createServerFn({ method: "GET" }).handler(async ({ context }) => {
   const supabase = context.getSupabase();
-  const [destinations, formules, faqs] = await Promise.all([
+  const [destinations, formules, faqs, reseaux] = await Promise.all([
     listOrdered(supabase, "destinations", 200),
     listOrdered(supabase, "formules", 50),
     listOrdered(supabase, "faqs", 200),
+    listOrdered(supabase, "reseaux_sociaux", 20),
   ]);
-  return { destinations, formules, faqs };
+  return { destinations, formules, faqs, reseaux };
 });
 
 // A destination's page: the destination, three others to suggest, and what the contact form lists.
@@ -56,13 +57,14 @@ export const getDestinationPage = createServerFn({ method: "GET" })
   .validator(z.object({ slug: text(200) }))
   .handler(async ({ data, context }) => {
     const supabase = context.getSupabase();
-    const [destinations, formules] = await Promise.all([
+    const [destinations, formules, reseaux] = await Promise.all([
       listOrdered(supabase, "destinations", 200),
       listOrdered(supabase, "formules", 50),
+      listOrdered(supabase, "reseaux_sociaux", 20),
     ]);
     const destination = destinations.find((item) => item.slug === data.slug) ?? null;
     const others = destinations.filter((item) => item.slug !== data.slug).slice(0, 3);
-    return { destination, others, destinations, formules };
+    return { destination, others, destinations, formules, reseaux };
   });
 
 // --- Contact form: anyone may create a request, only admins read them ---
@@ -181,6 +183,31 @@ export const deleteFaq = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .validator(idInput)
   .handler(({ data, context }) => deleteRecord(context.getSupabase(), "faqs", data.id));
+
+export const listReseauxSociaux = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(({ context }) => listOrdered(context.getSupabase(), "reseaux_sociaux", 20));
+
+// The networks are fixed rows (supabase/migrations/0003_reseaux_sociaux.sql): only their URL changes.
+export const saveReseauxSociaux = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(
+    z
+      .array(
+        z.object({
+          reseau: z.enum(["facebook", "instagram", "tiktok", "youtube", "x"]),
+          url: text(500).refine((url) => url === "" || /^https:\/\/\S+$/.test(url), "Adresse en https:// attendue"),
+        }),
+      )
+      .max(5),
+  )
+  .handler(async ({ data, context }) => {
+    const supabase = context.getSupabase();
+    for (const { reseau, url } of data) {
+      unwrap(await supabase.from("reseaux_sociaux").update({ url }).eq("reseau", reseau));
+    }
+    return { ok: true };
+  });
 
 export const listDemandes = createServerFn({ method: "GET" })
   .middleware([requireAdmin])

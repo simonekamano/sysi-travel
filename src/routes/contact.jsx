@@ -4,6 +4,7 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import Nav from "@/components/landing/Nav";
 import ContactForm from "@/components/landing/ContactForm";
+import SocialLinks, { activeReseaux } from "@/components/SocialLinks";
 import Footer from "@/components/landing/Footer";
 import WhatsAppButton from "@/components/landing/WhatsAppButton";
 import { CONTACT } from "@/data/site";
@@ -42,7 +43,7 @@ const CHANNELS = [
 ];
 
 function ContactPage() {
-  const { destinations, formules } = Route.useLoaderData();
+  const { destinations, formules, reseaux } = Route.useLoaderData();
   const [formule, setFormule] = useState("");
 
   return (
@@ -88,6 +89,16 @@ function ContactPage() {
                 );
               })}
             </div>
+
+            {activeReseaux(reseaux).length ? (
+              <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+                <p className="label-caps text-petrol/45">Suivez-nous</p>
+                <SocialLinks
+                  reseaux={reseaux}
+                  linkClassName="border-petrol/15 bg-white text-petrol hover:border-gold hover:text-gold-deep"
+                />
+              </div>
+            ) : null}
           </div>
         </section>
 
@@ -100,7 +111,7 @@ function ContactPage() {
         />
       </main>
 
-      <Footer destinations={destinations} />
+      <Footer destinations={destinations} reseaux={reseaux} />
       <WhatsAppButton />
     </div>
   );

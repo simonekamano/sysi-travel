@@ -7,6 +7,7 @@ const TABS = [
   { to: "/admin", label: "Destinations", exact: true },
   { to: "/admin/formules", label: "Formules & prix", exact: false },
   { to: "/admin/faq", label: "FAQ", exact: false },
+  { to: "/admin/reseaux", label: "Réseaux sociaux", exact: false },
   { to: "/admin/demandes", label: "Demandes", exact: false },
 ];
 

@@ -50,7 +50,7 @@ export const Route = createFileRoute("/destinations/$slug")({
 });
 
 function DestinationPage() {
-  const { destination, others, destinations, formules } = Route.useLoaderData();
+  const { destination, others, destinations, formules, reseaux } = Route.useLoaderData();
   const [formule, setFormule] = useState("");
   // Preset the form with this destination, following navigation from one destination to another.
   const destinationChoice = useMemo(() => ({ name: destination.name }), [destination.name]);
@@ -233,7 +233,7 @@ function DestinationPage() {
         />
       </main>
 
-      <Footer destinations={destinations} />
+      <Footer destinations={destinations} reseaux={reseaux} />
       <WhatsAppButton />
     </div>
   );
