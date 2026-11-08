@@ -42,14 +42,36 @@ export const listFaqs = createServerFn({ method: "GET" }).handler(({ context }) 
 
 export const getSiteContent = createServerFn({ method: "GET" }).handler(async ({ context }) => {
   const supabase = context.getSupabase();
-  const [destinations, formules, faqs, reseaux] = await Promise.all([
+  const [destinations, formules, faqs, reseaux, circuits] = await Promise.all([
     listOrdered(supabase, "destinations", 200),
     listOrdered(supabase, "formules", 50),
     listOrdered(supabase, "faqs", 200),
     listOrdered(supabase, "reseaux_sociaux", 20),
+    listPublishedCircuits(supabase),
   ]);
-  return { destinations, formules, faqs, reseaux };
+  return { destinations, formules, faqs, reseaux, circuits };
 });
+
+// Published circuits only: an admin browsing the site must not see drafts in the lists.
+const listPublishedCircuits = (supabase) =>
+  supabase.from("circuits").select("*").eq("published", true).order("sort_order").limit(100).then(unwrap);
+
+// A circuit's page, with what the contact form and footer need. A draft is returned to admins
+// only (row level security), so they can preview it; `circuit` is null otherwise and the route answers 404.
+export const getCircuitPage = createServerFn({ method: "GET" })
+  .validator(z.object({ slug: text(200) }))
+  .handler(async ({ data, context }) => {
+    const supabase = context.getSupabase();
+    const [circuit, circuits, destinations, formules, reseaux] = await Promise.all([
+      supabase.from("circuits").select("*").eq("slug", data.slug).maybeSingle().then(unwrap),
+      listPublishedCircuits(supabase),
+      listOrdered(supabase, "destinations", 200),
+      listOrdered(supabase, "formules", 50),
+      listOrdered(supabase, "reseaux_sociaux", 20),
+    ]);
+    const others = circuits.filter((item) => item.slug !== data.slug).slice(0, 3);
+    return { circuit, others, destinations, formules, reseaux };
+  });
 
 // A destination's page: the destination, three others to suggest, and what the contact form lists.
 // `destination` is null for an unknown slug; the route answers 404.
@@ -183,6 +205,40 @@ export const deleteFaq = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .validator(idInput)
   .handler(({ data, context }) => deleteRecord(context.getSupabase(), "faqs", data.id));
+
+const circuitInput = z.object({
+  id: z.uuid().optional(),
+  title: text(200).min(1),
+  kind: z.enum(["circuit", "excursion", "visite"]),
+  // Empty: the database derives it from the title (supabase/migrations/0005_circuits.sql).
+  slug: text(120).regex(/^[a-z0-9-]*$/, "Lettres minuscules, chiffres et tirets uniquement"),
+  tagline: text(500),
+  duration: text(100),
+  price: text(100),
+  departure: text(200),
+  dates: text(300),
+  image: text(2000),
+  description: text(10000),
+  included: z.array(text(300)).max(40),
+  excluded: z.array(text(300)).max(40),
+  programme: z.array(z.object({ title: text(200).min(1), description: text(3000) })).max(60),
+  published: z.boolean(),
+  sort_order: z.number(),
+});
+
+export const listAllCircuits = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(({ context }) => listOrdered(context.getSupabase(), "circuits", 200));
+
+export const saveCircuit = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(circuitInput)
+  .handler(({ data, context }) => saveRecord(context.getSupabase(), "circuits", data));
+
+export const deleteCircuit = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(idInput)
+  .handler(({ data, context }) => deleteRecord(context.getSupabase(), "circuits", data.id));
 
 export const listReseauxSociaux = createServerFn({ method: "GET" })
   .middleware([requireAdmin])

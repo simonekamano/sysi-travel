@@ -30,6 +30,13 @@ export const IMAGES = {
   sunset: "/images/illustrations/coucher-de-soleil.jpg",
 };
 
+// Types of tour (column circuits.kind, supabase/migrations/0005_circuits.sql).
+export const CIRCUIT_KINDS = {
+  circuit: "Circuit",
+  excursion: "Excursion",
+  visite: "Visite guidée",
+};
+
 // Public address of the site, for links that must be absolute (og:image for social previews).
 export const SITE_ORIGIN = "https://sysitravel.com";
 export const absoluteUrl = (path) => (path?.startsWith("/") ? `${SITE_ORIGIN}${path}` : path);
