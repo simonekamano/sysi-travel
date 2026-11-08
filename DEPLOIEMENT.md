@@ -289,4 +289,4 @@ npm run dev            # http://localhost:3000
 ```
 
 `.env.local` contient l'URL et la clé anon locales (clés de démonstration publiques du CLI Supabase).
-Studio local : http://127.0.0.1:56323 · e-mails de test : http://127.0.0.1:56324.
+Studio local : http://127.0.0.1:57323 · e-mails de test : http://127.0.0.1:57324.

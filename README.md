@@ -16,11 +16,11 @@ npm run dev            # http://localhost:3000
 Créez `.env.local` avec l'URL et la clé `ANON_KEY` affichées par `npx supabase start` :
 
 ```dotenv
-VITE_SUPABASE_URL=http://127.0.0.1:56321
+VITE_SUPABASE_URL=http://127.0.0.1:57321
 VITE_SUPABASE_ANON_KEY=<ANON_KEY>
 ```
 
-Pour accéder à `/admin` : créez un compte sur `/register`, puis dans le Studio local (http://127.0.0.1:56323) ou en SQL :
+Pour accéder à `/admin` : créez un compte sur `/register`, puis dans le Studio local (http://127.0.0.1:57323) ou en SQL :
 `update public.profiles set role = 'admin' where email = '…';`
 
 ## Production
