@@ -39,7 +39,7 @@ C'est le cœur de l'activité : ce que les voyageurs viennent acheter.
 
 | N° | Fonctionnalité | Type | Éléments nécessaires | Statut |
 |---|---|---|---|---|
-| 8 | Présentation de l'entreprise et de la Guinée en vidéo | Contrat | Vidéos de la Cliente, ou vidéos créées à partir de ses photos (n° 9) | ⬜ À faire |
+| 8 | Présentation de l'entreprise et de la Guinée en vidéo : section « En vidéo » sur l'accueil, page /videos, gérées dans Administration › Vidéos | Contrat | Vidéos de la Cliente, ou vidéos créées à partir de ses photos (n° 9), à mettre sur sa chaîne YouTube ou Vimeo puis à ajouter dans l'administration (la section de l'accueil reste masquée tant qu'aucune vidéo n'est publiée) | ✅ Terminé le 10 novembre 2026 |
 | 9 | Vidéos créées à partir des photos (30 à 60 s, téléphone et ordinateur) | Option, 20 € | Accord écrit ; 5 à 10 photos par vidéo, textes | 🔒 Accord |
 | 10 | Présentation des partenaires | Contrat | Liste des partenaires, logos, textes, accord de chacun | ⬜ À faire |
 | 11 | Formulaire pour ajouter un établissement | Option, 50 € | Accord écrit ; informations demandées, règles de publication | 🔒 Accord |

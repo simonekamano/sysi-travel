@@ -5,6 +5,7 @@ import Nav from "@/components/landing/Nav";
 import Hero from "@/components/landing/Hero";
 import Problem from "@/components/landing/Problem";
 import Solution from "@/components/landing/Solution";
+import Videos from "@/components/landing/Videos";
 import Destinations from "@/components/landing/Destinations";
 import Circuits from "@/components/landing/Circuits";
 import ExplorerTeaser from "@/components/landing/ExplorerTeaser";
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/")({
 });
 
 function LandingPage() {
-  const { destinations, formules, faqs, reseaux, circuits, sitesCount } = Route.useLoaderData();
+  const { destinations, formules, faqs, reseaux, circuits, sitesCount, videos } = Route.useLoaderData();
   const [formule, setFormule] = useState("");
 
   const selectFormule = (id) => {
@@ -45,6 +46,7 @@ function LandingPage() {
         <Hero />
         <Problem />
         <Solution />
+        <Videos videos={videos} />
         <Destinations destinations={destinations} />
         <Circuits circuits={circuits} />
         <ExplorerTeaser sitesCount={sitesCount} />

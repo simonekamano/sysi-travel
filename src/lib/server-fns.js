@@ -3,6 +3,7 @@ import { getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth-middleware";
 import { sendDemandeEmails } from "@/lib/mail";
+import { parseVideo } from "@/lib/video";
 
 // Supabase answers { data, error }; a server function must throw a plain Error to reach the caller.
 const unwrap = ({ data, error }) => {
@@ -42,15 +43,17 @@ export const listFaqs = createServerFn({ method: "GET" }).handler(({ context }) 
 
 export const getSiteContent = createServerFn({ method: "GET" }).handler(async ({ context }) => {
   const supabase = context.getSupabase();
-  const [destinations, formules, faqs, reseaux, circuits, sites] = await Promise.all([
+  const [destinations, formules, faqs, reseaux, circuits, sites, videos] = await Promise.all([
     listOrdered(supabase, "destinations", 200),
     listOrdered(supabase, "formules", 50),
     listOrdered(supabase, "faqs", 200),
     listOrdered(supabase, "reseaux_sociaux", 20),
     listPublishedCircuits(supabase),
     supabase.from("sites_touristiques").select("id", { count: "exact", head: true }).eq("published", true),
+    // Published only: an admin browsing the site must not see hidden videos.
+    supabase.from("videos").select("*").eq("published", true).order("sort_order").limit(100).then(unwrap),
   ]);
-  return { destinations, formules, faqs, reseaux, circuits, sitesCount: sites.count ?? 0 };
+  return { destinations, formules, faqs, reseaux, circuits, sitesCount: sites.count ?? 0, videos };
 });
 
 // Published circuits only: an admin browsing the site must not see drafts in the lists.
@@ -301,6 +304,45 @@ export const deleteSite = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .validator(idInput)
   .handler(({ data, context }) => deleteRecord(context.getSupabase(), "sites_touristiques", data.id));
+
+const videoInput = z.object({
+  id: z.uuid().optional(),
+  title: text(200).min(1),
+  description: text(1000),
+  category: z.enum(["entreprise", "guinee"]),
+  url: text(500).refine((url) => parseVideo(url) !== null, "Lien YouTube, Vimeo ou fichier .mp4 attendu"),
+  poster: text(2000),
+  duration: text(20),
+  vertical: z.boolean(),
+  published: z.boolean(),
+  sort_order: z.number(),
+});
+
+export const listAllVideos = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(({ context }) => listOrdered(context.getSupabase(), "videos", 200));
+
+export const saveVideo = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(videoInput)
+  .handler(({ data, context }) => saveRecord(context.getSupabase(), "videos", data));
+
+export const deleteVideo = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(idInput)
+  .handler(({ data, context }) => deleteRecord(context.getSupabase(), "videos", data.id));
+
+// New order of the videos (administration › Vidéos, arrows): the first visible one leads the home page.
+export const reorderVideos = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(z.array(z.object({ id: z.uuid(), sort_order: z.number() })).max(200))
+  .handler(async ({ data, context }) => {
+    const supabase = context.getSupabase();
+    for (const { id, sort_order } of data) {
+      unwrap(await supabase.from("videos").update({ sort_order }).eq("id", id));
+    }
+    return { ok: true };
+  });
 
 export const listReseauxSociaux = createServerFn({ method: "GET" })
   .middleware([requireAdmin])

@@ -9,6 +9,7 @@ const EXPLORER = [
   { label: "Circuits & excursions", to: "/circuits" },
   { label: "Explorer la Guinée", to: "/explorer" },
   { label: "Produits locaux", to: "/produits" },
+  { label: "Vidéos", to: "/videos" },
   { label: "Prise en charge aéroport", to: "/transfert-aeroport" },
   { label: "La plateforme", hash: "solution" },
   { label: "Nos formules", hash: "offre" },
