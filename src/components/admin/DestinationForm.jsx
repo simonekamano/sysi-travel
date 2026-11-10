@@ -3,6 +3,7 @@ import { Loader2 } from "lucide-react";
 import { saveDestination } from "@/lib/server-fns";
 import { Button } from "@/components/ui/button";
 import { GalleryField, ImageField, TextAreaField, TextField } from "@/components/admin/fields";
+import { formatCoordinates, parseCoordinates } from "@/lib/coordinates";
 
 const EMPTY = {
   name: "",
@@ -28,21 +29,9 @@ const toForm = (record) =>
         tags: (record.tags || []).join(", "),
         highlights: (record.highlights || []).join("\n"),
         gallery: record.gallery || [],
-        coordinates:
-          record.latitude != null && record.longitude != null ? `${record.latitude}, ${record.longitude}` : "",
+        coordinates: formatCoordinates(record),
       }
     : EMPTY;
-
-// "9.5092, -13.7122" (as Google Maps copies it) -> { latitude, longitude }; empty -> nulls.
-function parseCoordinates(value) {
-  const trimmed = value.trim();
-  if (!trimmed) return { latitude: null, longitude: null };
-  const parts = trimmed.split(/[,;\s]+/).filter(Boolean).map(Number);
-  if (parts.length !== 2 || parts.some((n) => !Number.isFinite(n))) return null;
-  const [latitude, longitude] = parts;
-  if (Math.abs(latitude) > 90 || Math.abs(longitude) > 180) return null;
-  return { latitude, longitude };
-}
 
 const lines = (value) =>
   value

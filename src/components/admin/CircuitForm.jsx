@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageField, TextAreaField, TextField } from "@/components/admin/fields";
 import { CIRCUIT_KINDS } from "@/data/site";
+import { formatCoordinates, parseCoordinates } from "@/lib/coordinates";
 
 const EMPTY = {
   title: "",
@@ -31,9 +32,17 @@ const toForm = (record) =>
         ...record,
         included: (record.included || []).join("\n"),
         excluded: (record.excluded || []).join("\n"),
-        programme: record.programme || [],
+        programme: (record.programme || []).map((day) => ({
+          title: day.title ?? "",
+          description: day.description ?? "",
+          place: day.place ?? "",
+          coordinates: formatCoordinates(day),
+          image: day.image ?? "",
+        })),
       }
     : EMPTY;
+
+const NEW_DAY = { title: "", description: "", place: "", coordinates: "", image: "" };
 
 const lines = (value) =>
   value
@@ -57,8 +66,18 @@ function FormSection({ title, hint, children }) {
 }
 
 // The day-by-day programme: one block per day, which can be moved up or down or removed.
-function ProgrammeEditor({ value, onChange }) {
+// A place picked among the destinations brings its GPS position, for the itinerary map.
+function ProgrammeEditor({ value, onChange, destinations }) {
   const update = (index, key, text) => onChange(value.map((day, i) => (i === index ? { ...day, [key]: text } : day)));
+  const updatePlace = (index, place) =>
+    onChange(
+      value.map((day, i) => {
+        if (i !== index) return day;
+        const match = destinations.find((item) => item.name.toLowerCase() === place.trim().toLowerCase());
+        const position = !day.coordinates.trim() && match ? formatCoordinates(match) : day.coordinates;
+        return { ...day, place, coordinates: position };
+      }),
+    );
   const move = (index, step) => {
     const next = [...value];
     [next[index], next[index + step]] = [next[index + step], next[index]];
@@ -117,12 +136,35 @@ function ProgrammeEditor({ value, onChange }) {
               onChange={(event) => update(index, "description", event.target.value)}
               className={`${inputClass} resize-none`}
             />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Input
+                value={day.place}
+                list="circuit-places"
+                placeholder="Lieu de l'étape, par exemple : Dalaba"
+                onChange={(event) => updatePlace(index, event.target.value)}
+                className={inputClass}
+                aria-label={`Lieu du jour ${index + 1}`}
+              />
+              <Input
+                value={day.coordinates}
+                placeholder="GPS pour la carte : 10.6969, -12.2509"
+                onChange={(event) => update(index, "coordinates", event.target.value)}
+                className={inputClass}
+                aria-label={`Coordonnées GPS du jour ${index + 1}`}
+              />
+            </div>
+            <ImageField label="Photo de l'étape (facultatif)" value={day.image} onChange={(url) => update(index, "image", url)} />
           </li>
         ))}
       </ol>
+      <datalist id="circuit-places">
+        {destinations.map((item) => (
+          <option key={item.id} value={item.name} />
+        ))}
+      </datalist>
       <button
         type="button"
-        onClick={() => onChange([...value, { title: "", description: "" }])}
+        onClick={() => onChange([...value, NEW_DAY])}
         className="label-caps inline-flex items-center gap-2 border border-petrol/25 px-4 py-2.5 text-petrol transition-colors hover:border-gold hover:bg-petrol/5"
       >
         <Plus className="h-4 w-4" /> Ajouter le jour {value.length + 1}
@@ -131,7 +173,7 @@ function ProgrammeEditor({ value, onChange }) {
   );
 }
 
-export default function CircuitForm({ initial, onCancel, onSaved }) {
+export default function CircuitForm({ initial, destinations = [], onCancel, onSaved }) {
   const [form, setForm] = useState(() => toForm(initial));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -148,13 +190,23 @@ export default function CircuitForm({ initial, onCancel, onSaved }) {
       setError("L'adresse de la page ne peut contenir que des lettres minuscules, des chiffres et des tirets.");
       return;
     }
-    const programme = form.programme
-      .map((day) => ({ title: day.title.trim(), description: day.description.trim() }))
-      .filter((day) => day.title || day.description);
-    if (programme.some((day) => !day.title)) {
+    const days = form.programme.filter((day) => day.title.trim() || day.description.trim());
+    if (days.some((day) => !day.title.trim())) {
       setError("Chaque jour du programme doit avoir un titre.");
       return;
     }
+    const invalidDay = days.findIndex((day) => !parseCoordinates(day.coordinates));
+    if (invalidDay >= 0) {
+      setError(`Jour ${invalidDay + 1} : coordonnées GPS invalides. Format attendu : 10.6969, -12.2509`);
+      return;
+    }
+    const programme = days.map((day) => ({
+      title: day.title.trim(),
+      description: day.description.trim(),
+      place: day.place.trim(),
+      ...parseCoordinates(day.coordinates),
+      image: day.image.trim(),
+    }));
     setSaving(true);
     setError("");
     const payload = {
@@ -233,8 +285,11 @@ export default function CircuitForm({ initial, onCancel, onSaved }) {
         />
       </FormSection>
 
-      <FormSection title="Programme jour par jour" hint="Une étape par jour, dans l'ordre du voyage.">
-        <ProgrammeEditor value={form.programme} onChange={set("programme")} />
+      <FormSection
+        title="Programme jour par jour"
+        hint="Une étape par jour, dans l'ordre du voyage. Avec un lieu et ses coordonnées GPS, l'étape apparaît sur la carte de l'itinéraire : choisir une destination du site les remplit, sinon copiez-les depuis Google Maps (clic droit sur le lieu)."
+      >
+        <ProgrammeEditor value={form.programme} onChange={set("programme")} destinations={destinations} />
       </FormSection>
 
       <FormSection title="Ce qui est compris">

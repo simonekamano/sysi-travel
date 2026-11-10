@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { ClientOnly } from "@tanstack/react-router";
 import { MapPin } from "lucide-react";
+import { hasPosition } from "@/lib/coordinates";
 import { cn } from "@/lib/utils";
 
 // Leaflet touches `window` on import, so the map only loads in the browser; the server
@@ -10,9 +11,7 @@ const GuineaMapClient = lazy(() => import("@/components/map/GuineaMapClient"));
 
 export { default as LEAFLET_CSS } from "leaflet/dist/leaflet.css?url";
 
-const hasPosition = (point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude);
-
-function Placeholder() {
+export function Placeholder() {
   return (
     <div className="flex h-full w-full items-center justify-center bg-petrol/5">
       <MapPin className="h-6 w-6 animate-pulse text-gold-deep" strokeWidth={1.5} aria-hidden="true" />

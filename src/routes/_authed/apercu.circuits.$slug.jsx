@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { NotFound } from "@/components/NotFound";
 import CircuitView from "@/components/circuit/CircuitView";
+import { LEAFLET_CSS } from "@/components/map/GuineaMap";
 import { getCircuitPage } from "@/lib/server-fns";
 
 // Admins' preview of a circuit, draft or published. Under _authed (rendered in the browser,
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/_authed/apercu/circuits/$slug")({
       { title: `Aperçu : ${loaderData?.circuit?.title ?? "circuit"} — SYSI TRAVEL` },
       { name: "robots", content: "noindex" },
     ],
+    links: [{ rel: "stylesheet", href: LEAFLET_CSS }],
   }),
   notFoundComponent: () => (
     <NotFound>

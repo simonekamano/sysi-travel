@@ -221,7 +221,19 @@ const circuitInput = z.object({
   description: text(10000),
   included: z.array(text(300)).max(40),
   excluded: z.array(text(300)).max(40),
-  programme: z.array(z.object({ title: text(200).min(1), description: text(3000) })).max(60),
+  // One step per day; the place, GPS position and photo (optional) draw the itinerary map.
+  programme: z
+    .array(
+      z.object({
+        title: text(200).min(1),
+        description: text(3000),
+        place: text(200).default(""),
+        latitude: z.number().min(-90).max(90).nullable().default(null),
+        longitude: z.number().min(-180).max(180).nullable().default(null),
+        image: text(2000).default(""),
+      }),
+    )
+    .max(60),
   published: z.boolean(),
   sort_order: z.number(),
 });

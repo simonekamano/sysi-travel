@@ -7,7 +7,7 @@ import CircuitForm from "@/components/admin/CircuitForm";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import { CIRCUIT_KINDS } from "@/data/site";
 
-export default function CircuitsPanel({ circuits = [] }) {
+export default function CircuitsPanel({ circuits = [], destinations = [] }) {
   const router = useRouter();
   const [editing, setEditing] = useState(null);
   const [pending, setPending] = useState(null);
@@ -54,6 +54,7 @@ export default function CircuitsPanel({ circuits = [] }) {
         <CircuitForm
           key={editing === "new" ? "new" : editing.id}
           initial={editing === "new" ? null : editing}
+          destinations={destinations}
           onCancel={() => setEditing(null)}
           onSaved={saved}
         />

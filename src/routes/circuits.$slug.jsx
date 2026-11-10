@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { NotFound } from "@/components/NotFound";
 import CircuitView from "@/components/circuit/CircuitView";
+import { LEAFLET_CSS } from "@/components/map/GuineaMap";
 import { CIRCUIT_KINDS, absoluteUrl } from "@/data/site";
 import { getCircuitPage } from "@/lib/server-fns";
 
@@ -24,7 +25,10 @@ export const Route = createFileRoute("/circuits/$slug")({
         { property: "og:description", content: description },
         ...(circuit.image ? [{ property: "og:image", content: absoluteUrl(circuit.image) }] : []),
       ],
-      links: circuit.image ? [{ rel: "preload", as: "image", href: circuit.image, fetchPriority: "high" }] : [],
+      links: [
+        { rel: "stylesheet", href: LEAFLET_CSS },
+        ...(circuit.image ? [{ rel: "preload", as: "image", href: circuit.image, fetchPriority: "high" }] : []),
+      ],
     };
   },
   notFoundComponent: () => (

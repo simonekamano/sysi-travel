@@ -1,15 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { listAllCircuits } from "@/lib/server-fns";
+import { listAllCircuits, listDestinations } from "@/lib/server-fns";
 import CircuitsPanel from "@/components/admin/CircuitsPanel";
 
 export const Route = createFileRoute("/_authed/admin/circuits")({
-  loader: () => listAllCircuits(),
+  // The destinations are suggested as places for the programme's steps, with their GPS position.
+  loader: async () => {
+    const [circuits, destinations] = await Promise.all([listAllCircuits(), listDestinations()]);
+    return { circuits, destinations };
+  },
   head: () => ({ meta: [{ title: "Circuits — Administration SYSI TRAVEL" }] }),
   component: AdminCircuitsPage,
 });
 
 function AdminCircuitsPage() {
-  const circuits = Route.useLoaderData();
+  const { circuits, destinations } = Route.useLoaderData();
 
   return (
     <div className="space-y-8">
@@ -24,7 +28,7 @@ function AdminCircuitsPage() {
           brouillon reste visible des seuls administrateurs, via le bouton « Voir ».
         </p>
       </div>
-      <CircuitsPanel circuits={circuits} />
+      <CircuitsPanel circuits={circuits} destinations={destinations} />
     </div>
   );
 }

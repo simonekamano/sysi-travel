@@ -8,6 +8,7 @@ import SectionHeading from "@/components/landing/SectionHeading";
 import ContactForm from "@/components/landing/ContactForm";
 import Footer from "@/components/landing/Footer";
 import WhatsAppButton from "@/components/landing/WhatsAppButton";
+import CircuitProgramme from "@/components/circuit/CircuitProgramme";
 import { CIRCUIT_KINDS, CONTACT } from "@/data/site";
 
 function Fact({ icon: Icon, label, value }) {
@@ -92,43 +93,14 @@ export default function CircuitView({ circuit, others, destinations, formules, r
         <section className="py-14 lg:py-20">
           <div className="mx-auto grid max-w-[1180px] gap-12 px-6 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
             <div>
-              {paragraphs.length ? (
-                <Reveal>
-                  <p className="eyebrow text-gold-deep">Le voyage</p>
-                  <div className="mt-5 space-y-5 text-[1.02rem] leading-relaxed text-petrol/75">
-                    {paragraphs.map((paragraph) => (
-                      <p key={paragraph.slice(0, 40)}>{paragraph}</p>
-                    ))}
-                  </div>
-                </Reveal>
-              ) : null}
-
-              {programme.length ? (
-                <Reveal delay={80}>
-                  <h2 className={`${paragraphs.length ? "mt-14" : ""} text-[clamp(1.6rem,3vw,2.3rem)] font-bold leading-tight tracking-[-0.015em] text-petrol`}>
-                    Le programme jour par jour
-                  </h2>
-                  <ol className="mt-8">
-                    {programme.map((day, index) => (
-                      <li key={`${index}-${day.title}`} className="relative flex gap-5 pb-9 last:pb-0">
-                        {index < programme.length - 1 ? (
-                          <span aria-hidden="true" className="absolute left-[1.35rem] top-12 bottom-0 w-px bg-gold/40" />
-                        ) : null}
-                        <span className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-full bg-petrol text-ivory">
-                          <span className="text-[0.55rem] uppercase leading-none tracking-[0.12em] text-gold">Jour</span>
-                          <span className="font-display text-[1rem] font-bold leading-none">{index + 1}</span>
-                        </span>
-                        <div className="pt-1.5">
-                          <h3 className="text-[1.08rem] font-semibold leading-snug text-petrol">{day.title}</h3>
-                          {day.description ? (
-                            <p className="mt-2 whitespace-pre-line text-[0.95rem] leading-relaxed text-petrol/70">{day.description}</p>
-                          ) : null}
-                        </div>
-                      </li>
-                    ))}
-                  </ol>
-                </Reveal>
-              ) : null}
+              <Reveal>
+                <p className="eyebrow text-gold-deep">Le voyage</p>
+                <div className="mt-5 space-y-5 text-[1.02rem] leading-relaxed text-petrol/75">
+                  {(paragraphs.length ? paragraphs : [circuit.tagline].filter(Boolean)).map((paragraph) => (
+                    <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+                  ))}
+                </div>
+              </Reveal>
             </div>
 
             <aside className="lg:sticky lg:top-28 lg:self-start">
@@ -162,6 +134,8 @@ export default function CircuitView({ circuit, others, destinations, formules, r
             </aside>
           </div>
         </section>
+
+        {programme.length ? <CircuitProgramme programme={programme} /> : null}
 
         {circuit.included?.length || circuit.excluded?.length ? (
           <section className="bg-ivory-soft py-14 lg:py-20">
