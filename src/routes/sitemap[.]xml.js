@@ -25,6 +25,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         });
         const entries = [
           { loc: `${base}/`, priority: "1.0" },
+          { loc: `${base}/circuits`, priority: "0.9" },
           { loc: `${base}/contact`, priority: "0.6" },
           ...destinations.data.map(page("destinations", "0.8")),
           ...circuits.data.map(page("circuits", "0.8")),

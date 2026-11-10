@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LOGO_INVERSE, NAV_LINKS } from "@/data/site";
@@ -23,7 +24,7 @@ function useActiveSection(ids) {
   return active;
 }
 
-const SECTION_IDS = NAV_LINKS.map((link) => link.href.slice(1));
+const SECTION_IDS = NAV_LINKS.filter((link) => link.href).map((link) => link.href.slice(1));
 
 // `home`: on the landing page the links are in-page anchors; elsewhere they lead back to its sections.
 // `solid`: the opaque bar from the start, for pages without a dark photo at the top.
@@ -31,6 +32,7 @@ export default function Nav({ home = true, solid = false }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const active = useActiveSection(SECTION_IDS);
+  const pathname = useLocation({ select: (location) => location.pathname });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -46,8 +48,10 @@ export default function Nav({ home = true, solid = false }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const isActive = (link) => home && active === link.href.slice(1);
-  const hrefOf = (link) => (home ? link.href : `/${link.href}`);
+  // A page link is active on that page and below it (/circuits, /circuits/…); a section link,
+  // on the home page while its section is in view.
+  const isActive = (link) => (link.to ? pathname.startsWith(link.to) : home && active === link.href.slice(1));
+  const hrefOf = (link) => link.to ?? (home ? link.href : `/${link.href}`);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
@@ -77,7 +81,7 @@ export default function Nav({ home = true, solid = false }) {
           <nav className="hidden items-center gap-4 xl:flex 2xl:gap-8">
             {NAV_LINKS.map((link) => (
               <a
-                key={link.href}
+                key={link.label}
                 href={hrefOf(link)}
                 aria-current={isActive(link) ? "location" : undefined}
                 className={cn(
@@ -124,7 +128,7 @@ export default function Nav({ home = true, solid = false }) {
         <nav className="flex flex-col gap-5">
           {NAV_LINKS.map((link, index) => (
             <a
-              key={link.href}
+              key={link.label}
               href={hrefOf(link)}
               onClick={() => setOpen(false)}
               style={{ transitionDelay: open ? `${80 + index * 55}ms` : "0ms" }}

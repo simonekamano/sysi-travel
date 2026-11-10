@@ -41,11 +41,12 @@ export const CIRCUIT_KINDS = {
 export const SITE_ORIGIN = "https://sysitravel.com";
 export const absoluteUrl = (path) => (path?.startsWith("/") ? `${SITE_ORIGIN}${path}` : path);
 
+// `href`: a section of the home page; `to`: a page of its own.
 export const NAV_LINKS = [
   { label: "Destinations", href: "#destinations" },
+  { label: "Circuits", to: "/circuits" },
   { label: "Produits", href: "#produits" },
   { label: "La plateforme", href: "#solution" },
-  { label: "Notre offre", href: "#offre" },
   { label: "Questions", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];

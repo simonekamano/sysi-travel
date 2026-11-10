@@ -60,11 +60,11 @@ export default function CircuitView({ circuit, others, destinations, formules, r
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-petrol-deep via-petrol-deep/50 to-petrol-deep/60" />
 
           <div className="mx-auto w-full max-w-[1180px] px-6 pb-14 pt-36 lg:pb-20">
-            <BackButton to="/" hash="circuits" tone="light" className="mb-6 animate-fade-in" />
+            <BackButton to="/circuits" tone="light" className="mb-6 animate-fade-in" />
             <nav aria-label="Fil d'Ariane" className="label-caps flex flex-wrap gap-2 text-ivory/55 animate-fade-in">
               <Link to="/" className="transition-colors hover:text-gold">Accueil</Link>
               <span aria-hidden="true">/</span>
-              <Link to="/" hash="circuits" className="transition-colors hover:text-gold">Circuits</Link>
+              <Link to="/circuits" className="transition-colors hover:text-gold">Circuits</Link>
               <span aria-hidden="true">/</span>
               <span className="text-ivory/85">{circuit.title}</span>
             </nav>

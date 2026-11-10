@@ -34,7 +34,7 @@ export const Route = createFileRoute("/circuits/$slug")({
   notFoundComponent: () => (
     <NotFound>
       Ce circuit n'existe pas ou n'est plus proposé.{" "}
-      <Link to="/" hash="circuits" className="text-gold-deep underline underline-offset-4">
+      <Link to="/circuits" className="text-gold-deep underline underline-offset-4">
         Voir tous les circuits
       </Link>
     </NotFound>

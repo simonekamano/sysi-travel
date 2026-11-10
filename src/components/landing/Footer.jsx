@@ -76,6 +76,11 @@ export default function Footer({ destinations = [], reseaux = [] }) {
             </li>
           ))}
           <li>
+            <Link to="/circuits" className={linkClass}>
+              Circuits & excursions
+            </Link>
+          </li>
+          <li>
             <Link to="/contact" className={linkClass}>
               Contact
             </Link>
