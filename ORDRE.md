@@ -73,6 +73,13 @@ Le suivi des commissions a besoin des réservations, des paiements et des parten
 |---|---|---|---|
 | 21 | Achat de billets d'avion en ligne, en temps réel | Sur devis, à partir de 1 000 € | ⏸️ Non planifié |
 
+## Ajouts demandés en cours de route
+
+| N° | Fonctionnalité | Type | Éléments nécessaires | Statut |
+|---|---|---|---|---|
+| A1 | Pages dédiées aux destinations, circuits et produits ; accueil allégé (3 éléments puis « Voir plus ») | Hors contrat, prix à fixer | Aucun | ✅ Terminé le 10 novembre 2026 |
+| A2 | Carte interactive « Explorer la Guinée » (/explorer) : 4 régions, 59 sites des cartes touristiques, visite guidée animée, aperçu sur l'accueil, onglet Sites dans l'administration | Hors contrat, prix à fixer | Positions à vérifier sur place (surtout en Guinée forestière) ; droit de publier les 16 photos de sites | ✅ Terminé le 10 novembre 2026 |
+
 ## Déjà terminé
 
 Ces fonctionnalités sont livrées sur https://sysitravel.com (annexe 1, parties 1 et 2) :

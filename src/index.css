@@ -200,6 +200,162 @@ h4 {
   100% { transform: scale(2.6); opacity: 0; }
 }
 
+/* Home page preview of the map (ExplorerTeaser.jsx): each region traces itself, then fills;
+   the landmarks drop in and pulse. */
+.teaser-map__region {
+  fill: var(--region-color);
+  fill-opacity: 0;
+  stroke: #fff;
+  stroke-width: 1.5;
+  stroke-dasharray: 2600;
+  stroke-dashoffset: 2600;
+}
+
+.teaser-map.is-visible .teaser-map__region {
+  animation:
+    teaser-draw 1.6s ease-out forwards,
+    teaser-fill 0.9s ease forwards;
+  animation-delay: var(--region-delay), calc(var(--region-delay) + 900ms);
+}
+
+.teaser-map__pin {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.teaser-map.is-visible .teaser-map__pin {
+  animation: teaser-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--pin-delay) forwards;
+}
+
+.teaser-map__dot {
+  fill: hsl(var(--gold));
+  stroke: hsl(var(--petrol-deep));
+  stroke-width: 2;
+}
+
+.teaser-map__pulse {
+  fill: hsl(var(--gold) / 0.35);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: teaser-pulse 2.4s ease-out infinite;
+}
+
+@keyframes teaser-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes teaser-fill {
+  to { fill-opacity: 0.85; }
+}
+
+@keyframes teaser-pop {
+  0% { opacity: 0; transform: translateY(-10px) scale(0.5); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes teaser-pulse {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* « Explorer la Guinée » pins (ExplorerMapClient.jsx). MapLibre positions the button itself
+   with `transform`, so only its children are animated. */
+.explorer-pin {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: opacity 0.35s ease, visibility 0.35s;
+}
+
+.explorer-pin.is-active {
+  z-index: 5;
+}
+
+.explorer-pin.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.explorer-pin__dot {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--pin-color);
+  border: 2.5px solid #fff;
+  box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.55);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.explorer-pin.is-dropping .explorer-pin__dot {
+  animation: explorer-drop 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--pin-delay, 0ms) backwards;
+}
+
+.explorer-pin:hover .explorer-pin__dot,
+.explorer-pin:focus-visible .explorer-pin__dot {
+  transform: scale(1.25);
+}
+
+.explorer-pin.is-active .explorer-pin__dot {
+  background: hsl(var(--gold));
+  border-color: hsl(var(--petrol));
+  transform: scale(1.45);
+}
+
+.explorer-pin__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid hsl(var(--gold));
+  opacity: 0;
+}
+
+.explorer-pin.is-active .explorer-pin__ring {
+  animation: explorer-ring 1.8s ease-out infinite;
+}
+
+.explorer-pin__label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translate(-50%, 4px);
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fff;
+  color: hsl(var(--petrol));
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 600;
+  box-shadow: 0 10px 24px -12px rgba(18, 61, 67, 0.7);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.explorer-pin:hover .explorer-pin__label,
+.explorer-pin:focus-visible .explorer-pin__label,
+.explorer-pin.is-active .explorer-pin__label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@keyframes explorer-drop {
+  0% { transform: translateY(-30px) scale(0.6); opacity: 0; }
+  60% { transform: translateY(3px) scale(1.1); opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+
+@keyframes explorer-ring {
+  0% { transform: scale(0.8); opacity: 0.9; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
 /* Itinerary steps (ItineraryMapClient.jsx): numbered discs, the active day in gold. */
 .sysi-step {
   background: none;

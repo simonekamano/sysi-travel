@@ -45,8 +45,8 @@ export const absoluteUrl = (path) => (path?.startsWith("/") ? `${SITE_ORIGIN}${p
 export const NAV_LINKS = [
   { label: "Destinations", to: "/destinations" },
   { label: "Circuits", to: "/circuits" },
+  { label: "Explorer", to: "/explorer" },
   { label: "Produits", to: "/produits" },
-  { label: "La plateforme", href: "#solution" },
   { label: "Questions", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];

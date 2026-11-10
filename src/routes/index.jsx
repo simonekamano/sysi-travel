@@ -7,6 +7,7 @@ import Problem from "@/components/landing/Problem";
 import Solution from "@/components/landing/Solution";
 import Destinations from "@/components/landing/Destinations";
 import Circuits from "@/components/landing/Circuits";
+import ExplorerTeaser from "@/components/landing/ExplorerTeaser";
 import LocalProducts from "@/components/landing/LocalProducts";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Pricing from "@/components/landing/Pricing";
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/")({
 });
 
 function LandingPage() {
-  const { destinations, formules, faqs, reseaux, circuits } = Route.useLoaderData();
+  const { destinations, formules, faqs, reseaux, circuits, sitesCount } = Route.useLoaderData();
   const [formule, setFormule] = useState("");
 
   const selectFormule = (id) => {
@@ -46,6 +47,7 @@ function LandingPage() {
         <Solution />
         <Destinations destinations={destinations} />
         <Circuits circuits={circuits} />
+        <ExplorerTeaser sitesCount={sitesCount} />
         <LocalProducts />
         <HowItWorks />
         <Pricing formules={formules} onSelect={selectFormule} />
