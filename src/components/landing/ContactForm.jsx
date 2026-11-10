@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { CheckCircle2, Loader2, Mail, Phone, Plane } from "lucide-react";
 import { createDemande } from "@/lib/server-fns";
 import Reveal from "@/components/landing/Reveal";
 import { CONTACT, IMAGES } from "@/data/site";
+import { useLegalLinks } from "@/lib/legal";
 
 const EMPTY = {
   nom: "",
@@ -34,6 +36,7 @@ export default function ContactForm({
   transfertChoice = false,
 }) {
   const initial = { ...EMPTY, transfert: transfertChoice };
+  const privacy = useLegalLinks().some((link) => link.slug === "confidentialite");
   const [form, setForm] = useState(initial);
 
   // A destination card clicked higher up the page presets the field.
@@ -379,6 +382,16 @@ export default function ContactForm({
                   <p className="mt-4 text-center text-[0.78rem] leading-relaxed text-petrol/65">
                     En envoyant ce formulaire, vous acceptez d'être contacté par SYSI TRAVEL au
                     sujet de votre voyage.
+                    {privacy ? (
+                      <>
+                        {" "}
+                        Vos données :{" "}
+                        <Link to="/confidentialite" className="underline underline-offset-4 hover:text-petrol">
+                          politique de confidentialité
+                        </Link>
+                        .
+                      </>
+                    ) : null}
                   </p>
                 </div>
               </form>

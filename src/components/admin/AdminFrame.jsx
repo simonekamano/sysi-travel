@@ -13,6 +13,7 @@ const TABS = [
   { to: "/admin/formules", label: "Formules & prix", exact: false },
   { to: "/admin/faq", label: "FAQ", exact: false },
   { to: "/admin/reseaux", label: "Réseaux sociaux", exact: false },
+  { to: "/admin/pages-legales", label: "Pages légales", exact: false },
   { to: "/admin/demandes", label: "Demandes", exact: false },
 ];
 

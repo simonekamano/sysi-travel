@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUp, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import SocialLinks from "@/components/SocialLinks";
 import { CONTACT, LOGO_INVERSE } from "@/data/site";
+import { useLegalLinks } from "@/lib/legal";
 
 // `to`: a page of its own; `hash`: a section of the home page.
 const EXPLORER = [
@@ -33,6 +34,8 @@ function Column({ title, children, className }) {
 // to the first destination pages; the column always ends with the /destinations page.
 // `reseaux` (optional): the social networks from the database; hidden while none is filled in.
 export default function Footer({ destinations = [], reseaux = [] }) {
+  // Published legal pages only (Administration › Pages légales).
+  const legal = useLegalLinks();
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
@@ -113,7 +116,20 @@ export default function Footer({ destinations = [], reseaux = [] }) {
 
       <div className="border-t border-ivory/10">
         <div className="mx-auto flex max-w-[1180px] flex-col gap-4 px-6 pb-24 pt-6 text-[0.82rem] text-ivory/55 sm:flex-row sm:pb-6 sm:pr-24 sm:items-center sm:justify-between">
-          <p>© 2026 SYSI TRAVEL — Guinée. Tous droits réservés.</p>
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-8">
+            <p>© 2026 SYSI TRAVEL — Guinée. Tous droits réservés.</p>
+            {legal.length ? (
+              <ul aria-label="Informations légales" className="flex flex-wrap gap-x-5 gap-y-2">
+                {legal.map((link) => (
+                  <li key={link.slug}>
+                    <Link to={`/${link.slug}`} className="text-ivory/70 transition-colors hover:text-gold">
+                      {link.short}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
           <button
             type="button"
             onClick={scrollToTop}

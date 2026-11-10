@@ -3,6 +3,7 @@ import { getRequest, getRequestHeader, getRequestIP } from "@tanstack/react-star
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth-middleware";
 import { BOOK_PUBLIC_COLUMNS, DOWNLOAD_DAYS } from "@/lib/boutique";
+import { LEGAL_PAGES, LEGAL_SLUGS, findPlaceholders } from "@/lib/legal";
 import { sendCommandeEmails, sendDemandeEmails, sendLienTelechargement } from "@/lib/mail";
 import { siteUrl } from "@/lib/site-url";
 import { parseVideo } from "@/lib/video";
@@ -199,6 +200,8 @@ export const createCommande = createServerFn({ method: "POST" })
       livres: z.array(z.uuid()).min(1).max(50),
       // Digital content delivered at once: the buyer waives the withdrawal period.
       renonciation: z.literal(true),
+      // Terms of sale accepted: required once the client has published them.
+      cgv: z.boolean().default(false),
       // Hidden field of the form (spam trap): only robots fill it in.
       site_web: text(500).optional(),
     }),
@@ -206,7 +209,11 @@ export const createCommande = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     if (data.site_web) return { reference: "", total_cents: 0 };
     checkCommandeRate();
-    const { data: commande, error } = await context.getSupabase().rpc("creer_commande", {
+    const supabase = context.getSupabase();
+    if (!data.cgv && (await isLegalPagePublished(supabase, "conditions-generales-de-vente"))) {
+      throw new Error("Cochez la case pour accepter les conditions générales de vente.");
+    }
+    const { data: commande, error } = await supabase.rpc("creer_commande", {
       p_nom: data.nom,
       p_email: data.email,
       p_telephone: data.telephone,
@@ -231,7 +238,72 @@ export const getTelechargement = createServerFn({ method: "GET" })
     return unwrap(await context.getSupabase().rpc("commande_par_jeton", { p_token: data.token }));
   });
 
+// --- Legal pages (supabase/migrations/0010_pages_legales.sql): published ones only ---
+
+const legalSlug = z.enum(LEGAL_SLUGS);
+
+const isLegalPagePublished = async (supabase, slug) => {
+  const { count, error } = await supabase
+    .from("pages_legales")
+    .select("slug", { count: "exact", head: true })
+    .eq("slug", slug)
+    .eq("published", true);
+  return !error && count > 0;
+};
+
+// The published legal pages, in footer order: the root route loads them for every page. An
+// error leaves the footer without them rather than breaking the site.
+export const getLegalLinks = createServerFn({ method: "GET" }).handler(async ({ context }) => {
+  const { data, error } = await context.getSupabase().from("pages_legales").select("slug").eq("published", true);
+  if (error) return [];
+  return LEGAL_PAGES.filter((page) => data.some((row) => row.slug === page.slug));
+});
+
+// A legal page and what the footer needs. `page` is null while the page is a draft (even for an
+// admin browsing the site): the route answers 404.
+export const getLegalPage = createServerFn({ method: "GET" })
+  .validator(z.object({ slug: legalSlug }))
+  .handler(async ({ data, context }) => {
+    const supabase = context.getSupabase();
+    const [page, destinations, reseaux] = await Promise.all([
+      supabase
+        .from("pages_legales")
+        .select("slug, title, body, updated_at")
+        .eq("slug", data.slug)
+        .eq("published", true)
+        .maybeSingle()
+        .then(unwrap),
+      listOrdered(supabase, "destinations", 200),
+      listOrdered(supabase, "reseaux_sociaux", 20),
+    ]);
+    return { page, destinations, reseaux };
+  });
+
 // --- Administration: admin role checked here, and again by row level security ---
+
+export const listLegalPages = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(async ({ context }) => {
+    const rows = unwrap(await context.getSupabase().from("pages_legales").select("*"));
+    return LEGAL_SLUGS.map((slug) => rows.find((row) => row.slug === slug)).filter(Boolean);
+  });
+
+export const saveLegalPage = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(z.object({ slug: legalSlug, body: text(60000), published: z.boolean() }))
+  .handler(async ({ data, context }) => {
+    if (data.published && findPlaceholders(data.body).length) {
+      throw new Error("Complétez les passages entre [[ ]] : une page en ligne ne peut pas en contenir.");
+    }
+    unwrap(
+      await context
+        .getSupabase()
+        .from("pages_legales")
+        .update({ body: data.body, published: data.published })
+        .eq("slug", data.slug),
+    );
+    return { ok: true };
+  });
 
 const destinationInput = z.object({
   id: z.uuid().optional(),

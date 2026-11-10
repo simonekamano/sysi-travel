@@ -54,7 +54,7 @@ Le paiement suppose que les pages légales existent. Le catalogue a besoin du pa
 
 | N° | Fonctionnalité | Type | Éléments nécessaires | Statut |
 |---|---|---|---|---|
-| 16 | Pages légales : mentions légales, conditions générales de vente, confidentialité, remboursement | Contrat (article 9) | Informations sur l'entreprise ; textes validés par la Cliente | ⬜ À faire |
+| 16 | Pages légales : mentions légales, conditions générales de vente, confidentialité, remboursement ; gérées dans Administration › Pages légales, liens dans le pied de page, CGV à accepter pour commander | Contrat (article 9) | Brouillons rédigés, invisibles tant qu'ils ne sont pas publiés. La Cliente relit chaque texte, complète les passages surlignés (nom, forme et siège de l'entreprise, immatriculation, licence d'agence et assurance, moyens de paiement, barème d'annulation, médiateur, droit applicable, délai d'annulation du transfert), puis publie la page. Relecture par un juriste conseillée | ✅ Terminé le 10 novembre 2026 (textes à valider et publier par la Cliente) |
 | 17 | Paiement en ligne des visites, circuits et excursions | Contrat | Compte de paiement au nom de la Cliente (Stripe ou PayPal) | ⬜ À faire |
 | 18 | Catalogue de livres et guides : page /boutique, panier, commande, téléchargements sécurisés (lien personnel valable 30 jours), gérés dans Administration › Livres & guides et › Commandes | Contrat | Liste des ouvrages, prix, couvertures, fichiers PDF (50 Mo au plus), droits de vente ; moyens de paiement acceptés. En attendant le paiement en ligne (n° 17), la Cliente encaisse elle-même puis clique « Paiement reçu » : le lien part tout seul. Conditions de vente : n° 16 | ✅ Terminé le 10 novembre 2026 (paiement en ligne à brancher avec le n° 17) |
 

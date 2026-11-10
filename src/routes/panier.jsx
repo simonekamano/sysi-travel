@@ -9,6 +9,7 @@ import BookCover from "@/components/boutique/BookCover";
 import { CONTACT } from "@/data/site";
 import { BOOK_KIND_LABEL, DOWNLOAD_DAYS, formatPrice } from "@/lib/boutique";
 import { useCart } from "@/lib/cart";
+import { useLegalLinks } from "@/lib/legal";
 import { createCommande, getSiteContent } from "@/lib/server-fns";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,7 +30,11 @@ const inputClass = "border-petrol/25 bg-white text-petrol placeholder:text-petro
 function PanierPage() {
   const { livres, destinations, reseaux } = Route.useLoaderData();
   const cart = useCart();
-  const [form, setForm] = useState({ nom: "", email: "", telephone: "", renonciation: false, site_web: "" });
+  const [form, setForm] = useState({ nom: "", email: "", telephone: "", cgv: false, renonciation: false, site_web: "" });
+  // The terms of sale must be accepted once the client has published them.
+  const legal = useLegalLinks();
+  const hasCgv = legal.some((link) => link.slug === "conditions-generales-de-vente");
+  const hasRefund = legal.some((link) => link.slug === "remboursement");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(null);
@@ -51,6 +56,10 @@ function PanierPage() {
       setError("Votre nom et votre e-mail sont nécessaires pour recevoir vos livres.");
       return;
     }
+    if (hasCgv && !form.cgv) {
+      setError("Cochez la case pour accepter les conditions générales de vente.");
+      return;
+    }
     if (!form.renonciation) {
       setError("Cochez la case pour confirmer la livraison immédiate du contenu numérique.");
       return;
@@ -64,6 +73,7 @@ function PanierPage() {
           email: form.email.trim(),
           telephone: form.telephone.trim(),
           livres: items.map((livre) => livre.id),
+          cgv: form.cgv,
           renonciation: true,
           site_web: form.site_web,
         },
@@ -176,6 +186,32 @@ function PanierPage() {
                       <label htmlFor="commande-site">Site web</label>
                       <input id="commande-site" tabIndex={-1} autoComplete="off" value={form.site_web} onChange={set("site_web")} />
                     </div>
+
+                    {hasCgv ? (
+                      <label className="flex items-start gap-3 text-[0.85rem] leading-relaxed text-petrol/70">
+                        <input
+                          type="checkbox"
+                          checked={form.cgv}
+                          onChange={set("cgv")}
+                          className="mt-1 h-4 w-4 shrink-0 accent-[hsl(var(--petrol))]"
+                        />
+                        <span>
+                          J'ai lu et j'accepte les{" "}
+                          <a href="/conditions-generales-de-vente" target="_blank" rel="noopener" className="text-gold-deep underline underline-offset-4">
+                            conditions générales de vente
+                          </a>
+                          {hasRefund ? (
+                            <>
+                              {" "}et la{" "}
+                              <a href="/remboursement" target="_blank" rel="noopener" className="text-gold-deep underline underline-offset-4">
+                                politique de remboursement
+                              </a>
+                            </>
+                          ) : null}
+                          .
+                        </span>
+                      </label>
+                    ) : null}
 
                     <label className="flex items-start gap-3 text-[0.85rem] leading-relaxed text-petrol/70">
                       <input

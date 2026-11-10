@@ -3,10 +3,15 @@ import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/AuthContext";
+import { getLegalLinks } from "@/lib/server-fns";
 import { SYMBOL } from "@/data/site";
 import appCss from "@/index.css?url";
 
 export const Route = createRootRoute({
+  // The published legal pages, for the footer and the forms (src/lib/legal.js, useLegalLinks).
+  // Never breaks a page: without them the footer simply omits the links.
+  loader: () => getLegalLinks().catch(() => []),
+  staleTime: 5 * 60 * 1000,
   // Per-page <title>/meta come from each route's head(); this is the shared base.
   head: () => ({
     meta: [
@@ -29,12 +34,6 @@ export const Route = createRootRoute({
     links: [
       { rel: "icon", type: "image/png", href: SYMBOL },
       { rel: "apple-touch-icon", href: SYMBOL },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Source+Sans+3:wght@400;600&display=swap",
-      },
       { rel: "stylesheet", href: appCss },
     ],
   }),
