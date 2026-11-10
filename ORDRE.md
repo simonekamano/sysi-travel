@@ -32,7 +32,7 @@ C'est le cœur de l'activité : ce que les voyageurs viennent acheter.
 |---|---|---|---|---|
 | 4 | Circuits et excursions : fiches, programme jour par jour, dates, prix, gérés depuis l'administration | Contrat | Programme, dates, prix et nom de chaque circuit, à saisir par la Cliente dans Administration › Circuits (rien n'est affiché tant qu'aucun circuit n'est publié) | ✅ Terminé le 8 novembre 2026 |
 | 5 | Itinéraire interactif des circuits : carte, trajet tracé, étapes jour par jour (jusqu'à 4 circuits) | Option, 150 € | Accord donné le 10 novembre 2026 ; lieu, GPS et photo de chaque étape, à saisir par la Cliente dans le programme du circuit | ✅ Terminé le 10 novembre 2026 |
-| 6 | Prise en charge de l'aéroport au lieu de séjour, sur demande | Option, 60 € | Accord écrit ; tarifs, zones, type de véhicule, prestataire | 🔒 Accord |
+| 6 | Prise en charge de l'aéroport au lieu de séjour, sur demande : option du formulaire, page /transfert-aeroport | Option, 60 € | Accord donné le 10 novembre 2026. Tarifs, zones, véhicule et prestataire restent à fournir : la page annonce un tarif confirmé avant l'arrivée | ✅ Terminé le 10 novembre 2026 |
 | 7 | Demande de billets d'avion : formulaire et suivi dans l'administration | Option, 80 € | Accord écrit ; qui émet les billets ; cadre légal vérifié | 🔒 Accord |
 
 ## Phase 3 : Contenus et image

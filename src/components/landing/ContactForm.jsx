@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, Loader2, Mail, Phone } from "lucide-react";
+import { CheckCircle2, Loader2, Mail, Phone, Plane } from "lucide-react";
 import { createDemande } from "@/lib/server-fns";
 import Reveal from "@/components/landing/Reveal";
 import { CONTACT, IMAGES } from "@/data/site";
@@ -13,6 +13,9 @@ const EMPTY = {
   periode: "",
   voyageurs: "2",
   message: "",
+  transfert: false,
+  arrivee: "",
+  hebergement: "",
   site_web: "",
 };
 
@@ -27,8 +30,11 @@ export default function ContactForm({
   formules = [],
   showContactDetails = true,
   destinationChoice = null,
+  // The airport pick-up page opens the form with the option already ticked.
+  transfertChoice = false,
 }) {
-  const [form, setForm] = useState(EMPTY);
+  const initial = { ...EMPTY, transfert: transfertChoice };
+  const [form, setForm] = useState(initial);
 
   // A destination card clicked higher up the page presets the field.
   useEffect(() => {
@@ -59,11 +65,14 @@ export default function ContactForm({
           voyageurs: String(form.voyageurs),
           message: form.message.trim(),
           formule: selected ? selected.name : formule === "sur-mesure" ? "Séjour sur mesure" : "",
+          transfert: form.transfert,
+          arrivee: form.transfert ? form.arrivee.trim() : "",
+          hebergement: form.transfert ? form.hebergement.trim() : "",
           site_web: form.site_web,
         },
       });
       setSentName(form.nom.trim());
-      setForm(EMPTY);
+      setForm(initial);
       setFormule("");
       setStatus("done");
     } catch (err) {
@@ -300,6 +309,54 @@ export default function ContactForm({
                     className={`${fieldClass} resize-none`}
                   />
                 </div>
+
+                <fieldset className="sm:col-span-2 border border-petrol/15 bg-ivory-soft p-4 sm:p-5">
+                  <label className="flex cursor-pointer items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={form.transfert}
+                      onChange={(event) => setForm((prev) => ({ ...prev, transfert: event.target.checked }))}
+                      className="mt-1 h-4 w-4 shrink-0 accent-[hsl(var(--petrol))]"
+                    />
+                    <span>
+                      <span className="flex items-center gap-2 text-[0.98rem] font-semibold text-petrol">
+                        <Plane className="h-4 w-4 text-gold-deep" /> Prise en charge à l'aéroport
+                      </span>
+                      <span className="mt-1 block text-[0.85rem] leading-relaxed text-petrol/65">
+                        À votre arrivée à Conakry, un chauffeur vous attend et vous conduit jusqu'à votre
+                        lieu de séjour.
+                      </span>
+                    </span>
+                  </label>
+                  {form.transfert ? (
+                    <div className="mt-4 grid gap-5 sm:grid-cols-2">
+                      <div>
+                        <label className={labelClass} htmlFor="arrivee">
+                          Arrivée (date, heure, vol)
+                        </label>
+                        <input
+                          id="arrivee"
+                          value={form.arrivee}
+                          onChange={update("arrivee")}
+                          placeholder="12 décembre, 18 h 40, vol AF 596"
+                          className={fieldClass}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelClass} htmlFor="hebergement">
+                          Lieu de séjour
+                        </label>
+                        <input
+                          id="hebergement"
+                          value={form.hebergement}
+                          onChange={update("hebergement")}
+                          placeholder="Hôtel, quartier ou adresse"
+                          className={fieldClass}
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+                </fieldset>
 
                 {error ? (
                   <p className="sm:col-span-2 text-[0.85rem] text-destructive">{error}</p>

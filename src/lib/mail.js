@@ -68,6 +68,13 @@ export async function sendDemandeEmails(demande) {
     ["Formule", demande.formule || "À définir ensemble"],
     ["Période", demande.periode],
     ["Voyageurs", demande.voyageurs],
+    ...(demande.transfert
+      ? [
+          ["Prise en charge aéroport", "Oui"],
+          ["Arrivée", demande.arrivee],
+          ["Lieu de séjour", demande.hebergement],
+        ]
+      : []),
   ];
   const details = [
     ["Nom", demande.nom],

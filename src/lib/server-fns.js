@@ -123,6 +123,10 @@ export const createDemande = createServerFn({ method: "POST" })
       periode: text(200),
       voyageurs: text(10),
       message: text(5000),
+      // Airport pick-up on request (supabase/migrations/0006_transfert_aeroport.sql).
+      transfert: z.boolean().default(false),
+      arrivee: text(200).default(""),
+      hebergement: text(300).default(""),
       // Hidden field of the form (spam trap): only robots fill it in.
       site_web: text(500).optional(),
     }),

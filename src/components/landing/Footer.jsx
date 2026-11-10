@@ -8,6 +8,7 @@ const EXPLORER = [
   { label: "Destinations", to: "/destinations" },
   { label: "Circuits & excursions", to: "/circuits" },
   { label: "Produits locaux", to: "/produits" },
+  { label: "Prise en charge aéroport", to: "/transfert-aeroport" },
   { label: "La plateforme", hash: "solution" },
   { label: "Nos formules", hash: "offre" },
   { label: "Questions fréquentes", hash: "faq" },

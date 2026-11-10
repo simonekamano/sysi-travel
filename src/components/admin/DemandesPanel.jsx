@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "@tanstack/react-router";
-import { Mail, Phone, Trash2 } from "lucide-react";
+import { Mail, Phone, Plane, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { deleteDemande, updateDemandeStatut } from "@/lib/server-fns";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
@@ -77,6 +77,11 @@ export default function DemandesPanel({ demandes = [] }) {
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <h3 className="text-[1rem] font-semibold text-petrol">{demande.nom}</h3>
                 <p className="text-[0.8rem] text-petrol/50">{dateFormat.format(new Date(demande.created_at))}</p>
+                {demande.transfert ? (
+                  <span className="label-caps inline-flex items-center gap-1.5 rounded-full bg-gold/25 px-2.5 py-1 text-[0.62rem] text-petrol">
+                    <Plane className="h-3 w-3" /> Prise en charge aéroport
+                  </span>
+                ) : null}
               </div>
               <div className="flex flex-wrap gap-x-5 gap-y-1 text-[0.88rem] text-petrol/75">
                 <a href={`mailto:${demande.email}`} className="inline-flex items-center gap-1.5 hover:text-gold-deep">
@@ -95,6 +100,8 @@ export default function DemandesPanel({ demandes = [] }) {
                   ["Formule", demande.formule],
                   ["Période", demande.periode],
                   ["Voyageurs", demande.voyageurs],
+                  ["Arrivée", demande.transfert ? demande.arrivee || "à préciser" : ""],
+                  ["Lieu de séjour", demande.transfert ? demande.hebergement || "à préciser" : ""],
                 ]
                   .filter(([, value]) => value)
                   .map(([label, value]) => (
