@@ -1,6 +1,7 @@
 // E-mails sent by the site through the Resend API (server only, called from server functions).
 // Settings, read at run time: RESEND_API_KEY, MAIL_FROM, MAIL_NOTIFY_TO (see .env.example).
 import { CONTACT } from "@/data/site";
+import { DOWNLOAD_DAYS, DOWNLOAD_LIMIT, formatPrice } from "@/lib/boutique";
 
 const escapeHtml = (value) =>
   String(value ?? "").replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
@@ -113,5 +114,85 @@ export async function sendDemandeEmails(demande) {
   const results = await Promise.allSettled([notification, acknowledgement]);
   for (const result of results) {
     if (result.status === "rejected") console.error("E-mail de demande non envoyé :", result.reason);
+  }
+}
+
+// --- Shop (ORDRE n° 18) ---
+
+const orderLines = (commande) =>
+  commande.lignes.map((ligne) => [ligne.title, formatPrice(ligne.price_cents)]).concat([["Total", formatPrice(commande.total_cents)]]);
+
+// A new order: notify the agency, and tell the buyer what happens next (payment, then the link).
+// Never throws: the order is already saved, a mail failure is only logged.
+export async function sendCommandeEmails(commande) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("RESEND_API_KEY absente : e-mails de la commande non envoyés.");
+    return;
+  }
+  const agency = process.env.MAIL_NOTIFY_TO || CONTACT.email;
+  const lines = orderLines(commande);
+  const buyer = [
+    ["Référence", commande.reference],
+    ["Nom", commande.nom],
+    ["E-mail", commande.email],
+    ["Téléphone", commande.telephone],
+  ];
+
+  const notification = sendEmail({
+    to: agency,
+    replyTo: commande.email,
+    subject: `Nouvelle commande ${commande.reference} : ${formatPrice(commande.total_cents)}`,
+    html: layout(
+      `Nouvelle commande ${escapeHtml(commande.reference)}`,
+      `<p style="margin:0 0 18px;font-size:15px;line-height:1.6">Contactez ${escapeHtml(commande.nom)} pour le paiement, puis marquez la commande « payée » dans Administration › Commandes : le lien de téléchargement part tout seul.</p>${rows(buyer)}<p style="margin:22px 0 10px;font-size:15px">Livres commandés :</p>${rows(lines)}`,
+    ),
+    text: `Nouvelle commande ${commande.reference}\n\n${asText(buyer)}\n\nLivres commandés :\n${asText(lines)}`,
+  });
+
+  const acknowledgement = sendEmail({
+    to: commande.email,
+    replyTo: agency,
+    subject: `Votre commande ${commande.reference} · SYSI TRAVEL`,
+    html: layout(
+      `Merci ${escapeHtml(commande.nom)}, votre commande est bien reçue`,
+      `<p style="margin:0 0 14px;font-size:15px;line-height:1.6">Nous vous contactons sous <strong>72 heures</strong> pour le paiement. Dès qu'il est reçu, vous recevez par e-mail votre lien de téléchargement.</p>
+<p style="margin:0 0 18px;font-size:15px;line-height:1.6">Référence : <strong>${escapeHtml(commande.reference)}</strong></p>${rows(lines)}
+<p style="margin:22px 0 0;font-size:15px;line-height:1.6">Une question ? Répondez simplement à cet e-mail, ou écrivez-nous sur WhatsApp au ${escapeHtml(CONTACT.phone)}.</p>`,
+    ),
+    text: `Bonjour ${commande.nom},\n\nNous avons bien reçu votre commande ${commande.reference}. Nous vous contactons sous 72 heures pour le paiement ; dès qu'il est reçu, vous recevez par e-mail votre lien de téléchargement.\n\n${asText(lines)}\n\nUne question ? Répondez à cet e-mail, ou écrivez-nous sur WhatsApp au ${CONTACT.phone}.\n\nSYSI TRAVEL`,
+  });
+
+  const results = await Promise.allSettled([notification, acknowledgement]);
+  for (const result of results) {
+    if (result.status === "rejected") console.error("E-mail de commande non envoyé :", result.reason);
+  }
+}
+
+// The paid order's download link. Returns false when the e-mail could not be sent, so the
+// administration can say so (the admin can still copy the link and send it on WhatsApp).
+export async function sendLienTelechargement(commande, url) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("RESEND_API_KEY absente : lien de téléchargement non envoyé.");
+    return false;
+  }
+  const titles = commande.lignes.map((ligne) => `<li style="margin:0 0 6px">${escapeHtml(ligne.title)}</li>`).join("");
+  try {
+    await sendEmail({
+      to: commande.email,
+      replyTo: process.env.MAIL_NOTIFY_TO || CONTACT.email,
+      subject: `Vos livres sont prêts · commande ${commande.reference}`,
+      html: layout(
+        "Vos livres sont prêts à télécharger",
+        `<p style="margin:0 0 14px;font-size:15px;line-height:1.6">Merci ${escapeHtml(commande.nom)}, votre paiement est bien reçu. Vos livres :</p>
+<ul style="margin:0 0 22px;padding-left:20px;font-size:15px;line-height:1.5">${titles}</ul>
+<p style="margin:0 0 24px"><a href="${escapeHtml(url)}" style="display:inline-block;background:#E6B45C;color:#0B2A2E;text-decoration:none;font-weight:bold;padding:14px 26px;border-radius:999px">Télécharger mes livres</a></p>
+<p style="margin:0;font-size:13px;line-height:1.6;color:#5E6B6A">Ce lien personnel est valable ${DOWNLOAD_DAYS} jours (${DOWNLOAD_LIMIT} téléchargements au plus). Gardez-le pour vous : il donne accès à vos fichiers. Les PDF se lisent sur téléphone, tablette et ordinateur.</p>`,
+      ),
+      text: `Bonjour ${commande.nom},\n\nVotre paiement est bien reçu. Téléchargez vos livres ici :\n${url}\n\nCe lien personnel est valable ${DOWNLOAD_DAYS} jours (${DOWNLOAD_LIMIT} téléchargements au plus). Gardez-le pour vous.\n\nSYSI TRAVEL`,
+    });
+    return true;
+  } catch (error) {
+    console.error("Lien de téléchargement non envoyé :", error);
+    return false;
   }
 }

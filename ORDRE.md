@@ -56,7 +56,7 @@ Le paiement suppose que les pages légales existent. Le catalogue a besoin du pa
 |---|---|---|---|---|
 | 16 | Pages légales : mentions légales, conditions générales de vente, confidentialité, remboursement | Contrat (article 9) | Informations sur l'entreprise ; textes validés par la Cliente | ⬜ À faire |
 | 17 | Paiement en ligne des visites, circuits et excursions | Contrat | Compte de paiement au nom de la Cliente (Stripe ou PayPal) | ⬜ À faire |
-| 18 | Catalogue de livres et guides : panier, paiement, téléchargements sécurisés | Contrat | Liste des ouvrages, prix, couvertures, fichiers PDF, droits de vente | ⬜ À faire |
+| 18 | Catalogue de livres et guides : page /boutique, panier, commande, téléchargements sécurisés (lien personnel valable 30 jours), gérés dans Administration › Livres & guides et › Commandes | Contrat | Liste des ouvrages, prix, couvertures, fichiers PDF (50 Mo au plus), droits de vente ; moyens de paiement acceptés. En attendant le paiement en ligne (n° 17), la Cliente encaisse elle-même puis clique « Paiement reçu » : le lien part tout seul. Conditions de vente : n° 16 | ✅ Terminé le 10 novembre 2026 (paiement en ligne à brancher avec le n° 17) |
 
 ## Phase 5 : Partenaires et commissions
 

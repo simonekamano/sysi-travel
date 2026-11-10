@@ -10,6 +10,7 @@ const EXPLORER = [
   { label: "Explorer la Guinée", to: "/explorer" },
   { label: "Produits locaux", to: "/produits" },
   { label: "Vidéos", to: "/videos" },
+  { label: "Livres & guides", to: "/boutique" },
   { label: "Prise en charge aéroport", to: "/transfert-aeroport" },
   { label: "La plateforme", hash: "solution" },
   { label: "Nos formules", hash: "offre" },

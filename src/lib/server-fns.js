@@ -1,8 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
+import { getRequest, getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth-middleware";
-import { sendDemandeEmails } from "@/lib/mail";
+import { BOOK_PUBLIC_COLUMNS, DOWNLOAD_DAYS } from "@/lib/boutique";
+import { sendCommandeEmails, sendDemandeEmails, sendLienTelechargement } from "@/lib/mail";
+import { siteUrl } from "@/lib/site-url";
 import { parseVideo } from "@/lib/video";
 
 // Supabase answers { data, error }; a server function must throw a plain Error to reach the caller.
@@ -43,7 +45,7 @@ export const listFaqs = createServerFn({ method: "GET" }).handler(({ context }) 
 
 export const getSiteContent = createServerFn({ method: "GET" }).handler(async ({ context }) => {
   const supabase = context.getSupabase();
-  const [destinations, formules, faqs, reseaux, circuits, sites, videos] = await Promise.all([
+  const [destinations, formules, faqs, reseaux, circuits, sites, videos, livres] = await Promise.all([
     listOrdered(supabase, "destinations", 200),
     listOrdered(supabase, "formules", 50),
     listOrdered(supabase, "faqs", 200),
@@ -52,9 +54,30 @@ export const getSiteContent = createServerFn({ method: "GET" }).handler(async ({
     supabase.from("sites_touristiques").select("id", { count: "exact", head: true }).eq("published", true),
     // Published only: an admin browsing the site must not see hidden videos.
     supabase.from("videos").select("*").eq("published", true).order("sort_order").limit(100).then(unwrap),
+    listPublishedBooks(supabase),
   ]);
-  return { destinations, formules, faqs, reseaux, circuits, sitesCount: sites.count ?? 0, videos };
+  return { destinations, formules, faqs, reseaux, circuits, sitesCount: sites.count ?? 0, videos, livres };
 });
+
+// Published books only, without the PDF's place in the private bucket.
+const listPublishedBooks = (supabase) =>
+  supabase.from("livres").select(BOOK_PUBLIC_COLUMNS).eq("published", true).order("sort_order").limit(200).then(unwrap);
+
+// A book's page, three others to suggest, and what the footer needs. `livre` is null for an
+// unknown or hidden book; the route answers 404.
+export const getLivrePage = createServerFn({ method: "GET" })
+  .validator(z.object({ slug: text(200) }))
+  .handler(async ({ data, context }) => {
+    const supabase = context.getSupabase();
+    const [livres, destinations, reseaux] = await Promise.all([
+      listPublishedBooks(supabase),
+      listOrdered(supabase, "destinations", 200),
+      listOrdered(supabase, "reseaux_sociaux", 20),
+    ]);
+    const livre = livres.find((item) => item.slug === data.slug) ?? null;
+    const others = livres.filter((item) => item.slug !== data.slug).slice(0, 3);
+    return { livre, others, destinations, reseaux };
+  });
 
 // Published circuits only: an admin browsing the site must not see drafts in the lists.
 const listPublishedCircuits = (supabase) =>
@@ -108,25 +131,28 @@ export const getDestinationPage = createServerFn({ method: "GET" })
 
 // --- Contact form: anyone may create a request, only admins read them ---
 
-// Each request sends two e-mails, so a visitor may send at most DEMANDE_LIMIT requests per
-// DEMANDE_WINDOW_MS. In memory: one Node process serves the site (docker-compose.yml).
-const DEMANDE_LIMIT = 5;
-const DEMANDE_WINDOW_MS = 15 * 60 * 1000;
-const recentDemandes = new Map();
-
-function checkDemandeRate() {
-  // Nginx sets X-Real-IP to the client address and overwrites any value the client sent.
-  const ip = getRequestHeader("x-real-ip") || getRequestIP() || "inconnu";
-  const now = Date.now();
-  const times = (recentDemandes.get(ip) ?? []).filter((time) => now - time < DEMANDE_WINDOW_MS);
-  if (times.length >= DEMANDE_LIMIT) {
-    throw new Error("Trop de demandes envoyées. Réessayez dans quelques minutes ou écrivez-nous sur WhatsApp.");
-  }
-  recentDemandes.set(ip, [...times, now]);
-  if (recentDemandes.size > 5000) {
-    for (const [key, list] of recentDemandes) if (list.every((time) => now - time >= DEMANDE_WINDOW_MS)) recentDemandes.delete(key);
-  }
+// Each request or order sends two e-mails, so a visitor may send at most `limit` of them per
+// `windowMs`. In memory: one Node process serves the site (docker-compose.yml).
+function rateLimiter(limit, windowMs, message) {
+  const recent = new Map();
+  return () => {
+    // Nginx sets X-Real-IP to the client address and overwrites any value the client sent.
+    const ip = getRequestHeader("x-real-ip") || getRequestIP() || "inconnu";
+    const now = Date.now();
+    const times = (recent.get(ip) ?? []).filter((time) => now - time < windowMs);
+    if (times.length >= limit) throw new Error(message);
+    recent.set(ip, [...times, now]);
+    if (recent.size > 5000) {
+      for (const [key, list] of recent) if (list.every((time) => now - time >= windowMs)) recent.delete(key);
+    }
+  };
 }
+
+const checkDemandeRate = rateLimiter(
+  5,
+  15 * 60 * 1000,
+  "Trop de demandes envoyées. Réessayez dans quelques minutes ou écrivez-nous sur WhatsApp.",
+);
 
 export const createDemande = createServerFn({ method: "POST" })
   .validator(
@@ -154,6 +180,55 @@ export const createDemande = createServerFn({ method: "POST" })
     unwrap(await context.getSupabase().from("demandes_sejour").insert({ ...demande, statut: "nouveau" }));
     await sendDemandeEmails(demande);
     return { ok: true };
+  });
+
+// --- Shop: anyone may order (prices come from the catalogue, in the database) ---
+
+const checkCommandeRate = rateLimiter(
+  5,
+  15 * 60 * 1000,
+  "Trop de commandes envoyées. Réessayez dans quelques minutes ou écrivez-nous sur WhatsApp.",
+);
+
+export const createCommande = createServerFn({ method: "POST" })
+  .validator(
+    z.object({
+      nom: text(200).min(1),
+      email: z.email().max(320),
+      telephone: text(50),
+      livres: z.array(z.uuid()).min(1).max(50),
+      // Digital content delivered at once: the buyer waives the withdrawal period.
+      renonciation: z.literal(true),
+      // Hidden field of the form (spam trap): only robots fill it in.
+      site_web: text(500).optional(),
+    }),
+  )
+  .handler(async ({ data, context }) => {
+    if (data.site_web) return { reference: "", total_cents: 0 };
+    checkCommandeRate();
+    const { data: commande, error } = await context.getSupabase().rpc("creer_commande", {
+      p_nom: data.nom,
+      p_email: data.email,
+      p_telephone: data.telephone,
+      p_livres: data.livres,
+    });
+    if (error) {
+      throw new Error(
+        /plus disponible/.test(error.message)
+          ? "Un livre de votre panier n'est plus disponible : retirez-le puis réessayez."
+          : "La commande n'a pas pu être enregistrée. Réessayez ou écrivez-nous sur WhatsApp.",
+      );
+    }
+    await sendCommandeEmails({ ...commande, nom: data.nom, email: data.email, telephone: data.telephone });
+    return { reference: commande.reference, total_cents: commande.total_cents };
+  });
+
+// The /telechargement/<token> page: the order of that link (null for an unknown link).
+export const getTelechargement = createServerFn({ method: "GET" })
+  .validator(z.object({ token: text(100) }))
+  .handler(async ({ data, context }) => {
+    if (!/^[a-f0-9]{64}$/.test(data.token)) return null;
+    return unwrap(await context.getSupabase().rpc("commande_par_jeton", { p_token: data.token }));
   });
 
 // --- Administration: admin role checked here, and again by row level security ---
@@ -343,6 +418,92 @@ export const reorderVideos = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+const livreInput = z.object({
+  id: z.uuid().optional(),
+  title: text(200).min(1),
+  // Empty: the database derives it from the title (supabase/migrations/0009_boutique.sql).
+  slug: text(120).regex(/^[a-z0-9-]*$/, "Lettres minuscules, chiffres et tirets uniquement"),
+  subtitle: text(300),
+  author: text(200),
+  kind: z.enum(["livre", "guide"]),
+  description: text(10000),
+  cover: text(2000),
+  price_cents: z.number().int().min(50).max(100000),
+  pages: z.number().int().min(1).max(5000).nullable(),
+  language: text(60),
+  file_path: text(300).regex(/^([\w-]+\.pdf)?$/, "Fichier PDF attendu"),
+  file_size: z.number().int().min(0),
+  published: z.boolean(),
+  sort_order: z.number(),
+});
+
+export const listAllLivres = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(({ context }) => listOrdered(context.getSupabase(), "livres", 200));
+
+export const saveLivre = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(livreInput)
+  .handler(({ data, context }) => saveRecord(context.getSupabase(), "livres", data));
+
+export const deleteLivre = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(idInput)
+  .handler(({ data, context }) => deleteRecord(context.getSupabase(), "livres", data.id));
+
+export const listCommandes = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(({ context }) =>
+    context
+      .getSupabase()
+      .from("commandes")
+      .select("*, lignes:commande_livres(title, price_cents)")
+      .order("created_at", { ascending: false })
+      .limit(500)
+      .then(unwrap),
+  );
+
+// Opens the download link for DOWNLOAD_DAYS days (counter back to zero) and e-mails it.
+async function openDownloadLink(supabase, id, values = {}) {
+  const lienExpireLe = new Date(Date.now() + DOWNLOAD_DAYS * 24 * 60 * 60 * 1000).toISOString();
+  unwrap(await supabase.from("commandes").update({ ...values, lien_expire_le: lienExpireLe, telechargements: 0 }).eq("id", id));
+  const commande = unwrap(
+    await supabase.from("commandes").select("*, lignes:commande_livres(title, price_cents)").eq("id", id).single(),
+  );
+  const url = `${siteUrl(getRequest())}/telechargement/${commande.token}`;
+  const emailed = await sendLienTelechargement(commande, url);
+  return { ok: true, emailed };
+}
+
+// « Payée » opens the download link and sends it to the buyer; « Annulée » or « En attente »
+// closes it (the link only works for a paid order).
+export const setCommandeStatut = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(z.object({ id: z.uuid(), statut: z.enum(["en_attente", "payee", "annulee"]) }))
+  .handler(async ({ data, context }) => {
+    const supabase = context.getSupabase();
+    if (data.statut === "payee") {
+      return openDownloadLink(supabase, data.id, { statut: "payee", payee_le: new Date().toISOString() });
+    }
+    return saveRecord(supabase, "commandes", data);
+  });
+
+// A paid order's link again: 30 more days, counter back to zero, e-mailed once more.
+export const renvoyerLienCommande = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(idInput)
+  .handler(async ({ data, context }) => {
+    const supabase = context.getSupabase();
+    const { statut } = unwrap(await supabase.from("commandes").select("statut").eq("id", data.id).single());
+    if (statut !== "payee") throw new Error("Seule une commande payée a un lien de téléchargement.");
+    return openDownloadLink(supabase, data.id);
+  });
+
+export const deleteCommande = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(idInput)
+  .handler(({ data, context }) => deleteRecord(context.getSupabase(), "commandes", data.id));
 
 export const listReseauxSociaux = createServerFn({ method: "GET" })
   .middleware([requireAdmin])

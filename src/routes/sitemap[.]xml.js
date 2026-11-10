@@ -5,18 +5,19 @@ const escapeXml = (value) =>
   String(value).replace(/[<>&'"]/g, (char) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" })[char]);
 
 // /sitemap.xml for search engines: the public pages plus one entry per destination and per
-// published circuit.
+// published circuit and book.
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async ({ request, context }) => {
         const base = siteUrl(request);
         const supabase = context.getSupabase();
-        const [destinations, circuits] = await Promise.all([
+        const [destinations, circuits, livres] = await Promise.all([
           supabase.from("destinations").select("slug, updated_at").order("sort_order"),
           supabase.from("circuits").select("slug, updated_at").eq("published", true).order("sort_order"),
+          supabase.from("livres").select("slug, updated_at").eq("published", true).order("sort_order"),
         ]);
-        if (destinations.error || circuits.error) return new Response("Sitemap indisponible", { status: 503 });
+        if (destinations.error || circuits.error || livres.error) return new Response("Sitemap indisponible", { status: 503 });
 
         const page = (path, priority) => (item) => ({
           loc: `${base}/${path}/${item.slug}`,
@@ -30,10 +31,12 @@ export const Route = createFileRoute("/sitemap.xml")({
           { loc: `${base}/explorer`, priority: "0.9" },
           { loc: `${base}/produits`, priority: "0.7" },
           { loc: `${base}/videos`, priority: "0.7" },
+          { loc: `${base}/boutique`, priority: "0.8" },
           { loc: `${base}/transfert-aeroport`, priority: "0.7" },
           { loc: `${base}/contact`, priority: "0.6" },
           ...destinations.data.map(page("destinations", "0.8")),
           ...circuits.data.map(page("circuits", "0.8")),
+          ...livres.data.map(page("boutique", "0.7")),
         ];
 
         const xml = [

@@ -10,6 +10,7 @@ import Destinations from "@/components/landing/Destinations";
 import Circuits from "@/components/landing/Circuits";
 import ExplorerTeaser from "@/components/landing/ExplorerTeaser";
 import LocalProducts from "@/components/landing/LocalProducts";
+import Books from "@/components/landing/Books";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Pricing from "@/components/landing/Pricing";
 import Testimonials from "@/components/landing/Testimonials";
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/")({
 });
 
 function LandingPage() {
-  const { destinations, formules, faqs, reseaux, circuits, sitesCount, videos } = Route.useLoaderData();
+  const { destinations, formules, faqs, reseaux, circuits, sitesCount, videos, livres } = Route.useLoaderData();
   const [formule, setFormule] = useState("");
 
   const selectFormule = (id) => {
@@ -51,6 +52,7 @@ function LandingPage() {
         <Circuits circuits={circuits} />
         <ExplorerTeaser sitesCount={sitesCount} />
         <LocalProducts />
+        <Books livres={livres} />
         <HowItWorks />
         <Pricing formules={formules} onSelect={selectFormule} />
         <Testimonials />

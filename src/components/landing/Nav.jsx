@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import CartButton from "@/components/boutique/CartButton";
 import { LOGO_INVERSE, NAV_LINKS } from "@/data/site";
 
 // The section currently in the middle band of the screen, for the active link.
@@ -28,7 +29,8 @@ const SECTION_IDS = NAV_LINKS.filter((link) => link.href).map((link) => link.hre
 
 // `home`: on the landing page the links are in-page anchors; elsewhere they lead back to its sections.
 // `solid`: the opaque bar from the start, for pages without a dark photo at the top.
-export default function Nav({ home = true, solid = false }) {
+// `bookingHref`: where « Réserver mon séjour » leads; the /contact page on pages without the form.
+export default function Nav({ home = true, solid = false, bookingHref = "#contact" }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const active = useActiveSection(SECTION_IDS);
@@ -54,8 +56,10 @@ export default function Nav({ home = true, solid = false }) {
   const hrefOf = (link) => link.to ?? (home ? link.href : `/${link.href}`);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div className="mx-auto max-w-[1440px] px-3 pt-3 lg:px-8 lg:pt-5">
+    // The header's box also spans the closed mobile menu: it lets clicks through, and only the
+    // bar and the open menu take them, so the page under the closed menu stays clickable.
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
+      <div className="pointer-events-auto mx-auto max-w-[1440px] px-3 pt-3 lg:px-8 lg:pt-5">
         <div
           className={cn(
             "flex items-center justify-between gap-6 rounded-full px-3 py-2.5 transition-all duration-500 lg:px-5",
@@ -96,8 +100,9 @@ export default function Nav({ home = true, solid = false }) {
           </nav>
 
           <div className="flex items-center gap-2">
+            <CartButton />
             <a
-              href="#contact"
+              href={bookingHref}
               className="label-caps hidden whitespace-nowrap rounded-full bg-gold px-6 py-3 text-petrol-deep transition-all duration-300 hover:-translate-y-0.5 hover:bg-ivory hover:shadow-[0_12px_30px_-12px_rgba(0,0,0,0.6)] sm:inline-flex"
             >
               Réserver mon séjour
@@ -122,7 +127,7 @@ export default function Nav({ home = true, solid = false }) {
         inert={!open}
         className={cn(
           "mx-3 mt-2 origin-top rounded-3xl bg-petrol px-6 py-7 shadow-2xl transition-all duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] xl:hidden",
-          open ? "translate-y-0 scale-100 opacity-100" : "pointer-events-none -translate-y-3 scale-[0.98] opacity-0"
+          open ? "pointer-events-auto translate-y-0 scale-100 opacity-100" : "pointer-events-none -translate-y-3 scale-[0.98] opacity-0"
         )}
       >
         <nav className="flex flex-col gap-5">
@@ -143,7 +148,7 @@ export default function Nav({ home = true, solid = false }) {
           ))}
         </nav>
         <a
-          href="#contact"
+          href={bookingHref}
           onClick={() => setOpen(false)}
           className="label-caps mt-7 flex w-full items-center justify-center rounded-full bg-gold px-6 py-3.5 text-petrol-deep transition-colors hover:bg-ivory"
         >
