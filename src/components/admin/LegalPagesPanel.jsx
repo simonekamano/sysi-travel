@@ -48,7 +48,7 @@ export default function LegalPagesPanel({ pages = [] }) {
 
   return (
     <div className="space-y-8">
-      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {pages.map((item) => {
           const todo = findPlaceholders(item.body).length;
           return (
@@ -237,7 +237,7 @@ function LegalEditor({ page, onDirtyChange }) {
         </p>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 xl:grid-cols-2">
         <div className="min-w-0">
           <label htmlFor="legal-body" className="label-caps text-petrol/65">
             Texte
