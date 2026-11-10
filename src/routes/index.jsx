@@ -16,7 +16,6 @@ import Partner from "@/components/landing/Partner";
 import ContactForm from "@/components/landing/ContactForm";
 import Footer from "@/components/landing/Footer";
 import WhatsAppButton from "@/components/landing/WhatsAppButton";
-import { LEAFLET_CSS } from "@/components/map/GuineaMap";
 import { IMAGES } from "@/data/site";
 
 export const Route = createFileRoute("/")({
@@ -24,7 +23,6 @@ export const Route = createFileRoute("/")({
   head: () => ({
     links: [
       { rel: "preload", as: "image", href: IMAGES.hero, fetchPriority: "high" },
-      { rel: "stylesheet", href: LEAFLET_CSS },
     ],
   }),
   component: LandingPage,

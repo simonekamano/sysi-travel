@@ -41,7 +41,7 @@ export const Route = createFileRoute("/destinations/$slug")({
   notFoundComponent: () => (
     <NotFound>
       Cette destination n'existe pas ou n'est plus proposée.{" "}
-      <Link to="/" hash="destinations" className="text-gold-deep underline underline-offset-4">
+      <Link to="/destinations" className="text-gold-deep underline underline-offset-4">
         Voir toutes les destinations
       </Link>
     </NotFound>
@@ -74,11 +74,11 @@ function DestinationPage() {
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-petrol-deep via-petrol-deep/45 to-petrol-deep/60" />
 
           <div className="mx-auto w-full max-w-[1180px] px-6 pb-14 pt-36 lg:pb-20">
-            <BackButton to="/" hash="destinations" tone="light" className="mb-6 animate-fade-in" />
+            <BackButton to="/destinations" tone="light" className="mb-6 animate-fade-in" />
             <nav aria-label="Fil d'Ariane" className="label-caps flex flex-wrap gap-2 text-ivory/55 animate-fade-in">
               <Link to="/" className="transition-colors hover:text-gold">Accueil</Link>
               <span aria-hidden="true">/</span>
-              <Link to="/" hash="destinations" className="transition-colors hover:text-gold">Destinations</Link>
+              <Link to="/destinations" className="transition-colors hover:text-gold">Destinations</Link>
               <span aria-hidden="true">/</span>
               <span className="text-ivory/85">{destination.name}</span>
             </nav>

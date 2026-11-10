@@ -3,12 +3,15 @@ import { ArrowUp, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react
 import SocialLinks from "@/components/SocialLinks";
 import { CONTACT, LOGO_INVERSE } from "@/data/site";
 
+// `to`: a page of its own; `hash`: a section of the home page.
 const EXPLORER = [
-  { label: "Destinations", hash: "destinations" },
-  { label: "Produits locaux", hash: "produits" },
+  { label: "Destinations", to: "/destinations" },
+  { label: "Circuits & excursions", to: "/circuits" },
+  { label: "Produits locaux", to: "/produits" },
   { label: "La plateforme", hash: "solution" },
   { label: "Nos formules", hash: "offre" },
   { label: "Questions fréquentes", hash: "faq" },
+  { label: "Contact", to: "/contact" },
 ];
 
 const linkClass = "text-[0.95rem] text-ivory/75 transition-colors duration-300 hover:text-gold";
@@ -23,7 +26,7 @@ function Column({ title, children, className }) {
 }
 
 // `destinations` (optional): the pages that have them pass their list, so the footer links
-// to every destination page; without it, the column points at the home page's section.
+// to the first destination pages; the column always ends with the /destinations page.
 // `reseaux` (optional): the social networks from the database; hidden while none is filled in.
 export default function Footer({ destinations = [], reseaux = [] }) {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
@@ -50,41 +53,28 @@ export default function Footer({ destinations = [], reseaux = [] }) {
         </div>
 
         <Column title="Destinations" className="col-span-1 lg:col-span-3">
-          {destinations.length
-            ? destinations.slice(0, 7).map((destination) => (
-                <li key={destination.id}>
-                  <Link to="/destinations/$slug" params={{ slug: destination.slug }} className={linkClass}>
-                    {destination.name}
-                  </Link>
-                </li>
-              ))
-            : (
-                <li>
-                  <Link to="/" hash="destinations" className={linkClass}>
-                    Toutes les destinations
-                  </Link>
-                </li>
-              )}
+          {destinations.slice(0, 7).map((destination) => (
+            <li key={destination.id}>
+              <Link to="/destinations/$slug" params={{ slug: destination.slug }} className={linkClass}>
+                {destination.name}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <Link to="/destinations" className={`${linkClass} text-gold/90`}>
+              Toutes les destinations →
+            </Link>
+          </li>
         </Column>
 
         <Column title="Explorer" className="col-span-1 lg:col-span-2">
           {EXPLORER.map((link) => (
             <li key={link.label}>
-              <Link to="/" hash={link.hash} className={linkClass}>
+              <Link to={link.to ?? "/"} hash={link.hash} className={linkClass}>
                 {link.label}
               </Link>
             </li>
           ))}
-          <li>
-            <Link to="/circuits" className={linkClass}>
-              Circuits & excursions
-            </Link>
-          </li>
-          <li>
-            <Link to="/contact" className={linkClass}>
-              Contact
-            </Link>
-          </li>
         </Column>
 
         <Column title="Nous joindre" className="col-span-2 md:col-span-1 lg:col-span-3">
