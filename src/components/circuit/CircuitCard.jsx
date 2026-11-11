@@ -39,7 +39,11 @@ export default function CircuitCard({ circuit }) {
         <h3 className="mt-3 text-[1.25rem] font-bold leading-tight text-petrol">{circuit.title}</h3>
         {circuit.tagline ? <p className="mb-5 mt-2 text-[0.92rem] leading-relaxed text-petrol/65">{circuit.tagline}</p> : null}
         <div className="mt-auto border-t border-petrol/10 pt-4">
-          {circuit.price ? <p className="font-display text-[1.05rem] font-bold leading-snug text-petrol">{circuit.price}</p> : null}
+          {circuit.price ? (
+            <p className="font-display text-[1.05rem] font-bold leading-snug text-petrol">{circuit.price}</p>
+          ) : (
+            <p className="font-display text-[1rem] font-semibold leading-snug text-petrol/70">Tarif sur demande</p>
+          )}
           <p className="label-caps mt-2 text-gold-deep transition-transform duration-300 group-hover:translate-x-1">
             Voir le programme →
           </p>

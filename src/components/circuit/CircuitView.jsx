@@ -109,7 +109,14 @@ export default function CircuitView({ circuit, others, destinations, formules, r
                   <p className="label-caps text-gold-deep">En bref</p>
                   {circuit.price ? (
                     <p className="mt-4 font-display text-[1.6rem] font-bold leading-tight text-petrol">{circuit.price}</p>
-                  ) : null}
+                  ) : (
+                    <p className="mt-4 font-display text-[1.25rem] font-bold leading-tight text-petrol">
+                      Tarif sur demande
+                      <span className="mt-1 block font-body text-[0.88rem] font-normal text-petrol/60">
+                        Écrivez-nous : nous vous répondons avec un devis détaillé.
+                      </span>
+                    </p>
+                  )}
                   <dl className="mt-5 space-y-5">
                     <Fact icon={Clock} label="Durée" value={circuit.duration} />
                     <Fact icon={MapPin} label="Départ" value={circuit.departure} />
