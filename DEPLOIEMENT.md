@@ -227,8 +227,18 @@ Le site répond sur `https://sysitravel.com`, le Studio Supabase sur `https://ap
    ```
 3. Connectez-vous sur `https://sysitravel.com/admin`.
 
-Une fois les comptes admin créés, vous pouvez fermer les inscriptions publiques :
-`DISABLE_SIGNUP=true` dans `/opt/supabase/.env`, puis `docker compose up -d` dans `/opt/supabase`.
+Les inscriptions publiques servent aux clients de la boutique (espace « Mon compte », `/compte`).
+Pour les ouvrir ou les refermer, en root sur le VPS, une fois Resend configuré (§ 2.2 bis) :
+
+```bash
+cd /opt/sysi-travel/app
+bash deploy/inscriptions-clients.sh          # ouvre : e-mail confirmé obligatoire, ni téléphone ni anonyme
+bash deploy/inscriptions-clients.sh fermer   # referme (les comptes existants se connectent toujours)
+```
+
+Le script sauvegarde `/opt/supabase/.env` avant de le modifier, redémarre le service d'authentification et
+vérifie le résultat. Un compte créé ainsi a le rôle « client » : aucun droit d'administration, il ne lit que
+ses propres commandes.
 
 ---
 
