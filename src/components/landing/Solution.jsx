@@ -8,7 +8,7 @@ const ICONS = { compass: Compass, badge: BadgeCheck, clock: Clock, headset: Life
 export default function Solution() {
   return (
     <section id="solution" className="bg-ivory-soft py-14 lg:py-20">
-      <div className="mx-auto grid max-w-[1180px] items-center gap-10 px-6 lg:grid-cols-2 lg:gap-16">
+      <div className="mx-auto grid max-w-site items-center gap-10 px-6 lg:grid-cols-2 lg:gap-16">
         <div>
           <Reveal>
             <SectionHeading
@@ -38,7 +38,7 @@ export default function Solution() {
         </div>
 
         <Reveal delay={120}>
-          <div className="relative mx-auto w-full max-w-[440px] lg:ml-auto">
+          <div className="relative mx-auto w-full max-w-[25.14rem] lg:ml-auto">
             <div className="relative aspect-[4/5] overflow-hidden">
               <img
                 src={IMAGES.textile}
@@ -47,7 +47,7 @@ export default function Solution() {
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
-            <div className="mt-6 bg-petrol p-6 text-ivory sm:absolute sm:-bottom-8 sm:-left-8 sm:mt-0 sm:max-w-[250px]">
+            <div className="mt-6 bg-petrol p-6 text-ivory sm:absolute sm:-bottom-8 sm:-left-8 sm:mt-0 sm:max-w-[14.29rem]">
               <p className="eyebrow text-gold">Un interlocuteur, pas une plateforme anonyme</p>
               <p className="mt-2 text-[0.84rem] leading-relaxed text-ivory/70">
                 Notre équipe est basée en Guinée, joignable avant, pendant et après votre séjour.

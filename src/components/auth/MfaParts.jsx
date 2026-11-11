@@ -134,12 +134,12 @@ function DialCodePicker({ value, onChange }) {
     <Popover open={open} onOpenChange={handleOpenChange} modal>
       <PopoverTrigger asChild>
         <Button type="button" variant="outline" role="combobox" aria-expanded={open} aria-label="Country code"
-          className="h-10 w-[100px] justify-between px-2.5 font-normal shadow-none">
+          className="h-10 w-[5.71rem] justify-between px-2.5 font-normal shadow-none">
           {value}
           <ChevronsUpDown className="ml-1 h-3.5 w-3.5 shrink-0 opacity-50" aria-hidden="true" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[140px] p-0" align="start" side="bottom" avoidCollisions={false}>
+      <PopoverContent className="w-[8rem] p-0" align="start" side="bottom" avoidCollisions={false}>
         <Command filter={(item, text) => (matchesSearch(item, text) ? 1 : 0)}>
           <CommandInput placeholder="Search..." className="h-9" onValueChange={(text) => { search.current = text; }} />
           <CommandList>

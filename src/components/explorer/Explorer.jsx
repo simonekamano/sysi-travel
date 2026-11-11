@@ -144,7 +144,7 @@ export default function Explorer({ sites, destinations, onRequestTrip }) {
   const countOf = (key) => sites.filter((item) => item.region === key).length;
 
   return (
-    <section className="relative h-[100svh] min-h-[640px] overflow-hidden bg-[#EEF2EF]">
+    <section className="relative h-[100svh] min-h-[36.57rem] overflow-hidden bg-[#EEF2EF]">
       <div className="absolute inset-0">
         <ExplorerMap
           sites={sites}
@@ -159,7 +159,7 @@ export default function Explorer({ sites, destinations, onRequestTrip }) {
 
       {/* Regions */}
       <div className="pointer-events-none absolute inset-x-0 top-[6.25rem] z-10 lg:top-[7.25rem]">
-        <div className="pointer-events-auto mx-auto flex max-w-[1180px] gap-2 overflow-x-auto px-4 pb-2 lg:pl-[26.5rem] lg:pr-6 [scrollbar-width:none]">
+        <div className="pointer-events-auto mx-auto flex max-w-site gap-2 overflow-x-auto px-4 pb-2 lg:pl-[26.5rem] lg:pr-6 [scrollbar-width:none]">
           {[null, ...EXPLORER_REGIONS.map((r) => r.key)].map((key) => {
             const info = key ? REGION_BY_KEY[key] : null;
             const active = region === key;
@@ -214,7 +214,7 @@ export default function Explorer({ sites, destinations, onRequestTrip }) {
       {/* Panel: left on computers, bottom sheet on phones */}
       <aside
         ref={panel}
-        className="absolute inset-x-0 bottom-0 z-10 max-h-[46svh] overflow-y-auto rounded-t-3xl bg-white/95 shadow-[0_-20px_60px_-30px_rgba(18,61,67,0.6)] backdrop-blur-md lg:inset-x-auto lg:bottom-6 lg:left-6 lg:top-[7.25rem] lg:max-h-none lg:w-[380px] lg:rounded-3xl"
+        className="absolute inset-x-0 bottom-0 z-10 max-h-[46svh] overflow-y-auto rounded-t-3xl bg-white/95 shadow-[0_-20px_60px_-30px_rgba(18,61,67,0.6)] backdrop-blur-md lg:inset-x-auto lg:bottom-6 lg:left-6 lg:top-[7.25rem] lg:max-h-none lg:w-[21.71rem] lg:rounded-3xl"
       >
         <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-petrol/15 lg:hidden" aria-hidden="true" />
 

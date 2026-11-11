@@ -59,7 +59,7 @@ export default function Nav({ home = true, solid = false, bookingHref = "#contac
     // The header's box also spans the closed mobile menu: it lets clicks through, and only the
     // bar and the open menu take them, so the page under the closed menu stays clickable.
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
-      <div className="pointer-events-auto mx-auto max-w-[1440px] px-3 pt-3 lg:px-8 lg:pt-5">
+      <div className="pointer-events-auto mx-auto max-w-[82.29rem] px-3 pt-3 lg:px-8 lg:pt-5">
         <div
           className={cn(
             "flex items-center justify-between gap-6 rounded-full px-3 py-2.5 transition-all duration-500 lg:px-5",
@@ -78,7 +78,7 @@ export default function Nav({ home = true, solid = false, bookingHref = "#contac
               alt="SYSI TRAVEL Guinée"
               width={1000}
               height={463}
-              className="block h-[66px] w-auto object-contain lg:h-[76px] xl:h-[66px] 2xl:h-[76px]"
+              className="block h-[3.77rem] w-auto object-contain lg:h-[4.34rem] xl:h-[3.77rem] 2xl:h-[4.34rem]"
             />
           </a>
 

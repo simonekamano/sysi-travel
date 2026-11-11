@@ -26,9 +26,9 @@ const LINKS = [
 export default function Partner() {
   return (
     <section id="ambassadeur" className="bg-background pb-14 lg:pb-20">
-      <div className="mx-auto max-w-[1180px] px-6">
+      <div className="mx-auto max-w-site px-6">
         <Reveal>
-          <div className="relative overflow-hidden rounded-[28px] bg-petrol-deep px-5 py-10 text-ivory sm:px-10 lg:px-14 lg:py-14">
+          <div className="relative overflow-hidden rounded-[1.6rem] bg-petrol-deep px-5 py-10 text-ivory sm:px-10 lg:px-14 lg:py-14">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-gold/15 blur-3xl"

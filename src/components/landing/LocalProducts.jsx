@@ -113,7 +113,7 @@ export function ProductsShowcase({ compact = false }) {
 export default function LocalProducts() {
   return (
     <section id="produits" className="bg-ivory-soft py-14 lg:py-20">
-      <div className="mx-auto max-w-[1180px] px-6">
+      <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading
             eyebrow="Artisanat de Guinée"

@@ -43,7 +43,7 @@ export default function ExplorerTeaser({ sitesCount = 0 }) {
 
   return (
     <section ref={root} className="overflow-hidden bg-petrol-deep py-14 text-ivory lg:py-20">
-      <div className="mx-auto grid max-w-[1180px] items-center gap-12 px-6 lg:grid-cols-[0.9fr_1.1fr]">
+      <div className="mx-auto grid max-w-site items-center gap-12 px-6 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
           <p className="eyebrow flex items-center gap-2 text-gold">
             <Compass className="h-4 w-4" /> Carte interactive

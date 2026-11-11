@@ -91,7 +91,7 @@ function SidebarContent({ user, onNavigate }) {
                           : "text-ivory/70 hover:bg-ivory/5 hover:text-ivory",
                       )}
                     >
-                      <Icon className={cn("h-[18px] w-[18px] shrink-0", active ? "text-gold" : "text-ivory/50")} strokeWidth={1.8} />
+                      <Icon className={cn("h-[1.03rem] w-[1.03rem] shrink-0", active ? "text-gold" : "text-ivory/50")} strokeWidth={1.8} />
                       {link.label}
                     </Link>
                   </li>
@@ -135,12 +135,12 @@ export default function AdminFrame({ user, children }) {
   const current = LINKS.find((link) => isActive(link, pathname));
 
   return (
-    <div className="min-h-screen bg-background text-petrol lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
+    <div className="min-h-screen bg-background text-petrol lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
       {/* Computer: always visible, follows the page. */}
       <aside className="hidden bg-petrol-deep lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col">
         <div className="border-b border-ivory/10 px-7 pb-4 pt-5">
           <Link to="/admin" aria-label="Administration — accueil" className="inline-flex">
-            <img src={LOGO_INVERSE} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[66px] w-auto object-contain" />
+            <img src={LOGO_INVERSE} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[3.77rem] w-auto object-contain" />
           </Link>
           <p className="label-caps mt-2 text-[0.72rem] text-gold">Administration</p>
         </div>
@@ -173,11 +173,11 @@ export default function AdminFrame({ user, children }) {
           <Dialog.Overlay className="fixed inset-0 z-50 bg-petrol-deep/60 backdrop-blur-[2px] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 lg:hidden" />
           <Dialog.Content
             aria-describedby={undefined}
-            className="fixed inset-y-0 left-0 z-50 flex w-[min(88vw,300px)] flex-col bg-petrol-deep shadow-2xl duration-300 data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:animate-in data-[state=open]:slide-in-from-left lg:hidden"
+            className="fixed inset-y-0 left-0 z-50 flex w-[min(88vw,17.14rem)] flex-col bg-petrol-deep shadow-2xl duration-300 data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:animate-in data-[state=open]:slide-in-from-left lg:hidden"
           >
             <div className="flex items-start justify-between border-b border-ivory/10 px-6 pb-4 pt-5">
               <div>
-                <img src={LOGO_INVERSE} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[66px] w-auto object-contain" />
+                <img src={LOGO_INVERSE} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[3.77rem] w-auto object-contain" />
                 <Dialog.Title className="label-caps mt-2 text-[0.72rem] text-gold">Administration</Dialog.Title>
               </div>
               <Dialog.Close
@@ -195,7 +195,7 @@ export default function AdminFrame({ user, children }) {
       </Dialog.Root>
 
       <main className="min-w-0">
-        <div className="mx-auto max-w-[1180px] px-5 py-8 sm:px-8 lg:px-10 lg:py-10">{children}</div>
+        <div className="mx-auto max-w-site px-5 py-8 sm:px-8 lg:px-10 lg:py-10">{children}</div>
       </main>
     </div>
   );

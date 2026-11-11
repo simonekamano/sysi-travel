@@ -75,11 +75,11 @@ function LivrePage() {
 
       <main>
         <section className="bg-background pb-16 pt-36 lg:pb-24 lg:pt-40">
-          <div className="mx-auto max-w-[1180px] px-6">
+          <div className="mx-auto max-w-site px-6">
             <BackButton label="Boutique" className="mb-10" />
             <div className="grid gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
               <div className="book-hover lg:sticky lg:top-32 lg:self-start">
-                <BookCover book={livre} eager className="mx-auto w-[min(78%,360px)]" />
+                <BookCover book={livre} eager className="mx-auto w-[min(78%,20.57rem)]" />
               </div>
 
               <div>
@@ -147,7 +147,7 @@ function LivrePage() {
 
         {others.length ? (
           <section className="border-t border-petrol/10 bg-ivory-soft py-16">
-            <div className="mx-auto max-w-[1180px] px-6">
+            <div className="mx-auto max-w-site px-6">
               <h2 className="font-display text-[1.6rem] font-bold text-petrol">À lire aussi</h2>
               <div className="mt-10 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
                 {others.map((other, index) => (

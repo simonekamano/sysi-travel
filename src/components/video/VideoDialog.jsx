@@ -15,7 +15,7 @@ export default function VideoDialog({ video, onClose }) {
             className={cn(
               "fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 duration-300 focus:outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
               // An upright video is as tall as the screen allows; a wide one as wide.
-              video.vertical ? "max-w-[min(420px,calc((100svh-12rem)*9/16))]" : "max-w-[min(1080px,calc((100svh-12rem)*16/9))]",
+              video.vertical ? "max-w-[min(24rem,calc((100svh-12rem)*9/16))]" : "max-w-[min(61.71rem,calc((100svh-12rem)*16/9))]",
             )}
           >
             <div className="mb-3 flex items-start justify-between gap-4">

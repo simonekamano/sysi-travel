@@ -40,10 +40,10 @@ export default function Footer({ destinations = [], reseaux = [] }) {
 
   return (
     <footer className="bg-petrol-deep text-ivory">
-      <div className="mx-auto grid max-w-[1180px] grid-cols-2 gap-x-8 gap-y-12 px-6 py-14 md:grid-cols-3 lg:grid-cols-12 lg:gap-x-10">
+      <div className="mx-auto grid max-w-site grid-cols-2 gap-x-8 gap-y-12 px-6 py-14 md:grid-cols-3 lg:grid-cols-12 lg:gap-x-10">
         <div className="col-span-2 md:col-span-3 lg:col-span-4">
           <Link to="/" aria-label="SYSI TRAVEL Guinée — accueil" className="inline-flex items-center">
-            <img src={LOGO_INVERSE} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[86px] w-auto object-contain" />
+            <img src={LOGO_INVERSE} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[4.91rem] w-auto object-contain" />
           </Link>
           <p className="mt-6 max-w-sm text-[0.95rem] leading-relaxed text-ivory/70">
             Plateforme touristique dédiée à la Guinée. Des sites d'exception, des guides locaux
@@ -115,7 +115,7 @@ export default function Footer({ destinations = [], reseaux = [] }) {
       </div>
 
       <div className="border-t border-ivory/10">
-        <div className="mx-auto flex max-w-[1180px] flex-col gap-4 px-6 pb-24 pt-6 text-[0.82rem] text-ivory/55 sm:flex-row sm:pb-6 sm:pr-24 sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-site flex-col gap-4 px-6 pb-24 pt-6 text-[0.82rem] text-ivory/55 sm:flex-row sm:pb-6 sm:pr-24 sm:items-center sm:justify-between">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-8">
             <p>© 2026 SYSI TRAVEL — Guinée. Tous droits réservés.</p>
             {legal.length ? (

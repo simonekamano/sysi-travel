@@ -59,7 +59,7 @@ export default function CircuitView({ circuit, others, destinations, formules, r
           ) : null}
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-petrol-deep via-petrol-deep/50 to-petrol-deep/60" />
 
-          <div className="mx-auto w-full max-w-[1180px] px-6 pb-14 pt-36 lg:pb-20">
+          <div className="mx-auto w-full max-w-site px-6 pb-14 pt-36 lg:pb-20">
             <BackButton to="/circuits" tone="light" className="mb-6 animate-fade-in" />
             <nav aria-label="Fil d'Ariane" className="label-caps flex flex-wrap gap-2 text-ivory/55 animate-fade-in">
               <Link to="/" className="transition-colors hover:text-gold">Accueil</Link>
@@ -91,7 +91,7 @@ export default function CircuitView({ circuit, others, destinations, formules, r
         </section>
 
         <section className="py-14 lg:py-20">
-          <div className="mx-auto grid max-w-[1180px] gap-12 px-6 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
+          <div className="mx-auto grid max-w-site gap-12 px-6 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
             <div>
               <Reveal>
                 <p className="eyebrow text-gold-deep">Le voyage</p>
@@ -139,7 +139,7 @@ export default function CircuitView({ circuit, others, destinations, formules, r
 
         {circuit.included?.length || circuit.excluded?.length ? (
           <section className="bg-ivory-soft py-14 lg:py-20">
-            <div className="mx-auto max-w-[1180px] px-6">
+            <div className="mx-auto max-w-site px-6">
               <Reveal>
                 <SectionHeading eyebrow="Pour bien préparer" title="Ce qui est compris" />
               </Reveal>
@@ -171,7 +171,7 @@ export default function CircuitView({ circuit, others, destinations, formules, r
 
         {others.length ? (
           <section className="py-14 lg:py-20">
-            <div className="mx-auto max-w-[1180px] px-6">
+            <div className="mx-auto max-w-site px-6">
               <Reveal>
                 <SectionHeading eyebrow="Autres idées de voyage" title="Vous aimerez aussi" />
               </Reveal>

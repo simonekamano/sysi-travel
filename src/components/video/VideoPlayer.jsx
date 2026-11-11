@@ -98,7 +98,7 @@ export default function VideoPlayer({ video, autoPlay = false, frame = "auto", c
             className="absolute inset-0 h-full w-full transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04] motion-reduce:transition-none"
           />
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-petrol-deep/70 via-petrol-deep/10 to-transparent" />
-          <span className="video-play relative flex h-[72px] w-[72px] items-center justify-center rounded-full bg-gold text-petrol-deep shadow-[0_12px_40px_-8px_rgba(0,0,0,0.55)] transition-transform duration-300 group-hover:scale-110 group-focus-visible:ring-4 group-focus-visible:ring-ivory/70">
+          <span className="video-play relative flex h-[4.11rem] w-[4.11rem] items-center justify-center rounded-full bg-gold text-petrol-deep shadow-[0_12px_40px_-8px_rgba(0,0,0,0.55)] transition-transform duration-300 group-hover:scale-110 group-focus-visible:ring-4 group-focus-visible:ring-ivory/70">
             <Play className="ml-1 h-7 w-7 fill-current" />
           </span>
           {video.duration ? (

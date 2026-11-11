@@ -60,7 +60,7 @@ function TelechargementPage() {
       <Nav home={false} solid bookingHref="/contact" />
 
       <main className="bg-background pb-20 pt-36 lg:pt-40">
-        <div className="mx-auto max-w-[1180px] px-6">
+        <div className="mx-auto max-w-site px-6">
           {!commande ? (
             <Message title="Lien introuvable">
               Ce lien de téléchargement n'existe pas. Vérifiez qu'il est complet (copiez-le depuis

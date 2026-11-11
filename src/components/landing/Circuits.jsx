@@ -13,7 +13,7 @@ export default function Circuits({ circuits = [] }) {
 
   return (
     <section id="circuits" className="bg-white py-14 lg:py-20">
-      <div className="mx-auto max-w-[1180px] px-6">
+      <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading
             eyebrow="Circuits & excursions"

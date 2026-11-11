@@ -10,7 +10,7 @@ const HOME_LIMIT = 3;
 export default function Destinations({ destinations = [] }) {
   return (
     <section id="destinations" className="bg-background py-14 lg:py-20">
-      <div className="mx-auto max-w-[1180px] px-6">
+      <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading
             eyebrow="Découvrir la Guinée"

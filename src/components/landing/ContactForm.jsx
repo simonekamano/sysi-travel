@@ -90,7 +90,7 @@ export default function ContactForm({
 
   return (
     <section id="contact" className="bg-petrol py-14 text-ivory lg:py-20">
-      <div className="mx-auto grid max-w-[1180px] gap-10 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+      <div className="mx-auto grid max-w-site gap-10 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <Reveal>
           <div>
             <p className="eyebrow text-gold">Prochaine étape</p>
@@ -145,7 +145,7 @@ export default function ContactForm({
         <Reveal delay={120}>
           <div className="bg-ivory p-6 text-petrol sm:p-9">
             {status === "done" ? (
-              <div className="flex min-h-[420px] flex-col items-start justify-center gap-4">
+              <div className="flex min-h-[24rem] flex-col items-start justify-center gap-4">
                 <CheckCircle2 className="h-11 w-11 text-gold-deep" strokeWidth={1.4} />
                 <h3 className="text-[1.4rem] font-semibold text-petrol">
                   Merci {sentName || "à vous"}.

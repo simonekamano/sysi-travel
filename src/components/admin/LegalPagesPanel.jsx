@@ -250,7 +250,7 @@ function LegalEditor({ page, onDirtyChange }) {
             lang="fr"
             spellCheck
             maxLength={60000}
-            className="mt-2 h-[70vh] min-h-[420px] w-full resize-y border border-petrol/25 bg-white p-4 font-mono text-[0.84rem] leading-relaxed text-petrol outline-none focus-visible:ring-2 focus-visible:ring-gold"
+            className="mt-2 h-[70vh] min-h-[24rem] w-full resize-y border border-petrol/25 bg-white p-4 font-mono text-[0.84rem] leading-relaxed text-petrol outline-none focus-visible:ring-2 focus-visible:ring-gold"
           />
           <details className="mt-3 text-[0.85rem] text-petrol/70">
             <summary className="label-caps cursor-pointer text-petrol/65">Mise en forme</summary>
@@ -267,7 +267,7 @@ function LegalEditor({ page, onDirtyChange }) {
 
         <div className="min-w-0">
           <p className="label-caps text-petrol/65">Aperçu</p>
-          <div className="mt-2 h-[70vh] min-h-[420px] overflow-y-auto border border-petrol/15 bg-background p-6 sm:p-8">
+          <div className="mt-2 h-[70vh] min-h-[24rem] overflow-y-auto border border-petrol/15 bg-background p-6 sm:p-8">
             <p className="eyebrow text-gold-deep">Informations légales</p>
             <h1 className="mt-3 text-[1.9rem] font-extrabold leading-tight tracking-[-0.02em] text-petrol">{page.title}</h1>
             <LegalText body={body} draft className="mt-8" />

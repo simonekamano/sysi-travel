@@ -38,10 +38,10 @@ export default function LegalPageView({ page, destinations, reseaux }) {
       <Nav home={false} solid bookingHref="/contact" />
 
       <main className="bg-background pb-20 pt-36 lg:pt-40">
-        <div className="mx-auto max-w-[1180px] px-6">
+        <div className="mx-auto max-w-site px-6">
           <BackButton className="mb-10" />
 
-          <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-20">
+          <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-20">
             <article className="min-w-0 max-w-[46rem]">
               <p className="eyebrow text-gold-deep">Informations légales</p>
               <h1 className="mt-4 text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">

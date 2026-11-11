@@ -23,9 +23,9 @@ export default function Videos({ videos = [] }) {
     <section id="videos" className="relative isolate overflow-hidden bg-petrol-deep py-14 text-ivory lg:py-20">
       <div
         aria-hidden="true"
-        className="absolute -right-40 -top-40 -z-10 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle,hsl(var(--gold)/0.16),transparent_65%)]"
+        className="absolute -right-40 -top-40 -z-10 h-[29.71rem] w-[29.71rem] rounded-full bg-[radial-gradient(circle,hsl(var(--gold)/0.16),transparent_65%)]"
       />
-      <div className="mx-auto max-w-[1180px] px-6">
+      <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading
             tone="light"

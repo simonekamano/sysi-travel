@@ -7,6 +7,10 @@ export default {
   theme: {
   	extend: {
   		opacity: Object.fromEntries(Array.from({ length: 101 }, (_, i) => [i, `${i / 100}`])),
+  		// The site's content column: 1180px at the base 17.5px font size, growing with it on large screens.
+  		maxWidth: {
+  			site: '67.43rem'
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

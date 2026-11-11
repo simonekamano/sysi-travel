@@ -36,7 +36,7 @@ function DestinationsPage() {
 
       <main>
         <section className="bg-background pb-12 pt-36 lg:pb-16 lg:pt-40">
-          <div className="mx-auto max-w-[1180px] px-6">
+          <div className="mx-auto max-w-site px-6">
             <BackButton label="Retour" className="mb-8" />
             <p className="eyebrow text-gold-deep">Découvrir la Guinée</p>
             <h1 className="mt-4 max-w-3xl text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
@@ -59,7 +59,7 @@ function DestinationsPage() {
         </section>
 
         <section className="bg-ivory-soft py-14 lg:py-20">
-          <div className="mx-auto max-w-[1180px] px-6">
+          <div className="mx-auto max-w-site px-6">
             <Reveal>
               <div className="grid items-center gap-8 lg:grid-cols-[1fr_2fr]">
                 <div>

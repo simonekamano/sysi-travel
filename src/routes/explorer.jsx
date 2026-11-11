@@ -49,7 +49,7 @@ function ExplorerPage() {
         <Explorer sites={sites} destinations={destinations} onRequestTrip={requestTrip} />
 
         <section className="bg-background py-14 lg:py-20">
-          <div className="mx-auto max-w-[1180px] px-6">
+          <div className="mx-auto max-w-site px-6">
             <Reveal>
               <SectionHeading
                 eyebrow="Quatre régions, quatre paysages"

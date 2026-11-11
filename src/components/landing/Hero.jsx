@@ -24,7 +24,7 @@ export default function Hero() {
       
 
       <div className="flex flex-1 items-center justify-center px-6 pb-10 pt-32 lg:pt-36">
-        <div className="mx-auto max-w-[1100px] text-center">
+        <div className="mx-auto max-w-[62.86rem] text-center">
           <p className="eyebrow animate-fade-in text-gold">Bienvenue chez vous.</p>
 
           <h1 className="mt-6 animate-fade-up text-[clamp(2rem,5vw,4.3rem)] font-extrabold leading-[1.06] tracking-[-0.02em] text-ivory">
@@ -71,7 +71,7 @@ export default function Hero() {
       </div>
 
       <div className="relative border-t border-ivory/15">
-        <div className="mx-auto grid max-w-[1180px] grid-cols-2 gap-x-6 gap-y-5 px-6 py-7 sm:grid-cols-4">
+        <div className="mx-auto grid max-w-site grid-cols-2 gap-x-6 gap-y-5 px-6 py-7 sm:grid-cols-4">
           {HERO_BADGES.map((badge, index) => {
             const Icon = ICONS[index];
             return (

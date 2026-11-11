@@ -7,7 +7,7 @@ export function NotFound({ children }) {
   return (
     <div className="flex min-h-screen flex-col bg-background px-6 py-8 text-petrol">
       <Link to="/" aria-label="SYSI TRAVEL Guinée — accueil" className="mx-auto inline-flex">
-        <img src={LOGO} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[70px] w-auto object-contain" />
+        <img src={LOGO} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[4rem] w-auto object-contain" />
       </Link>
       <div className="mx-auto flex max-w-lg flex-1 flex-col items-center justify-center gap-5 py-16 text-center">
         <span className="flex h-14 w-14 items-center justify-center rounded-full border border-gold/60 text-gold-deep">
