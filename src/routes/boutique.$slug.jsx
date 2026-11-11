@@ -13,6 +13,7 @@ import { absoluteUrl } from "@/data/site";
 import { BOOK_KIND_LABEL, DOWNLOAD_DAYS, formatPrice, formatSize } from "@/lib/boutique";
 import { useCart } from "@/lib/cart";
 import { getLivrePage } from "@/lib/server-fns";
+import { AGENCY_ID, breadcrumbLd, jsonLd, noindex, pageUrl, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/boutique/$slug")({
   loader: async ({ params }) => {
@@ -22,18 +23,40 @@ export const Route = createFileRoute("/boutique/$slug")({
   },
   head: ({ loaderData }) => {
     const livre = loaderData?.livre;
-    if (!livre) return { meta: [{ title: "Livre introuvable — SYSI TRAVEL" }] };
+    if (!livre) return noindex("Livre introuvable — SYSI TRAVEL");
     const description =
       livre.subtitle || livre.description.slice(0, 160) || `${BOOK_KIND_LABEL[livre.kind]} en PDF sur la Guinée, par SYSI TRAVEL.`;
-    return {
-      meta: [
-        { title: `${livre.title} — ${BOOK_KIND_LABEL[livre.kind]} PDF | SYSI TRAVEL` },
-        { name: "description", content: description },
-        { property: "og:title", content: livre.title },
-        { property: "og:description", content: description },
-        ...(livre.cover ? [{ property: "og:image", content: absoluteUrl(livre.cover) }] : []),
+    const path = `/boutique/${livre.slug}`;
+    return seo({
+      title: `${livre.title} — ${BOOK_KIND_LABEL[livre.kind]} PDF | SYSI TRAVEL`,
+      description,
+      path,
+      image: livre.cover,
+      imageAlt: livre.title,
+      type: "product",
+      scripts: [
+        jsonLd({
+          "@type": ["Book", "Product"],
+          name: livre.title,
+          description,
+          url: pageUrl(path),
+          ...(livre.cover ? { image: absoluteUrl(livre.cover) } : {}),
+          ...(livre.author ? { author: { "@type": "Person", name: livre.author } } : {}),
+          ...(livre.language ? { inLanguage: livre.language } : {}),
+          ...(livre.pages ? { numberOfPages: livre.pages } : {}),
+          bookFormat: "https://schema.org/EBook",
+          publisher: { "@id": AGENCY_ID },
+          offers: {
+            "@type": "Offer",
+            price: ((livre.price_cents ?? 0) / 100).toFixed(2),
+            priceCurrency: "EUR",
+            availability: "https://schema.org/InStock",
+            url: pageUrl(path),
+          },
+        }),
+        breadcrumbLd([["Accueil", "/"], ["Livres et guides", "/boutique"], [livre.title, path]]),
       ],
-    };
+    });
   },
   notFoundComponent: () => (
     <NotFound>

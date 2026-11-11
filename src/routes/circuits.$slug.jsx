@@ -4,6 +4,7 @@ import CircuitView from "@/components/circuit/CircuitView";
 import { LEAFLET_CSS } from "@/components/map/GuineaMap";
 import { CIRCUIT_KINDS, absoluteUrl } from "@/data/site";
 import { getCircuitPage } from "@/lib/server-fns";
+import { AGENCY_ID, breadcrumbLd, jsonLd, noindex, pageUrl, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/circuits/$slug")({
   loader: async ({ params }) => {
@@ -14,22 +15,46 @@ export const Route = createFileRoute("/circuits/$slug")({
   },
   head: ({ loaderData }) => {
     const circuit = loaderData?.circuit;
-    if (!circuit) return { meta: [{ title: "Circuit introuvable — SYSI TRAVEL" }] };
+    if (!circuit) return noindex("Circuit introuvable — SYSI TRAVEL");
     const description =
       circuit.tagline || `${CIRCUIT_KINDS[circuit.kind]} ${circuit.duration} en Guinée avec SYSI TRAVEL : programme jour par jour et prix.`;
-    return {
-      meta: [
-        { title: `${circuit.title} — ${CIRCUIT_KINDS[circuit.kind]} | SYSI TRAVEL Guinée` },
-        { name: "description", content: description },
-        { property: "og:title", content: `${circuit.title} — SYSI TRAVEL` },
-        { property: "og:description", content: description },
-        ...(circuit.image ? [{ property: "og:image", content: absoluteUrl(circuit.image) }] : []),
-      ],
+    const path = `/circuits/${circuit.slug}`;
+    return seo({
+      title: `${circuit.title} — ${CIRCUIT_KINDS[circuit.kind]} en Guinée | SYSI TRAVEL`,
+      description,
+      path,
+      image: circuit.image,
+      imageAlt: circuit.title,
+      type: "article",
       links: [
         { rel: "stylesheet", href: LEAFLET_CSS },
         ...(circuit.image ? [{ rel: "preload", as: "image", href: circuit.image, fetchPriority: "high" }] : []),
       ],
-    };
+      scripts: [
+        jsonLd({
+          "@type": "TouristTrip",
+          name: circuit.title,
+          description,
+          url: pageUrl(path),
+          ...(circuit.image ? { image: absoluteUrl(circuit.image) } : {}),
+          touristType: CIRCUIT_KINDS[circuit.kind],
+          provider: { "@id": AGENCY_ID },
+          ...(circuit.programme?.length
+            ? {
+                itinerary: {
+                  "@type": "ItemList",
+                  itemListElement: circuit.programme.map((day, index) => ({
+                    "@type": "ListItem",
+                    position: index + 1,
+                    item: { "@type": "TouristAttraction", name: day.place || day.title, description: day.title },
+                  })),
+                },
+              }
+            : {}),
+        }),
+        breadcrumbLd([["Accueil", "/"], ["Circuits et excursions", "/circuits"], [circuit.title, path]]),
+      ],
+    });
   },
   notFoundComponent: () => (
     <NotFound>

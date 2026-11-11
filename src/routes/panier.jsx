@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Loader2, Lock, ShoppingBag, X } from "lucide-react";
 import BackButton from "@/components/BackButton";
@@ -38,6 +38,8 @@ function PanierPage() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(null);
+  // When the page appeared: a robot orders within a second, a person takes longer.
+  const openedAt = useRef(Date.now());
   const set = (key) => (event) =>
     setForm((prev) => ({ ...prev, [key]: event.target.type === "checkbox" ? event.target.checked : event.target.value }));
 
@@ -76,6 +78,7 @@ function PanierPage() {
           cgv: form.cgv,
           renonciation: true,
           site_web: form.site_web,
+          delai: Date.now() - openedAt.current,
         },
       });
       setDone({ ...result, email: form.email.trim(), titles: items.map((livre) => livre.title) });

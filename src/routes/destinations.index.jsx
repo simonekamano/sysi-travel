@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { breadcrumbLd, seo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import BackButton from "@/components/BackButton";
 import Nav from "@/components/landing/Nav";
@@ -12,17 +13,15 @@ import { getSiteContent } from "@/lib/server-fns";
 
 export const Route = createFileRoute("/destinations/")({
   loader: () => getSiteContent(),
-  head: () => ({
-    meta: [
-      { title: "Destinations en Guinée — SYSI TRAVEL" },
-      {
-        name: "description",
-        content:
-          "Îles de Loos, Fouta Djallon, Mont Nimba, cascades et plages : toutes les destinations de SYSI TRAVEL en Guinée, sur la carte et en détail.",
-      },
-    ],
-    links: [{ rel: "stylesheet", href: LEAFLET_CSS }],
-  }),
+  head: () =>
+    seo({
+      title: "Destinations en Guinée — SYSI TRAVEL",
+      description:
+        "Îles de Loos, Fouta Djallon, Mont Nimba, cascades et plages : toutes les destinations de SYSI TRAVEL en Guinée, sur la carte et en détail.",
+      path: "/destinations",
+      links: [{ rel: "stylesheet", href: LEAFLET_CSS }],
+      scripts: [breadcrumbLd([["Accueil", "/"], ["Destinations", "/destinations"]])],
+    }),
   component: DestinationsPage,
 });
 

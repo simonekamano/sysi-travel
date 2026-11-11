@@ -7,11 +7,12 @@ import WhatsAppButton from "@/components/landing/WhatsAppButton";
 import LegalText from "@/components/legal/LegalText";
 import { CONTACT } from "@/data/site";
 import { legalDayFormat, useLegalLinks } from "@/lib/legal";
+import { noindex, seo } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 // <head> of a legal page: its title and the start of its text as description.
 export function legalHead(page) {
-  if (!page) return { meta: [{ title: "Page introuvable — SYSI TRAVEL" }] };
+  if (!page) return noindex("Page introuvable — SYSI TRAVEL");
   const description = page.body
     .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
     .replace(/^\s*(#+|[-*]|\d+\.)\s+/gm, "")
@@ -19,13 +20,7 @@ export function legalHead(page) {
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, 155);
-  return {
-    meta: [
-      { title: `${page.title} — SYSI TRAVEL` },
-      { name: "description", content: description },
-      { property: "og:title", content: `${page.title} — SYSI TRAVEL` },
-    ],
-  };
+  return seo({ title: `${page.title} — SYSI TRAVEL`, description, path: `/${page.slug}` });
 }
 
 // A published legal page (/mentions-legales, /conditions-generales-de-vente, /confidentialite,

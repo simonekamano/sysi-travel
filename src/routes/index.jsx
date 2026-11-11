@@ -20,14 +20,31 @@ import ContactForm from "@/components/landing/ContactForm";
 import Footer from "@/components/landing/Footer";
 import WhatsAppButton from "@/components/landing/WhatsAppButton";
 import { IMAGES } from "@/data/site";
+import { jsonLd, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   loader: () => getSiteContent(),
-  head: () => ({
-    links: [
-      { rel: "preload", as: "image", href: IMAGES.hero, fetchPriority: "high" },
-    ],
-  }),
+  head: ({ loaderData }) =>
+    seo({
+      title: "SYSI TRAVEL — Voyage en Guinée : circuits, excursions et séjours accompagnés",
+      description:
+        "Découvrez la Guinée avec SYSI TRAVEL : îles de Loos, Fouta Djallon, cascades et mont Nimba. Circuits avec guides locaux, séjours accompagnés pour la diaspora, réponse sous 72 h.",
+      path: "/",
+      links: [{ rel: "preload", as: "image", href: IMAGES.hero, fetchPriority: "high" }],
+      // The questions of the home page, which search engines can show under the result.
+      scripts: loaderData?.faqs?.length
+        ? [
+            jsonLd({
+              "@type": "FAQPage",
+              mainEntity: loaderData.faqs.map((item) => ({
+                "@type": "Question",
+                name: item.question,
+                acceptedAnswer: { "@type": "Answer", text: item.answer },
+              })),
+            }),
+          ]
+        : [],
+    }),
   component: LandingPage,
 });
 

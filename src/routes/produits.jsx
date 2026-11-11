@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { IMAGES } from "@/data/site";
+import { breadcrumbLd, seo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import BackButton from "@/components/BackButton";
 import Nav from "@/components/landing/Nav";
@@ -10,16 +12,15 @@ import { getSiteContent } from "@/lib/server-fns";
 
 export const Route = createFileRoute("/produits")({
   loader: () => getSiteContent(),
-  head: () => ({
-    meta: [
-      { title: "Produits locaux de Guinée — SYSI TRAVEL" },
-      {
-        name: "description",
-        content:
-          "Pagnes, sacs, beurre de karité, jarres, calebasses et chaussures traditionnelles : l'artisanat de Guinée, à commander sur WhatsApp auprès de SYSI TRAVEL.",
-      },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "Produits locaux de Guinée — SYSI TRAVEL",
+      description:
+        "Pagnes, sacs, beurre de karité, jarres, calebasses et chaussures traditionnelles : l'artisanat de Guinée, à commander sur WhatsApp auprès de SYSI TRAVEL.",
+      path: "/produits",
+      image: IMAGES.textile,
+      scripts: [breadcrumbLd([["Accueil", "/"], ["Produits locaux", "/produits"]])],
+    }),
   component: ProduitsPage,
 });
 

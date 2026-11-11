@@ -149,6 +149,14 @@ function rateLimiter(limit, windowMs, message) {
   };
 }
 
+// Spam traps of the public forms: the hidden « site web » field, which only robots fill in,
+// and the time taken to fill in the form (under 2 seconds: no person types that fast).
+const isRobot = (siteWeb, delai) => Boolean(siteWeb) || (delai !== undefined && delai < 2000);
+
+// What a visitor may read of a database error: the database's own limit on requests (see
+// supabase/migrations/0012_securite.sql), never its internal messages.
+const publicError = (error, fallback) => (/^Trop de /.test(error?.message ?? "") ? error.message : fallback);
+
 const checkDemandeRate = rateLimiter(
   5,
   15 * 60 * 1000,
@@ -173,12 +181,16 @@ export const createDemande = createServerFn({ method: "POST" })
       hebergement: text(300).default(""),
       // Hidden field of the form (spam trap): only robots fill it in.
       site_web: text(500).optional(),
+      // Milliseconds between the form's display and its sending (see isRobot).
+      delai: z.number().int().min(0).max(1e10).optional(),
     }),
   )
-  .handler(async ({ data: { site_web, ...demande }, context }) => {
-    if (site_web) return { ok: true };
+  .handler(async ({ data: { site_web, delai, ...demande }, context }) => {
+    // A robot gets the usual answer, so it does not learn that it was spotted.
+    if (isRobot(site_web, delai)) return { ok: true };
     checkDemandeRate();
-    unwrap(await context.getSupabase().from("demandes_sejour").insert({ ...demande, statut: "nouveau" }));
+    const { error } = await context.getSupabase().from("demandes_sejour").insert({ ...demande, statut: "nouveau" });
+    if (error) throw new Error(publicError(error, "La demande n'a pas pu être enregistrée. Réessayez ou écrivez-nous sur WhatsApp."));
     await sendDemandeEmails(demande);
     return { ok: true };
   });
@@ -204,10 +216,11 @@ export const createCommande = createServerFn({ method: "POST" })
       cgv: z.boolean().default(false),
       // Hidden field of the form (spam trap): only robots fill it in.
       site_web: text(500).optional(),
+      delai: z.number().int().min(0).max(1e10).optional(),
     }),
   )
   .handler(async ({ data, context }) => {
-    if (data.site_web) return { reference: "", total_cents: 0 };
+    if (isRobot(data.site_web, data.delai)) return { reference: "", total_cents: 0 };
     checkCommandeRate();
     const supabase = context.getSupabase();
     if (!data.cgv && (await isLegalPagePublished(supabase, "conditions-generales-de-vente"))) {
@@ -223,7 +236,7 @@ export const createCommande = createServerFn({ method: "POST" })
       throw new Error(
         /plus disponible/.test(error.message)
           ? "Un livre de votre panier n'est plus disponible : retirez-le puis réessayez."
-          : "La commande n'a pas pu être enregistrée. Réessayez ou écrivez-nous sur WhatsApp.",
+          : publicError(error, "La commande n'a pas pu être enregistrée. Réessayez ou écrivez-nous sur WhatsApp."),
       );
     }
     await sendCommandeEmails({ ...commande, nom: data.nom, email: data.email, telephone: data.telephone });

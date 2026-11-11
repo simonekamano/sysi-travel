@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { breadcrumbLd, seo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { CalendarCheck, CarFront, Plane } from "lucide-react";
 import BackButton from "@/components/BackButton";
@@ -11,16 +12,14 @@ import { getSiteContent } from "@/lib/server-fns";
 
 export const Route = createFileRoute("/transfert-aeroport")({
   loader: () => getSiteContent(),
-  head: () => ({
-    meta: [
-      { title: "Prise en charge à l'aéroport de Conakry — SYSI TRAVEL" },
-      {
-        name: "description",
-        content:
-          "À votre arrivée à Conakry, un chauffeur SYSI TRAVEL vous attend à l'aéroport et vous conduit jusqu'à votre lieu de séjour. Service à la demande.",
-      },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "Prise en charge à l'aéroport de Conakry — SYSI TRAVEL",
+      description:
+        "À votre arrivée à Conakry, un chauffeur SYSI TRAVEL vous attend à l'aéroport et vous conduit jusqu'à votre lieu de séjour. Service à la demande.",
+      path: "/transfert-aeroport",
+      scripts: [breadcrumbLd([["Accueil", "/"], ["Prise en charge à l'aéroport", "/transfert-aeroport"]])],
+    }),
   component: TransfertPage,
 });
 

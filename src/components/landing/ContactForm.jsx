@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { CheckCircle2, Loader2, Mail, Phone, Plane } from "lucide-react";
 import { createDemande } from "@/lib/server-fns";
@@ -48,6 +48,8 @@ export default function ContactForm({
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
   const [sentName, setSentName] = useState("");
+  // When the form appeared: a robot sends it within a second, a person takes longer.
+  const openedAt = useRef(Date.now());
 
   const update = (key) => (event) => setForm((prev) => ({ ...prev, [key]: event.target.value }));
 
@@ -72,6 +74,7 @@ export default function ContactForm({
           arrivee: form.transfert ? form.arrivee.trim() : "",
           hebergement: form.transfert ? form.hebergement.trim() : "",
           site_web: form.site_web,
+          delai: Date.now() - openedAt.current,
         },
       });
       setSentName(form.nom.trim());

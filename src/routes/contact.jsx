@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { breadcrumbLd, seo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import BackButton from "@/components/BackButton";
@@ -12,16 +13,14 @@ import { getSiteContent } from "@/lib/server-fns";
 
 export const Route = createFileRoute("/contact")({
   loader: () => getSiteContent(),
-  head: () => ({
-    meta: [
-      { title: "Contact — SYSI TRAVEL Guinée" },
-      {
-        name: "description",
-        content:
-          "Contactez SYSI TRAVEL : téléphone, WhatsApp, e-mail et adresse à Conakry. Réponse sous 72 heures pour votre séjour en Guinée.",
-      },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "Contact — SYSI TRAVEL Guinée",
+      description:
+        "Contactez SYSI TRAVEL : téléphone, WhatsApp, e-mail et adresse à Conakry. Réponse sous 72 heures pour votre séjour en Guinée.",
+      path: "/contact",
+      scripts: [breadcrumbLd([["Accueil", "/"], ["Contact", "/contact"]])],
+    }),
   component: ContactPage,
 });
 

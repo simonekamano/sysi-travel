@@ -12,27 +12,43 @@ const hostname = process.env.HOST || "0.0.0.0";
 const assets = serveStatic({ dir: fileURLToPath(new URL("./dist/client", import.meta.url)) });
 
 // Sent with every response. HTTPS only (Nginx redirects http), no framing by other sites,
-// no MIME sniffing, and no camera, microphone or location for any page.
+// no MIME sniffing, no window shared with other sites, and no camera, microphone, location,
+// payment or tracking API for any page.
 const SECURITY_HEADERS = {
-  "strict-transport-security": "max-age=31536000; includeSubDomains",
+  "strict-transport-security": "max-age=63072000; includeSubDomains",
   "x-content-type-options": "nosniff",
   "x-frame-options": "SAMEORIGIN",
-  "content-security-policy": "frame-ancestors 'self'; base-uri 'self'; object-src 'none'",
   "referrer-policy": "strict-origin-when-cross-origin",
-  "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=()",
+  "permissions-policy":
+    "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=(), hid=(), interest-cohort=(), browsing-topics=()",
+  "cross-origin-opener-policy": "same-origin",
+  "cross-origin-resource-policy": "same-site",
+  "x-permitted-cross-domain-policies": "none",
+  "origin-agent-cluster": "?1",
 };
+// Pages set their own policy with a per-page nonce (src/lib/security.js); every other response
+// (files, server functions, errors) gets this one. It also governs the map's worker script
+// (/assets/maplibre-gl-worker…), which fetches the tiles of « Explorer la Guinée ».
+const DEFAULT_CSP =
+  "default-src 'self'; script-src 'self'; connect-src 'self' https://tiles.openfreemap.org; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'";
 
 // Browsers ask for these by name; the brand symbol is declared in the page head.
 const ICON_ALIASES = new Set(["/favicon.ico", "/apple-touch-icon.png", "/apple-touch-icon-precomposed.png"]);
 
+const applyHeaders = (headers) => {
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) headers.set(name, value);
+  if (!headers.has("content-security-policy")) headers.set("content-security-policy", DEFAULT_CSP);
+  headers.delete("x-powered-by");
+};
+
 const withSecurityHeaders = (response) => {
   try {
-    for (const [name, value] of Object.entries(SECURITY_HEADERS)) response.headers.set(name, value);
+    applyHeaders(response.headers);
     return response;
   } catch {
     // Immutable headers (some fetch responses): copy the response once.
     const copy = new Response(response.body, response);
-    for (const [name, value] of Object.entries(SECURITY_HEADERS)) copy.headers.set(name, value);
+    applyHeaders(copy.headers);
     return copy;
   }
 };

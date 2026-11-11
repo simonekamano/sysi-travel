@@ -63,7 +63,24 @@ const currentUser = async (context) => {
     .eq("id", data.user.id)
     .maybeSingle();
   if (profileError) throw new Error(profileError.message);
-  return { id: data.user.id, email: data.user.email, full_name: profile?.full_name ?? null, role: profile?.role ?? "user" };
+  return {
+    id: data.user.id,
+    email: data.user.email,
+    full_name: profile?.full_name ?? null,
+    role: profile?.role ?? "user",
+    // Two-step sign-in: set up on the account, and passed during this session.
+    mfaEnrolled: (data.user.factors ?? []).some((factor) => factor.status === "verified"),
+    mfaPassed: tokenClaims(context.accessToken).aal === "aal2",
+  };
+};
+
+// The claims of an access token that getUser has just verified.
+const tokenClaims = (token) => {
+  try {
+    return JSON.parse(Buffer.from(token.split(".")[1], "base64url").toString("utf8"));
+  } catch {
+    return {};
+  }
 };
 
 // Neither middleware authenticates anyone. Add this to a server function that
@@ -78,11 +95,12 @@ export const requireUser = createMiddleware({ type: "function" }).server(async (
   return next({ context: { user } });
 });
 
-// requireUser plus the admin role (public.profiles.role = 'admin').
+// requireUser plus the admin role (public.profiles.role = 'admin'). An admin who has set up
+// two-step sign-in must also have passed it in this session (public.is_admin() says the same).
 export const requireAdmin = createMiddleware({ type: "function" })
   .middleware([requireUser])
   .server(({ next, context }) => {
-    if (context.user.role !== "admin") {
+    if (context.user.role !== "admin" || (context.user.mfaEnrolled && !context.user.mfaPassed)) {
       setResponseStatus(403);
       throw Object.assign(new Error("Forbidden"), { status: 403, code: "FORBIDDEN" });
     }

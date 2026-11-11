@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { breadcrumbLd, seo } from "@/lib/seo";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Compass, Download, Mail, Smartphone } from "lucide-react";
 import BackButton from "@/components/BackButton";
@@ -13,16 +14,14 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/boutique/")({
   loader: () => getSiteContent(),
-  head: () => ({
-    meta: [
-      { title: "Livres et guides sur la Guinée — Boutique SYSI TRAVEL" },
-      {
-        name: "description",
-        content:
-          "Guides de voyage et livres sur la Guinée en PDF : à lire sur téléphone, tablette ou ordinateur. Commande simple, lien de téléchargement personnel.",
-      },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "Livres et guides sur la Guinée — Boutique SYSI TRAVEL",
+      description:
+        "Guides de voyage et livres sur la Guinée en PDF : à lire sur téléphone, tablette ou ordinateur. Commande simple, lien de téléchargement personnel.",
+      path: "/boutique",
+      scripts: [breadcrumbLd([["Accueil", "/"], ["Livres et guides", "/boutique"]])],
+    }),
   component: BoutiquePage,
 });
 

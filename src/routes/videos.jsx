@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { breadcrumbLd, seo } from "@/lib/seo";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Compass } from "lucide-react";
 import BackButton from "@/components/BackButton";
@@ -15,16 +16,14 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/videos")({
   loader: () => getSiteContent(),
-  head: () => ({
-    meta: [
-      { title: "SYSI TRAVEL et la Guinée en vidéo — SYSI TRAVEL" },
-      {
-        name: "description",
-        content:
-          "Les vidéos de SYSI TRAVEL : qui nous sommes, nos voyages accompagnés et la Guinée, de la côte atlantique à la forêt.",
-      },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "SYSI TRAVEL et la Guinée en vidéo — SYSI TRAVEL",
+      description:
+        "Les vidéos de SYSI TRAVEL : qui nous sommes, nos voyages accompagnés et la Guinée, de la côte atlantique à la forêt.",
+      path: "/videos",
+      scripts: [breadcrumbLd([["Accueil", "/"], ["Vidéos", "/videos"]])],
+    }),
   component: VideosPage,
 });
 

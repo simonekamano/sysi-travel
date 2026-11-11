@@ -4,6 +4,7 @@ import { routeTree } from "./routeTree.gen";
 import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
 import { createQueryClient } from "@/lib/query-client";
+import { pageNonce } from "@/lib/security";
 
 export function getRouter() {
   const queryClient = createQueryClient();
@@ -17,6 +18,8 @@ export function getRouter() {
     scrollRestoration: true,
     // A new page starts at its top at once; the CSS smooth scrolling is for in-page anchors.
     scrollRestorationBehavior: "instant",
+    // The page's Content Security Policy nonce, put on every script the router renders.
+    ssr: { nonce: pageNonce() },
   });
   // Provides QueryClientProvider and ships queries fetched during SSR to the browser cache.
   setupRouterSsrQueryIntegration({ router, queryClient });

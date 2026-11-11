@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { breadcrumbLd, seo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import Nav from "@/components/landing/Nav";
 import Reveal from "@/components/landing/Reveal";
@@ -13,17 +14,15 @@ import { getExplorerPage } from "@/lib/server-fns";
 
 export const Route = createFileRoute("/explorer")({
   loader: () => getExplorerPage(),
-  head: () => ({
-    meta: [
-      { title: "Explorer la Guinée : carte des sites touristiques — SYSI TRAVEL" },
-      {
-        name: "description",
-        content:
-          "La carte interactive des quatre régions de Guinée et de leurs sites : cascades, îles, monts, forêts et patrimoine. Visite guidée d'un site à l'autre.",
-      },
-    ],
-    links: [{ rel: "stylesheet", href: MAPLIBRE_CSS }],
-  }),
+  head: () =>
+    seo({
+      title: "Explorer la Guinée : carte des sites touristiques — SYSI TRAVEL",
+      description:
+        "La carte interactive des quatre régions de Guinée et de leurs sites : cascades, îles, monts, forêts et patrimoine. Visite guidée d'un site à l'autre.",
+      path: "/explorer",
+      links: [{ rel: "stylesheet", href: MAPLIBRE_CSS }],
+      scripts: [breadcrumbLd([["Accueil", "/"], ["Explorer la Guinée", "/explorer"]])],
+    }),
   component: ExplorerPage,
 });
 

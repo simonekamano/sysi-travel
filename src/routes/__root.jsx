@@ -5,7 +5,8 @@ import { UpdateWatcher } from "@/components/UpdateWatcher";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/AuthContext";
 import { getLegalLinks } from "@/lib/server-fns";
-import { SYMBOL } from "@/data/site";
+import { IMAGES, SYMBOL, absoluteUrl } from "@/data/site";
+import { SITE_NAME, agencyLd, websiteLd } from "@/lib/seo";
 import appCss from "@/index.css?url";
 
 export const Route = createRootRoute({
@@ -31,12 +32,21 @@ export const Route = createRootRoute({
         property: "og:description",
         content: "Sites incontournables, circuits authentiques et partenaires locaux vérifiés.",
       },
+      { property: "og:site_name", content: SITE_NAME },
+      { property: "og:locale", content: "fr_FR" },
+      { property: "og:image", content: absoluteUrl(IMAGES.hero) },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#123d43" },
+      // Phone numbers are links only where the site makes them so.
+      { name: "format-detection", content: "telephone=no" },
     ],
     links: [
       { rel: "icon", type: "image/png", href: SYMBOL },
       { rel: "apple-touch-icon", href: SYMBOL },
       { rel: "stylesheet", href: appCss },
     ],
+    // Who publishes the site, for search engines (schema.org).
+    scripts: [agencyLd(), websiteLd()],
   }),
   errorComponent: DefaultCatchBoundary,
   notFoundComponent: () => <NotFound />,

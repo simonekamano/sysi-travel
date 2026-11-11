@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { breadcrumbLd, seo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { MessageCircle } from "lucide-react";
 import BackButton from "@/components/BackButton";
@@ -14,16 +15,14 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/circuits/")({
   loader: () => getSiteContent(),
-  head: () => ({
-    meta: [
-      { title: "Circuits et excursions en Guinée — SYSI TRAVEL" },
-      {
-        name: "description",
-        content:
-          "Tous les circuits, excursions et visites guidées de SYSI TRAVEL en Guinée : programme jour par jour, itinéraire sur la carte, dates et prix.",
-      },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "Circuits et excursions en Guinée — SYSI TRAVEL",
+      description:
+        "Tous les circuits, excursions et visites guidées de SYSI TRAVEL en Guinée : programme jour par jour, itinéraire sur la carte, dates et prix.",
+      path: "/circuits",
+      scripts: [breadcrumbLd([["Accueil", "/"], ["Circuits et excursions", "/circuits"]])],
+    }),
   component: CircuitsPage,
 });
 

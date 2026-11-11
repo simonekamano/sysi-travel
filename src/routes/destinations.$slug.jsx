@@ -13,6 +13,7 @@ import GuineaMap, { LEAFLET_CSS } from "@/components/map/GuineaMap";
 import { NotFound } from "@/components/NotFound";
 import { CONTACT, absoluteUrl } from "@/data/site";
 import { getDestinationPage } from "@/lib/server-fns";
+import { breadcrumbLd, jsonLd, noindex, pageUrl, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/destinations/$slug")({
   loader: async ({ params }) => {
@@ -22,21 +23,35 @@ export const Route = createFileRoute("/destinations/$slug")({
   },
   head: ({ loaderData }) => {
     const destination = loaderData?.destination;
-    if (!destination) return { meta: [{ title: "Destination introuvable — SYSI TRAVEL" }] };
+    if (!destination) return noindex("Destination introuvable — SYSI TRAVEL");
     const description = destination.text || `${destination.name}, ${destination.region} : séjour sur mesure en Guinée avec SYSI TRAVEL.`;
-    return {
-      meta: [
-        { title: `${destination.name} — ${destination.region} | SYSI TRAVEL Guinée` },
-        { name: "description", content: description },
-        { property: "og:title", content: `${destination.name} — SYSI TRAVEL` },
-        { property: "og:description", content: description },
-        ...(destination.image ? [{ property: "og:image", content: absoluteUrl(destination.image) }] : []),
-      ],
+    const path = `/destinations/${destination.slug}`;
+    const hasPosition = Number.isFinite(destination.latitude) && Number.isFinite(destination.longitude);
+    return seo({
+      title: `${destination.name} (${destination.region}) : visiter en Guinée | SYSI TRAVEL`,
+      description,
+      path,
+      image: destination.image,
+      imageAlt: destination.name,
+      type: "article",
       links: [
         { rel: "stylesheet", href: LEAFLET_CSS },
         ...(destination.image ? [{ rel: "preload", as: "image", href: destination.image, fetchPriority: "high" }] : []),
       ],
-    };
+      scripts: [
+        jsonLd({
+          "@type": "TouristDestination",
+          name: destination.name,
+          description: destination.description || description,
+          url: pageUrl(path),
+          ...(destination.image ? { image: absoluteUrl(destination.image) } : {}),
+          containedInPlace: { "@type": "Country", name: "Guinée" },
+          ...(hasPosition ? { geo: { "@type": "GeoCoordinates", latitude: destination.latitude, longitude: destination.longitude } } : {}),
+          ...(destination.tags?.length ? { touristType: destination.tags } : {}),
+        }),
+        breadcrumbLd([["Accueil", "/"], ["Destinations", "/destinations"], [destination.name, path]]),
+      ],
+    });
   },
   notFoundComponent: () => (
     <NotFound>
