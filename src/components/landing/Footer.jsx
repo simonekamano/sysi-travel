@@ -5,19 +5,24 @@ import { CONTACT, LOGO_INVERSE } from "@/data/site";
 import { useLegalLinks } from "@/lib/legal";
 
 // `to`: a page of its own; `hash`: a section of the home page.
-const EXPLORER = [
-  { label: "Destinations", to: "/destinations" },
+const DECOUVRIR = [
   { label: "Circuits & excursions", to: "/circuits" },
   { label: "Explorer la Guinée", to: "/explorer" },
   { label: "Produits locaux", to: "/produits" },
   { label: "Vidéos", to: "/videos" },
   { label: "Livres & guides", to: "/boutique" },
+];
+
+const SERVICES = [
   { label: "Prise en charge aéroport", to: "/transfert-aeroport" },
-  { label: "La plateforme", hash: "solution" },
   { label: "Nos formules", hash: "offre" },
+  { label: "La plateforme", hash: "solution" },
   { label: "Questions fréquentes", hash: "faq" },
   { label: "Contact", to: "/contact" },
 ];
+
+// How many destination pages the footer lists before « Toutes les destinations ».
+const DESTINATIONS_SHOWN = 4;
 
 const linkClass = "text-[0.95rem] text-ivory/75 transition-colors duration-300 hover:text-gold";
 
@@ -40,78 +45,91 @@ export default function Footer({ destinations = [], reseaux = [] }) {
 
   return (
     <footer className="bg-petrol-deep text-ivory">
-      <div className="mx-auto grid max-w-site grid-cols-2 gap-x-8 gap-y-12 px-6 py-14 md:grid-cols-3 lg:grid-cols-12 lg:gap-x-10">
-        <div className="col-span-2 md:col-span-3 lg:col-span-4">
-          <Link to="/" aria-label="SYSI TRAVEL Guinée — accueil" className="inline-flex items-center">
+      <div className="mx-auto max-w-site px-6 py-14">
+        {/* The brand on one row: logo, what SYSI TRAVEL is, the promise and the social networks. */}
+        <div className="flex flex-col gap-6 border-b border-ivory/10 pb-10 lg:flex-row lg:items-center lg:gap-12">
+          <Link to="/" aria-label="SYSI TRAVEL Guinée — accueil" className="inline-flex shrink-0 items-center">
             <img src={LOGO_INVERSE} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[4.91rem] w-auto object-contain" />
           </Link>
-          <p className="mt-6 max-w-sm text-[0.95rem] leading-relaxed text-ivory/70">
+          <p className="max-w-xl text-[0.95rem] leading-relaxed text-ivory/70">
             Plateforme touristique dédiée à la Guinée. Des sites d'exception, des guides locaux
             et un accompagnement pensé pour la diaspora.
           </p>
-          <p className="mt-6 font-display text-[1.05rem] font-semibold text-gold">
-            Redécouvrez la Guinée, en toute confiance.
-          </p>
-          <SocialLinks
-            reseaux={reseaux}
-            className="mt-6"
-            linkClassName="border-ivory/20 text-ivory/80 hover:border-gold hover:text-gold"
-          />
+          <div className="lg:ml-auto lg:text-right">
+            <p className="font-display text-[1.05rem] font-semibold text-gold lg:whitespace-nowrap">Redécouvrez la Guinée, en toute confiance.</p>
+            <SocialLinks
+              reseaux={reseaux}
+              className="mt-4 lg:justify-end"
+              linkClassName="border-ivory/20 text-ivory/80 hover:border-gold hover:text-gold"
+            />
+          </div>
         </div>
 
-        <Column title="Destinations" className="col-span-1 lg:col-span-3">
-          {destinations.slice(0, 7).map((destination) => (
-            <li key={destination.id}>
-              <Link to="/destinations/$slug" params={{ slug: destination.slug }} className={linkClass}>
-                {destination.name}
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 pt-10 lg:grid-cols-4 lg:gap-x-10">
+          <Column title="Destinations">
+            {destinations.slice(0, DESTINATIONS_SHOWN).map((destination) => (
+              <li key={destination.id}>
+                <Link to="/destinations/$slug" params={{ slug: destination.slug }} className={linkClass}>
+                  {destination.name}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link to="/destinations" className={`${linkClass} text-gold/90`}>
+                Toutes les destinations →
               </Link>
             </li>
-          ))}
-          <li>
-            <Link to="/destinations" className={`${linkClass} text-gold/90`}>
-              Toutes les destinations →
-            </Link>
-          </li>
-        </Column>
-
-        <Column title="Explorer" className="col-span-1 lg:col-span-2">
-          {EXPLORER.map((link) => (
-            <li key={link.label}>
-              <Link to={link.to ?? "/"} hash={link.hash} className={linkClass}>
-                {link.label}
-              </Link>
+          </Column>
+  
+          <Column title="Découvrir">
+            {DECOUVRIR.map((link) => (
+              <li key={link.label}>
+                <Link to={link.to} className={linkClass}>
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </Column>
+  
+          <Column title="Services">
+            {SERVICES.map((link) => (
+              <li key={link.label}>
+                <Link to={link.to ?? "/"} hash={link.hash} className={linkClass}>
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </Column>
+  
+          <Column title="Nous joindre">
+            <li>
+              <a href={CONTACT.phoneHref} className={`${linkClass} inline-flex items-center gap-3`}>
+                <Phone className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} /> {CONTACT.phone}
+              </a>
             </li>
-          ))}
-        </Column>
-
-        <Column title="Nous joindre" className="col-span-2 md:col-span-1 lg:col-span-3">
-          <li>
-            <a href={CONTACT.phoneHref} className={`${linkClass} inline-flex items-center gap-3`}>
-              <Phone className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} /> {CONTACT.phone}
-            </a>
-          </li>
-          <li>
-            <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className={`${linkClass} inline-flex items-center gap-3`}>
-              <MessageCircle className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} /> WhatsApp
-            </a>
-          </li>
-          <li>
-            <a href={`mailto:${CONTACT.email}`} className={`${linkClass} inline-flex items-center gap-3`}>
-              <Mail className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} />
-              {/* May wrap only after the @, never inside a word. */}
-              <span>
-                {CONTACT.email.split("@")[0]}@<wbr />
-                {CONTACT.email.split("@")[1]}
-              </span>
-            </a>
-          </li>
-          <li className="flex items-start gap-3 text-[0.95rem] text-ivory/75">
-            <MapPin className="mt-1 h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} /> {CONTACT.address}
-          </li>
-          <li className="flex items-start gap-3 text-[0.95rem] text-ivory/75">
-            <Clock className="mt-1 h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} /> {CONTACT.hours}
-          </li>
-        </Column>
+            <li>
+              <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className={`${linkClass} inline-flex items-center gap-3`}>
+                <MessageCircle className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} /> WhatsApp
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${CONTACT.email}`} className={`${linkClass} inline-flex items-center gap-3`}>
+                <Mail className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} />
+                {/* May wrap only after the @, never inside a word. */}
+                <span>
+                  {CONTACT.email.split("@")[0]}@<wbr />
+                  {CONTACT.email.split("@")[1]}
+                </span>
+              </a>
+            </li>
+            <li className="flex items-start gap-3 text-[0.95rem] text-ivory/75">
+              <MapPin className="mt-1 h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} /> {CONTACT.address}
+            </li>
+            <li className="flex items-start gap-3 text-[0.95rem] text-ivory/75">
+              <Clock className="mt-1 h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} /> {CONTACT.hours}
+            </li>
+          </Column>
+        </div>
       </div>
 
       <div className="border-t border-ivory/10">

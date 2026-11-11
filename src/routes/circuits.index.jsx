@@ -46,7 +46,7 @@ function CircuitsPage() {
           <div className="mx-auto max-w-site px-6">
             <BackButton label="Retour" className="mb-8" />
             <p className="eyebrow text-gold-deep">Circuits & excursions</p>
-            <h1 className="mt-4 max-w-3xl text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
+            <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
               Des voyages prêts à vivre en Guinée
             </h1>
             <p className="mt-6 max-w-2xl text-[1rem] leading-relaxed text-petrol/70">
