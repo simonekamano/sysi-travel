@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, Compass, Mail, Scissors, Sparkles, Truck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Compass, Mail, Scissors, Sparkles, Truck } from "lucide-react";
 import { breadcrumbLd, seo } from "@/lib/seo";
 import BackButton from "@/components/BackButton";
 import Nav from "@/components/landing/Nav";
@@ -12,6 +12,12 @@ import { SHOP_CATEGORIES } from "@/lib/boutique";
 import { getBoutiquePage } from "@/lib/server-fns";
 import { IMAGES } from "@/data/site";
 import { cn } from "@/lib/utils";
+
+// The router marks a link « current » only on the very same address (not on ?page=2 for page 1).
+const EXACT = { exact: true, includeSearch: true };
+
+// Articles per page in a section (a multiple of 2, 3 and 4: full rows at every width).
+const PER_PAGE = 12;
 
 // The shop's sections: the articles' categories, then the books.
 const SECTIONS = [...SHOP_CATEGORIES, { key: "livres", label: "Livres & guides", short: "Livres" }];
@@ -42,7 +48,13 @@ const PROMISES = [
 ];
 
 export const Route = createFileRoute("/boutique/")({
-  validateSearch: (search) => ({ categorie: SECTION_KEYS.includes(search.categorie) ? search.categorie : undefined }),
+  validateSearch: (search) => {
+    const page = Number.parseInt(search.page, 10);
+    return {
+      categorie: SECTION_KEYS.includes(search.categorie) ? search.categorie : undefined,
+      page: Number.isFinite(page) && page > 1 ? page : undefined,
+    };
+  },
   loaderDeps: ({ search }) => ({ categorie: search.categorie }),
   loader: async ({ deps }) => ({ ...(await getBoutiquePage()), categorie: deps.categorie ?? "" }),
   head: ({ loaderData }) => {
@@ -62,6 +74,7 @@ export const Route = createFileRoute("/boutique/")({
 
 function BoutiquePage() {
   const { articles, livres, destinations, reseaux, categorie } = Route.useLoaderData();
+  const { page = 1 } = Route.useSearch();
   const countOf = (key) => (key === "livres" ? livres.length : articles.filter((article) => article.category === key).length);
   const sections = SECTIONS.filter((section) => countOf(section.key) > 0);
   const current = SECTIONS.find((section) => section.key === categorie);
@@ -71,17 +84,34 @@ function BoutiquePage() {
       <Nav home={false} solid bookingHref="/contact" />
 
       <main>
-        <section className="bg-background pb-14 pt-32 lg:pb-20 lg:pt-36">
+        <section className="bg-background pb-14 pt-28 lg:pb-20 lg:pt-32">
           <div className="mx-auto max-w-site px-6">
-            <BackButton label="Retour" className="mb-6" />
-            <p className="eyebrow text-gold-deep">{current ? "Boutique" : "Boutique SYSI TRAVEL"}</p>
-            <h1 className="mt-3 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
-              {current ? current.label : "Mode, sacs, bijoux et livres"}
-            </h1>
-            <p className="mt-5 max-w-2xl text-[1rem] leading-relaxed text-petrol/70">{INTRO[categorie]}</p>
+            {/* A compact header: the way back and where we are, then the title beside its text. */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <BackButton label="Retour" className="px-3.5 py-2 text-[0.7rem]" />
+              <nav aria-label="Fil d'Ariane" className="label-caps flex flex-wrap items-center gap-2 text-[0.7rem] text-gold-deep">
+                {current ? (
+                  <>
+                    <Link to="/boutique" className="transition-colors hover:text-petrol">
+                      Boutique
+                    </Link>
+                    <span aria-hidden="true" className="text-petrol/30">/</span>
+                    <span className="text-petrol/55">{current.label}</span>
+                  </>
+                ) : (
+                  <span>Boutique SYSI TRAVEL</span>
+                )}
+              </nav>
+            </div>
+            <div className="mt-4 grid gap-x-12 gap-y-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-end">
+              <h1 className="text-[clamp(1.9rem,3.4vw,2.7rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
+                {current ? current.label : "Mode, sacs, bijoux et livres"}
+              </h1>
+              <p className="text-[0.98rem] leading-relaxed text-petrol/70 lg:pb-1">{INTRO[categorie]}</p>
+            </div>
 
             {/* Sections of the shop, always in view: one tap to the right shelf. */}
-            <nav aria-label="Rayons de la boutique" className="-mx-6 mt-8 overflow-x-auto px-6 [scrollbar-width:none]">
+            <nav aria-label="Rayons de la boutique" className="-mx-6 mt-7 overflow-x-auto px-6 [scrollbar-width:none]">
               <ul className="flex w-max gap-2 lg:w-auto lg:flex-wrap">
                 <li>
                   <ShelfLink active={!categorie} search={{}}>
@@ -107,9 +137,9 @@ function BoutiquePage() {
             </nav>
 
             {categorie ? (
-              <Shelf categorie={categorie} articles={articles} livres={livres} />
+              <Shelf categorie={categorie} articles={articles} livres={livres} page={page} />
             ) : (
-              <div className="mt-12 space-y-16">
+              <div className="mt-10 space-y-14">
                 {sections.map((section) => (
                   <section key={section.key} aria-labelledby={`rayon-${section.key}`}>
                     <div className="flex flex-wrap items-end justify-between gap-4 border-b border-petrol/10 pb-4">
@@ -178,6 +208,7 @@ function ShelfLink({ active, search, children }) {
     <Link
       to="/boutique"
       search={search}
+      activeOptions={EXACT}
       aria-current={active ? "page" : undefined}
       className={cn(
         "label-caps inline-flex items-baseline gap-1.5 whitespace-nowrap rounded-full border px-5 py-2.5 transition-colors duration-300",
@@ -189,30 +220,85 @@ function ShelfLink({ active, search, children }) {
   );
 }
 
-// The items of one section: articles, or books for « livres ». `limit`: a preview on « Tout ».
-function Shelf({ categorie, articles, livres, limit }) {
-  if (categorie === "livres") {
-    const books = limit ? livres.slice(0, limit) : livres;
-    return (
-      <div className="mt-10 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
-        {books.map((livre, index) => (
-          <Reveal key={livre.id} delay={(index % 4) * 70} className="h-full">
-            <BookCard book={livre} />
-          </Reveal>
-        ))}
-      </div>
-    );
-  }
-  const items = articles.filter((article) => article.category === categorie);
-  const visible = limit ? items.slice(0, limit) : items;
+// The items of one section: articles, or books for « livres ». `limit`: a preview on « Tout »;
+// without it, the section is shown PER_PAGE items at a time, with its pages below.
+function Shelf({ categorie, articles, livres, limit, page = 1 }) {
+  const books = categorie === "livres";
+  const items = books ? livres : articles.filter((article) => article.category === categorie);
+  const pages = limit ? 1 : Math.max(1, Math.ceil(items.length / PER_PAGE));
+  const current = Math.min(page, pages);
+  const visible = limit ? items.slice(0, limit) : items.slice((current - 1) * PER_PAGE, current * PER_PAGE);
+
   return (
-    <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
-      {visible.map((article, index) => (
-        <Reveal key={article.id} delay={(index % 4) * 70} className="h-full">
-          <ArticleCard article={article} />
-        </Reveal>
-      ))}
+    <div id={limit ? undefined : "rayon"} className="scroll-mt-28">
+      {books ? (
+        <div className="mt-10 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+          {visible.map((livre, index) => (
+            <Reveal key={livre.id} delay={(index % 4) * 70} className="h-full">
+              <BookCard book={livre} />
+            </Reveal>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
+          {visible.map((article, index) => (
+            <Reveal key={article.id} delay={(index % 4) * 70} className="h-full">
+              <ArticleCard article={article} />
+            </Reveal>
+          ))}
+        </div>
+      )}
+      {pages > 1 ? (
+        <Pagination categorie={categorie} current={current} pages={pages} total={items.length} books={books} />
+      ) : null}
     </div>
+  );
+}
+
+// « 13–24 sur 35 articles » and the page links. Each link is a real address (?page=2), so a page
+// can be shared and the browser's back button returns to the previous one.
+function Pagination({ categorie, current, pages, total, books }) {
+  const first = (current - 1) * PER_PAGE + 1;
+  const last = Math.min(current * PER_PAGE, total);
+  const search = (number) => ({ categorie, page: number > 1 ? number : undefined });
+  const stepClass =
+    "label-caps inline-flex h-11 items-center gap-2 rounded-full border border-petrol/20 px-4 text-petrol transition-colors hover:border-gold";
+
+  return (
+    <nav aria-label="Pages du rayon" className="mt-12 flex flex-col items-center gap-4 border-t border-petrol/10 pt-8">
+      <p className="text-[0.9rem] text-petrol/60">
+        {first}–{last} sur {total} {books ? "livres" : "articles"}
+      </p>
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        {current > 1 ? (
+          <Link to="/boutique" search={search(current - 1)} hash="rayon" activeOptions={EXACT} className={stepClass} aria-label="Page précédente">
+            <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">Précédente</span>
+          </Link>
+        ) : null}
+        {Array.from({ length: pages }, (_, index) => index + 1).map((number) => (
+          <Link
+            key={number}
+            to="/boutique"
+            search={search(number)}
+            activeOptions={EXACT}
+            hash="rayon"
+            aria-label={`Page ${number}`}
+            aria-current={number === current ? "page" : undefined}
+            className={cn(
+              "inline-flex h-11 min-w-[2.75rem] items-center justify-center rounded-full border px-3 font-display text-[0.95rem] font-bold transition-colors",
+              number === current ? "border-petrol bg-petrol text-ivory" : "border-petrol/20 text-petrol hover:border-gold",
+            )}
+          >
+            {number}
+          </Link>
+        ))}
+        {current < pages ? (
+          <Link to="/boutique" search={search(current + 1)} hash="rayon" activeOptions={EXACT} className={stepClass} aria-label="Page suivante">
+            <span className="hidden sm:inline">Suivante</span> <ArrowRight className="h-4 w-4" />
+          </Link>
+        ) : null}
+      </div>
+    </nav>
   );
 }
 

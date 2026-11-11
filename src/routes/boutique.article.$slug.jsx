@@ -80,7 +80,7 @@ function ArticlePage() {
   return (
     <div className="min-h-screen bg-background">
       <Nav home={false} solid bookingHref="/contact" />
-      <main className="pb-16 pt-32 lg:pt-36">
+      <main className="pb-16 pt-28 lg:pt-32">
         {/* key: a new article starts with its own choices. */}
         <ArticleDetail key={article.id} article={article} />
         {others.length ? (
@@ -147,14 +147,18 @@ function ArticleDetail({ article }) {
 
   return (
     <div className="mx-auto max-w-site px-6">
-      <BackButton to="/boutique" label="Boutique" className="mb-6" />
-      <nav aria-label="Fil d'Ariane" className="label-caps mb-6 flex flex-wrap gap-2 text-[0.7rem] text-petrol/50">
-        <Link to="/boutique" className="hover:text-gold-deep">Boutique</Link>
-        <span aria-hidden="true">/</span>
-        <Link to="/boutique" search={{ categorie: article.category }} className="hover:text-gold-deep">
-          {ARTICLE_CATEGORY_LABEL[article.category]}
-        </Link>
-      </nav>
+      <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <BackButton to="/boutique" label="Retour" className="px-3.5 py-2 text-[0.7rem]" />
+        <nav aria-label="Fil d'Ariane" className="label-caps flex flex-wrap items-center gap-2 text-[0.7rem] text-petrol/50">
+          <Link to="/boutique" className="text-gold-deep hover:text-petrol">Boutique</Link>
+          <span aria-hidden="true">/</span>
+          <Link to="/boutique" search={{ categorie: article.category }} className="text-gold-deep hover:text-petrol">
+            {ARTICLE_CATEGORY_LABEL[article.category]}
+          </Link>
+          <span aria-hidden="true">/</span>
+          <span className="truncate">{article.name}</span>
+        </nav>
+      </div>
 
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-14">
         {/* Photos of the chosen variant. */}
