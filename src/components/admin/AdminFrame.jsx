@@ -15,6 +15,7 @@ import {
   Route,
   Scale,
   Share2,
+  Shirt,
   Tags,
   X,
 } from "lucide-react";
@@ -32,6 +33,13 @@ const GROUPS = [
     ],
   },
   {
+    title: "Boutique",
+    links: [
+      { to: "/admin/articles", label: "Articles", icon: Shirt },
+      { to: "/admin/livres", label: "Livres & guides", icon: BookOpen },
+    ],
+  },
+  {
     title: "Voyages",
     links: [
       { to: "/admin", label: "Destinations", icon: MapPin, exact: true },
@@ -44,7 +52,6 @@ const GROUPS = [
     title: "Contenus",
     links: [
       { to: "/admin/videos", label: "Vidéos", icon: Clapperboard },
-      { to: "/admin/livres", label: "Livres & guides", icon: BookOpen },
       { to: "/admin/faq", label: "FAQ", icon: HelpCircle },
     ],
   },

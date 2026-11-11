@@ -1,10 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest, getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 import { z } from "zod";
-import { requireAdmin } from "@/lib/auth-middleware";
-import { BOOK_PUBLIC_COLUMNS, DOWNLOAD_DAYS } from "@/lib/boutique";
+import { requireAdmin, requireUser } from "@/lib/auth-middleware";
+import { ARTICLE_CATEGORY_KEYS, BOOK_PUBLIC_COLUMNS, CUSTOM_SIZE, DOWNLOAD_DAYS } from "@/lib/boutique";
 import { LEGAL_PAGES, LEGAL_SLUGS, findPlaceholders } from "@/lib/legal";
-import { sendCommandeEmails, sendDemandeEmails, sendLienTelechargement } from "@/lib/mail";
+import { sendCommandeEmails, sendDemandeEmails, sendLienTelechargement, sendPaiementRecu, sendSuiviLivraison } from "@/lib/mail";
 import { siteUrl } from "@/lib/site-url";
 import { parseVideo } from "@/lib/video";
 
@@ -46,7 +46,7 @@ export const listFaqs = createServerFn({ method: "GET" }).handler(({ context }) 
 
 export const getSiteContent = createServerFn({ method: "GET" }).handler(async ({ context }) => {
   const supabase = context.getSupabase();
-  const [destinations, formules, faqs, reseaux, circuits, sites, videos, livres] = await Promise.all([
+  const [destinations, formules, faqs, reseaux, circuits, sites, videos, livres, articles] = await Promise.all([
     listOrdered(supabase, "destinations", 200),
     listOrdered(supabase, "formules", 50),
     listOrdered(supabase, "faqs", 200),
@@ -56,8 +56,13 @@ export const getSiteContent = createServerFn({ method: "GET" }).handler(async ({
     // Published only: an admin browsing the site must not see hidden videos.
     supabase.from("videos").select("*").eq("published", true).order("sort_order").limit(100).then(unwrap),
     listPublishedBooks(supabase),
+    listPublishedArticles(supabase),
   ]);
-  return { destinations, formules, faqs, reseaux, circuits, sitesCount: sites.count ?? 0, videos, livres };
+  // The shop window of the home page: the first article of each section.
+  const vitrine = [...new Set(articles.map((article) => article.category))]
+    .map((category) => articles.find((article) => article.category === category))
+    .slice(0, 4);
+  return { destinations, formules, faqs, reseaux, circuits, sitesCount: sites.count ?? 0, videos, livres, vitrine, articlesCount: articles.length };
 });
 
 // Published books only, without the PDF's place in the private bucket.
@@ -78,6 +83,42 @@ export const getLivrePage = createServerFn({ method: "GET" })
     const livre = livres.find((item) => item.slug === data.slug) ?? null;
     const others = livres.filter((item) => item.slug !== data.slug).slice(0, 3);
     return { livre, others, destinations, reseaux };
+  });
+
+// Published articles only (clothes, bags, jewels): an admin browsing the site sees the same shop.
+const listPublishedArticles = (supabase) =>
+  supabase.from("articles").select("*").eq("published", true).order("sort_order").limit(500).then(unwrap);
+
+// The shop (/boutique) and the cart: articles, books, and what the footer needs.
+export const getBoutiquePage = createServerFn({ method: "GET" }).handler(async ({ context }) => {
+  const supabase = context.getSupabase();
+  const [articles, livres, destinations, reseaux] = await Promise.all([
+    listPublishedArticles(supabase),
+    listPublishedBooks(supabase),
+    listOrdered(supabase, "destinations", 200),
+    listOrdered(supabase, "reseaux_sociaux", 20),
+  ]);
+  return { articles, livres, destinations, reseaux };
+});
+
+// An article's page and four others to suggest (same section first). `article` is null for an
+// unknown or hidden article; the route answers 404.
+export const getArticlePage = createServerFn({ method: "GET" })
+  .validator(z.object({ slug: text(200) }))
+  .handler(async ({ data, context }) => {
+    const supabase = context.getSupabase();
+    const [articles, destinations, reseaux] = await Promise.all([
+      listPublishedArticles(supabase),
+      listOrdered(supabase, "destinations", 200),
+      listOrdered(supabase, "reseaux_sociaux", 20),
+    ]);
+    const article = articles.find((item) => item.slug === data.slug) ?? null;
+    const rest = articles.filter((item) => item.slug !== data.slug);
+    const others = [
+      ...rest.filter((item) => item.category === article?.category),
+      ...rest.filter((item) => item.category !== article?.category),
+    ].slice(0, 4);
+    return { article, others, destinations, reseaux };
   });
 
 // Published circuits only: an admin browsing the site must not see drafts in the lists.
@@ -203,44 +244,92 @@ const checkCommandeRate = rateLimiter(
   "Trop de commandes envoyées. Réessayez dans quelques minutes ou écrivez-nous sur WhatsApp.",
 );
 
+// The messages of passer_commande() a visitor may read; any other database error stays internal.
+const ORDER_ERRORS = [
+  [/livre du panier n'est plus disponible/, "Un livre de votre panier n'est plus disponible : retirez-le puis réessayez."],
+  [/article du panier n'est plus disponible/, "Un article de votre panier n'est plus disponible : retirez-le puis réessayez."],
+  [/Adresse de livraison/, "Indiquez votre adresse de livraison complète et votre pays."],
+  [/Taille invalide/, "Une taille choisie n'existe plus pour cet article : retirez-le puis ajoutez-le de nouveau."],
+];
+
 export const createCommande = createServerFn({ method: "POST" })
   .validator(
-    z.object({
-      nom: text(200).min(1),
-      email: z.email().max(320),
-      telephone: text(50),
-      livres: z.array(z.uuid()).min(1).max(50),
-      // Digital content delivered at once: the buyer waives the withdrawal period.
-      renonciation: z.literal(true),
-      // Terms of sale accepted: required once the client has published them.
-      cgv: z.boolean().default(false),
-      // Hidden field of the form (spam trap): only robots fill it in.
-      site_web: text(500).optional(),
-      delai: z.number().int().min(0).max(1e10).optional(),
-    }),
+    z
+      .object({
+        nom: text(200).min(1),
+        email: z.email().max(320),
+        telephone: text(50),
+        livres: z.array(z.uuid()).max(50).default([]),
+        // Clothes, bags, jewels: prices and availability come from the catalogue.
+        articles: z
+          .array(z.object({ id: z.uuid(), variante: text(100), taille: text(40), quantite: z.number().int().min(1).max(20) }))
+          .max(30)
+          .default([]),
+        // Where the articles are sent (required when there are articles).
+        adresse: text(600).default(""),
+        pays: text(100).default(""),
+        message: text(2000).default(""),
+        // Digital content delivered at once: the buyer of a book waives the withdrawal period.
+        renonciation: z.boolean().default(false),
+        // Terms of sale accepted: required once the client has published them.
+        cgv: z.boolean().default(false),
+        // Hidden field of the form (spam trap): only robots fill it in.
+        site_web: text(500).optional(),
+        delai: z.number().int().min(0).max(1e10).optional(),
+      })
+      .refine((data) => data.livres.length + data.articles.length > 0, "Votre panier est vide.")
+      .refine((data) => data.livres.length === 0 || data.renonciation, "Confirmez la livraison immédiate des livres numériques."),
   )
   .handler(async ({ data, context }) => {
-    if (isRobot(data.site_web, data.delai)) return { reference: "", total_cents: 0 };
+    if (isRobot(data.site_web, data.delai)) return { reference: "", total_cents: 0, livraison: false };
     checkCommandeRate();
     const supabase = context.getSupabase();
     if (!data.cgv && (await isLegalPagePublished(supabase, "conditions-generales-de-vente"))) {
       throw new Error("Cochez la case pour accepter les conditions générales de vente.");
     }
-    const { data: commande, error } = await supabase.rpc("creer_commande", {
+    const { data: commande, error } = await supabase.rpc("passer_commande", {
       p_nom: data.nom,
       p_email: data.email,
       p_telephone: data.telephone,
+      p_adresse: data.adresse,
+      p_pays: data.pays,
+      p_message: data.message,
       p_livres: data.livres,
+      p_articles: data.articles,
     });
     if (error) {
-      throw new Error(
-        /plus disponible/.test(error.message)
-          ? "Un livre de votre panier n'est plus disponible : retirez-le puis réessayez."
-          : publicError(error, "La commande n'a pas pu être enregistrée. Réessayez ou écrivez-nous sur WhatsApp."),
-      );
+      const known = ORDER_ERRORS.find(([pattern]) => pattern.test(error.message));
+      throw new Error(known ? known[1] : publicError(error, "La commande n'a pas pu être enregistrée. Réessayez ou écrivez-nous sur WhatsApp."));
     }
-    await sendCommandeEmails({ ...commande, nom: data.nom, email: data.email, telephone: data.telephone });
-    return { reference: commande.reference, total_cents: commande.total_cents };
+    await sendCommandeEmails({
+      ...commande,
+      nom: data.nom,
+      email: data.email,
+      telephone: data.telephone,
+      adresse: data.adresse,
+      pays: data.pays,
+      message: data.message,
+    });
+    return { reference: commande.reference, total_cents: commande.total_cents, livraison: commande.livraison };
+  });
+
+// « Mon compte »: the signed-in customer's orders (same e-mail address). Row level security
+// gives a customer only their own; the explicit filter keeps an admin's account page personal.
+export const listMesCommandes = createServerFn({ method: "GET" })
+  .middleware([requireUser])
+  .handler(async ({ context }) => {
+    const email = (context.user.email ?? "").toLowerCase();
+    if (!email) return [];
+    return context
+      .getSupabase()
+      .from("commandes")
+      .select(
+        "id, reference, created_at, statut, livraison, livraison_maj_le, total_cents, adresse, pays, token, lien_expire_le, lignes:commande_livres(title, price_cents), articles:commande_articles(name, variante, taille, quantite, price_cents)",
+      )
+      .eq("email", email)
+      .order("created_at", { ascending: false })
+      .limit(100)
+      .then(unwrap);
   });
 
 // The /telechargement/<token> page: the order of that link (null for an unknown link).
@@ -543,35 +632,59 @@ export const listCommandes = createServerFn({ method: "GET" })
     context
       .getSupabase()
       .from("commandes")
-      .select("*, lignes:commande_livres(title, price_cents)")
+      .select(ORDER_COLUMNS)
       .order("created_at", { ascending: false })
       .limit(500)
       .then(unwrap),
   );
 
+// An order with its books and its articles.
+const ORDER_COLUMNS =
+  "*, lignes:commande_livres(title, price_cents), articles:commande_articles(name, variante, taille, quantite, price_cents)";
+
+const getOrder = async (supabase, id) => unwrap(await supabase.from("commandes").select(ORDER_COLUMNS).eq("id", id).single());
+
 // Opens the download link for DOWNLOAD_DAYS days (counter back to zero) and e-mails it.
 async function openDownloadLink(supabase, id, values = {}) {
   const lienExpireLe = new Date(Date.now() + DOWNLOAD_DAYS * 24 * 60 * 60 * 1000).toISOString();
   unwrap(await supabase.from("commandes").update({ ...values, lien_expire_le: lienExpireLe, telechargements: 0 }).eq("id", id));
-  const commande = unwrap(
-    await supabase.from("commandes").select("*, lignes:commande_livres(title, price_cents)").eq("id", id).single(),
-  );
+  const commande = await getOrder(supabase, id);
   const url = `${siteUrl(getRequest())}/telechargement/${commande.token}`;
   const emailed = await sendLienTelechargement(commande, url);
   return { ok: true, emailed };
 }
 
-// « Payée » opens the download link and sends it to the buyer; « Annulée » or « En attente »
-// closes it (the link only works for a paid order).
+// « Payée »: an order with books opens their download link and sends it; an order of articles
+// only gets a « paiement reçu » e-mail. « Annulée » or « En attente » closes the link (it only
+// works for a paid order).
 export const setCommandeStatut = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .validator(z.object({ id: z.uuid(), statut: z.enum(["en_attente", "payee", "annulee"]) }))
   .handler(async ({ data, context }) => {
     const supabase = context.getSupabase();
     if (data.statut === "payee") {
-      return openDownloadLink(supabase, data.id, { statut: "payee", payee_le: new Date().toISOString() });
+      const payment = { statut: "payee", payee_le: new Date().toISOString() };
+      const order = await getOrder(supabase, data.id);
+      if (order.lignes.length) return openDownloadLink(supabase, data.id, payment);
+      unwrap(await supabase.from("commandes").update(payment).eq("id", data.id));
+      const emailed = await sendPaiementRecu({ ...order, ...payment });
+      return { ok: true, emailed };
     }
     return saveRecord(supabase, "commandes", data);
+  });
+
+// Shipping of an order's articles: each step is e-mailed to the customer (except « à préparer »).
+export const setCommandeLivraison = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(z.object({ id: z.uuid(), livraison: z.enum(["a_preparer", "en_preparation", "expediee", "livree"]) }))
+  .handler(async ({ data, context }) => {
+    const supabase = context.getSupabase();
+    const order = await getOrder(supabase, data.id);
+    if (!order.articles.length) throw new Error("Cette commande n'a pas d'article à livrer.");
+    const values = { livraison: data.livraison, livraison_maj_le: new Date().toISOString() };
+    unwrap(await supabase.from("commandes").update(values).eq("id", data.id));
+    const emailed = data.livraison === "a_preparer" ? true : await sendSuiviLivraison({ ...order, ...values });
+    return { ok: true, emailed };
   });
 
 // A paid order's link again: 30 more days, counter back to zero, e-mailed once more.
@@ -584,6 +697,44 @@ export const renvoyerLienCommande = createServerFn({ method: "POST" })
     if (statut !== "payee") throw new Error("Seule une commande payée a un lien de téléchargement.");
     return openDownloadLink(supabase, data.id);
   });
+
+// --- Articles (clothes, bags, jewels: supabase/migrations/0013_boutique_articles.sql) ---
+
+const articleInput = z.object({
+  id: z.uuid().optional(),
+  name: text(200).min(1),
+  // Empty: the database derives it from the name.
+  slug: text(120).regex(/^[a-z0-9-]*$/, "Lettres minuscules, chiffres et tirets uniquement"),
+  category: z.enum(ARTICLE_CATEGORY_KEYS),
+  tagline: text(300),
+  description: text(10000),
+  price_cents: z.number().int().min(100).max(1000000),
+  sizes: z
+    .array(text(30).min(1))
+    .max(20)
+    .refine((sizes) => !sizes.includes(CUSTOM_SIZE), "« Sur mesure » se coche à part."),
+  custom_made: z.boolean(),
+  variants: z
+    .array(z.object({ name: text(100).min(1), images: z.array(text(2000).min(1)).max(20), available: z.boolean() }))
+    .max(20)
+    .refine((variants) => new Set(variants.map((item) => item.name.toLowerCase())).size === variants.length, "Deux variantes portent le même nom."),
+  published: z.boolean(),
+  sort_order: z.number(),
+});
+
+export const listAllArticles = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(({ context }) => listOrdered(context.getSupabase(), "articles", 500));
+
+export const saveArticle = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(articleInput)
+  .handler(({ data, context }) => saveRecord(context.getSupabase(), "articles", data));
+
+export const deleteArticle = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(idInput)
+  .handler(({ data, context }) => deleteRecord(context.getSupabase(), "articles", data.id));
 
 export const deleteCommande = createServerFn({ method: "POST" })
   .middleware([requireAdmin])

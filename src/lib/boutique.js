@@ -43,3 +43,55 @@ export const ORDER_STATUSES = {
   payee: "Payée",
   annulee: "Annulée",
 };
+
+// --- Articles (vêtements, sacs, bijoux: supabase/migrations/0013_boutique_articles.sql) ---
+
+// The shop's sections, in the navbar's order. `livres`: the PDF books; `terroir`: the local
+// products ordered on WhatsApp (/produits).
+export const SHOP_CATEGORIES = [
+  { key: "femme", label: "Mode femme", short: "Femme" },
+  { key: "homme", label: "Mode homme", short: "Homme" },
+  { key: "sacs", label: "Sacs", short: "Sacs" },
+  { key: "bijoux", label: "Bijoux", short: "Bijoux" },
+];
+export const ARTICLE_CATEGORY_LABEL = Object.fromEntries(SHOP_CATEGORIES.map((item) => [item.key, item.label]));
+export const ARTICLE_CATEGORY_KEYS = SHOP_CATEGORIES.map((item) => item.key);
+
+export const CUSTOM_SIZE = "Sur mesure";
+
+// The list-size version of a catalogue photo (made with it, « -640 »); uploaded photos have none.
+export const thumbOf = (src) => (src?.startsWith("/images/boutique/") ? src.replace(/\.jpg$/, "-640.jpg") : src);
+
+export const variantsOf = (article) => (Array.isArray(article?.variants) ? article.variants : []);
+
+// The photos of an article: its first variant's, or all of them when asked.
+export const articleImages = (article, variantName) => {
+  const variants = variantsOf(article);
+  const variant = variants.find((item) => item.name === variantName) ?? variants[0];
+  return variant?.images?.length ? variant.images : variants.flatMap((item) => item.images ?? []);
+};
+
+// Shipping of the items of an order, apart from its payment (commandes.livraison).
+export const DELIVERY_STATUSES = {
+  sans: "Sans livraison",
+  a_preparer: "À préparer",
+  en_preparation: "En préparation",
+  expediee: "Expédiée",
+  livree: "Livrée",
+};
+
+// The steps a customer sees for an order with items to ship.
+export const ORDER_STEPS = [
+  { key: "recue", label: "Commande reçue" },
+  { key: "payee", label: "Paiement reçu" },
+  { key: "en_preparation", label: "En préparation" },
+  { key: "expediee", label: "Expédiée" },
+  { key: "livree", label: "Livrée" },
+];
+
+// How far an order has gone, as an index in ORDER_STEPS (books only: received, then paid).
+export function orderStep(commande) {
+  if (commande.statut !== "payee") return 0;
+  const index = ["a_preparer", "en_preparation", "expediee", "livree"].indexOf(commande.livraison);
+  return index <= 0 ? 1 : index + 1;
+}

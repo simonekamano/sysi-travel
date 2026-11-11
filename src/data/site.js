@@ -41,14 +41,23 @@ export const CIRCUIT_KINDS = {
 export const SITE_ORIGIN = "https://sysitravel.com";
 export const absoluteUrl = (path) => (path?.startsWith("/") ? `${SITE_ORIGIN}${path}` : path);
 
-// `href`: a section of the home page; `to`: a page of its own.
+// The shop's sections, under « Boutique » in the navbar (src/lib/boutique.js, SHOP_CATEGORIES).
+export const SHOP_MENU = [
+  { label: "Mode femme", href: "/boutique?categorie=femme" },
+  { label: "Mode homme", href: "/boutique?categorie=homme" },
+  { label: "Sacs", href: "/boutique?categorie=sacs" },
+  { label: "Bijoux", href: "/boutique?categorie=bijoux" },
+  { label: "Livres & guides", href: "/boutique?categorie=livres" },
+  { label: "Produits du terroir", href: "/produits" },
+];
+
+// The navbar: the pages people come for. Questions and contact are on the home page and in the
+// footer. `active`: the paths under which the link shows as current.
 export const NAV_LINKS = [
   { label: "Destinations", to: "/destinations" },
   { label: "Circuits", to: "/circuits" },
   { label: "Explorer", to: "/explorer" },
-  { label: "Produits", to: "/produits" },
-  { label: "Questions", href: "#faq" },
-  { label: "Contact", href: "#contact" },
+  { label: "Boutique", to: "/boutique", active: ["/boutique", "/panier", "/produits"], children: SHOP_MENU },
 ];
 
 export const HERO_BADGES = [

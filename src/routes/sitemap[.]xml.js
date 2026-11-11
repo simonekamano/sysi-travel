@@ -5,20 +5,21 @@ const escapeXml = (value) =>
   String(value).replace(/[<>&'"]/g, (char) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" })[char]);
 
 // /sitemap.xml for search engines: the public pages plus one entry per destination and per
-// published circuit and book, and the published legal pages.
+// published circuit, book and article, and the published legal pages.
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async ({ request, context }) => {
         const base = siteUrl(request);
         const supabase = context.getSupabase();
-        const [destinations, circuits, livres, legal] = await Promise.all([
+        const [destinations, circuits, livres, legal, articles] = await Promise.all([
           supabase.from("destinations").select("slug, updated_at").order("sort_order"),
           supabase.from("circuits").select("slug, updated_at").eq("published", true).order("sort_order"),
           supabase.from("livres").select("slug, updated_at").eq("published", true).order("sort_order"),
           supabase.from("pages_legales").select("slug, updated_at").eq("published", true),
+          supabase.from("articles").select("slug, updated_at").eq("published", true).order("sort_order"),
         ]);
-        if (destinations.error || circuits.error || livres.error || legal.error) return new Response("Sitemap indisponible", { status: 503 });
+        if (destinations.error || circuits.error || livres.error || legal.error || articles.error) return new Response("Sitemap indisponible", { status: 503 });
 
         const page = (path, priority) => (item) => ({
           loc: `${base}/${path}/${item.slug}`,
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           ...destinations.data.map(page("destinations", "0.8")),
           ...circuits.data.map(page("circuits", "0.8")),
           ...livres.data.map(page("boutique", "0.7")),
+          ...articles.data.map(page("boutique/article", "0.7")),
           ...legal.data.map((item) => ({ loc: `${base}/${item.slug}`, lastmod: item.updated_at?.slice(0, 10), priority: "0.3" })),
         ];
 

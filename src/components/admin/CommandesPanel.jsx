@@ -1,18 +1,36 @@
 import { useState } from "react";
 import { useRouter } from "@tanstack/react-router";
-import { Check, Copy, Loader2, Mail, MessageCircle, RotateCcw, Send, Trash2, X } from "lucide-react";
+import { Check, Copy, Loader2, Mail, MapPin, MessageCircle, PackageCheck, RotateCcw, Send, Trash2, Truck, X } from "lucide-react";
 import { toast } from "sonner";
-import { deleteCommande, renvoyerLienCommande, setCommandeStatut } from "@/lib/server-fns";
+import { deleteCommande, renvoyerLienCommande, setCommandeLivraison, setCommandeStatut } from "@/lib/server-fns";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
-import { DOWNLOAD_LIMIT, ORDER_STATUSES, formatPrice } from "@/lib/boutique";
+import { DELIVERY_STATUSES, DOWNLOAD_LIMIT, ORDER_STATUSES, formatPrice } from "@/lib/boutique";
 import { cn } from "@/lib/utils";
 
+// « À expédier »: paid orders whose articles are not sent yet.
+const toShip = (item) => item.statut === "payee" && ["a_preparer", "en_preparation"].includes(item.livraison);
+
 const FILTERS = [
-  { value: "all", label: "Toutes" },
-  { value: "en_attente", label: "En attente" },
-  { value: "payee", label: "Payées" },
-  { value: "annulee", label: "Annulées" },
+  { value: "all", label: "Toutes", test: () => true },
+  { value: "en_attente", label: "En attente", test: (item) => item.statut === "en_attente" },
+  { value: "a_expedier", label: "À expédier", test: toShip },
+  { value: "payee", label: "Payées", test: (item) => item.statut === "payee" },
+  { value: "annulee", label: "Annulées", test: (item) => item.statut === "annulee" },
 ];
+
+const LIVRAISON_STYLE = {
+  a_preparer: "bg-gold/20 text-gold-deep",
+  en_preparation: "bg-[#2563eb]/10 text-[#1d4ed8]",
+  expediee: "bg-[#7c3aed]/10 text-[#6d28d9]",
+  livree: "bg-[#1a7f4b]/10 text-[#1a7f4b]",
+};
+
+// The next shipping step, offered first.
+const NEXT_STEP = {
+  a_preparer: { value: "en_preparation", label: "En préparation", icon: PackageCheck },
+  en_preparation: { value: "expediee", label: "Expédiée", icon: Truck },
+  expediee: { value: "livree", label: "Livrée", icon: Check },
+};
 
 const STATUT_STYLE = {
   en_attente: "bg-gold/20 text-gold-deep",
@@ -39,14 +57,35 @@ export default function CommandesPanel({ commandes = [] }) {
   const [pending, setPending] = useState(null);
   const [busy, setBusy] = useState(false);
 
-  const visible = filter === "all" ? commandes : commandes.filter((item) => item.statut === filter);
-  const countOf = (statut) => commandes.filter((item) => item.statut === statut).length;
+  const testOf = (value) => FILTERS.find((item) => item.value === value)?.test ?? (() => true);
+  const visible = commandes.filter(testOf(filter));
+  const countOf = (value) => commandes.filter(testOf(value)).length;
   const linkOf = (commande) => `${window.location.origin}/telechargement/${commande.token}`;
 
   const sentToast = (commande, emailed) =>
-    emailed
-      ? toast.success(`Lien de téléchargement envoyé à ${commande.email}.`)
-      : toast.warning("L'e-mail n'est pas parti : copiez le lien et envoyez-le à l'acheteur (WhatsApp, e-mail).");
+    commande.lignes.length
+      ? emailed
+        ? toast.success(`Lien de téléchargement envoyé à ${commande.email}.`)
+        : toast.warning("L'e-mail n'est pas parti : copiez le lien et envoyez-le à l'acheteur (WhatsApp, e-mail).")
+      : emailed
+        ? toast.success(`Paiement enregistré : ${commande.nom} est prévenu par e-mail.`)
+        : toast.warning("Paiement enregistré, mais l'e-mail n'est pas parti : prévenez l'acheteur sur WhatsApp.");
+
+  const changeLivraison = async (commande, livraison) => {
+    setWorking(commande.id);
+    try {
+      const result = await setCommandeLivraison({ data: { id: commande.id, livraison } });
+      if (livraison !== "a_preparer") {
+        if (result.emailed) toast.success(`${DELIVERY_STATUSES[livraison]} : ${commande.nom} est prévenu par e-mail.`);
+        else toast.warning("Étape enregistrée, mais l'e-mail n'est pas parti : prévenez l'acheteur sur WhatsApp.");
+      }
+      router.invalidate();
+    } catch {
+      toast.error("Mise à jour impossible. Vérifiez que vous êtes connecté en administrateur.");
+    } finally {
+      setWorking("");
+    }
+  };
 
   const changeStatut = async (commande, statut) => {
     setWorking(commande.id);
@@ -111,7 +150,7 @@ export default function CommandesPanel({ commandes = [] }) {
               filter === item.value ? "border-petrol bg-petrol text-ivory" : "border-petrol/20 text-petrol/70 hover:border-gold",
             )}
           >
-            {item.label} ({item.value === "all" ? commandes.length : countOf(item.value)})
+            {item.label} ({countOf(item.value)})
           </button>
         ))}
       </div>
@@ -130,6 +169,11 @@ export default function CommandesPanel({ commandes = [] }) {
                     <span className={cn("label-caps rounded-full px-3 py-1 text-[0.68rem]", STATUT_STYLE[commande.statut])}>
                       {ORDER_STATUSES[commande.statut]}
                     </span>
+                    {commande.livraison && commande.livraison !== "sans" && commande.statut !== "annulee" ? (
+                      <span className={cn("label-caps inline-flex items-center gap-1 rounded-full px-3 py-1 text-[0.68rem]", LIVRAISON_STYLE[commande.livraison])}>
+                        <Truck className="h-3 w-3" /> {DELIVERY_STATUSES[commande.livraison]}
+                      </span>
+                    ) : null}
                   </p>
                   <p className="mt-1 text-[0.85rem] text-petrol/55">{dateFormat.format(new Date(commande.created_at))}</p>
                 </div>
@@ -153,16 +197,40 @@ export default function CommandesPanel({ commandes = [] }) {
                   ) : null}
                 </div>
                 <ul className="space-y-1 text-[0.9rem] text-petrol/75">
+                  {(commande.articles ?? []).map((item, index) => (
+                    <li key={`a${index}`} className="flex justify-between gap-4">
+                      <span>
+                        {[item.name, item.variante, item.taille].filter(Boolean).join(" · ")}
+                        {item.quantite > 1 ? <strong className="text-petrol">{` × ${item.quantite}`}</strong> : null}
+                      </span>
+                      <span className="whitespace-nowrap text-petrol/55">{formatPrice(item.price_cents * item.quantite)}</span>
+                    </li>
+                  ))}
                   {commande.lignes.map((ligne, index) => (
                     <li key={index} className="flex justify-between gap-4">
-                      <span>{ligne.title}</span>
+                      <span>{ligne.title} (PDF)</span>
                       <span className="whitespace-nowrap text-petrol/55">{formatPrice(ligne.price_cents)}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              {commande.statut === "payee" ? (
+              {commande.adresse || commande.message ? (
+                <div className="mt-4 space-y-1.5 rounded-lg bg-ivory-soft px-4 py-3 text-[0.88rem] text-petrol/75">
+                  {commande.adresse ? (
+                    <p className="flex gap-2">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep" />
+                      <span className="whitespace-pre-line">
+                        {commande.adresse}
+                        {commande.pays ? `\n${commande.pays}` : ""}
+                      </span>
+                    </p>
+                  ) : null}
+                  {commande.message ? <p className="whitespace-pre-line text-petrol/65">« {commande.message} »</p> : null}
+                </div>
+              ) : null}
+
+              {commande.statut === "payee" && commande.lignes.length ? (
                 <p className="mt-4 text-[0.85rem] text-petrol/60">
                   {expired
                     ? "Lien expiré : renvoyez-le pour le rouvrir 30 jours."
@@ -188,7 +256,21 @@ export default function CommandesPanel({ commandes = [] }) {
                     </button>
                   </>
                 ) : null}
-                {commande.statut === "payee" ? (
+                {commande.statut === "payee" && NEXT_STEP[commande.livraison] ? (
+                  <button
+                    type="button"
+                    onClick={() => changeLivraison(commande, NEXT_STEP[commande.livraison].value)}
+                    disabled={isWorking}
+                    className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-4 py-2 text-ivory transition-colors hover:bg-petrol-deep disabled:opacity-50"
+                  >
+                    {isWorking ? <Loader2 className="h-4 w-4 animate-spin" /> : (() => {
+                      const Icon = NEXT_STEP[commande.livraison].icon;
+                      return <Icon className="h-4 w-4" />;
+                    })()}
+                    {NEXT_STEP[commande.livraison].label}
+                  </button>
+                ) : null}
+                {commande.statut === "payee" && commande.lignes.length ? (
                   <>
                     <button type="button" onClick={() => copyLink(commande)} className={actionClass}>
                       <Copy className="h-4 w-4" /> Copier le lien
@@ -226,10 +308,12 @@ export default function CommandesPanel({ commandes = [] }) {
         title="Paiement reçu ?"
         description={
           paying
-            ? `La commande ${paying.reference} passe en « Payée » et ${paying.nom} reçoit tout de suite son lien de téléchargement à ${paying.email}.`
+            ? paying.lignes.length
+              ? `La commande ${paying.reference} passe en « Payée » et ${paying.nom} reçoit tout de suite son lien de téléchargement à ${paying.email}.`
+              : `La commande ${paying.reference} passe en « Payée » et ${paying.nom} est prévenu par e-mail. Vous pourrez ensuite suivre l'expédition.`
             : ""
         }
-        confirmLabel="Oui, envoyer le lien"
+        confirmLabel={paying?.lignes.length ? "Oui, envoyer le lien" : "Oui, paiement reçu"}
         tone="confirm"
         busy={working === paying?.id}
         onCancel={() => setPaying(null)}

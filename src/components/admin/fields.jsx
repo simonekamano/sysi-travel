@@ -51,7 +51,7 @@ async function uploadImage(file) {
 }
 
 // A list of photos (destination gallery): add several at once, paste a URL, remove one.
-export function GalleryField({ label = "Galerie", value = [], onChange }) {
+export function GalleryField({ label = "Galerie", value = [], onChange, emptyText = "Aucune photo : la section galerie est masquée sur la page." }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [url, setUrl] = useState("");
@@ -99,7 +99,7 @@ export function GalleryField({ label = "Galerie", value = [], onChange }) {
           ))}
         </ul>
       ) : (
-        <p className="text-[0.85rem] text-petrol/55">Aucune photo : la section galerie est masquée sur la page.</p>
+        <p className="text-[0.85rem] text-petrol/55">{emptyText}</p>
       )}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <label className="label-caps inline-flex cursor-pointer items-center gap-2 border border-petrol/25 px-4 py-2.5 text-petrol transition-colors hover:border-gold hover:bg-petrol/5">

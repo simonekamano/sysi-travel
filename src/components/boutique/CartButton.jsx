@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart";
 
-// The cart in the navbar, shown once a book is in it. The badge bounces at each addition.
+// The cart in the navbar, shown once something is in it. The badge bounces at each addition.
 export default function CartButton() {
   const { count } = useCart();
   if (count === 0) return null;
@@ -10,8 +10,8 @@ export default function CartButton() {
   return (
     <Link
       to="/panier"
-      aria-label={`Panier : ${count} livre${count > 1 ? "s" : ""}`}
-      className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ivory/25 text-ivory transition-colors hover:border-gold hover:text-gold"
+      aria-label={`Panier : ${count} article${count > 1 ? "s" : ""}`}
+      className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ivory/25 text-ivory transition-colors hover:border-gold hover:text-gold"
     >
       <ShoppingBag className="h-5 w-5" />
       <span
