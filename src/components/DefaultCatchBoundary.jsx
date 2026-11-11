@@ -1,10 +1,18 @@
+import { useEffect } from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { AlertTriangle, RotateCw } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import { isMissingCodeError, reloadForNewVersion } from "@/lib/app-version";
 
 export function DefaultCatchBoundary({ error }) {
   const router = useRouter();
   if (error) console.error(error);
+
+  // A tab opened before a deployment asked for a code file the new build no longer has:
+  // load the page again, from the new version, instead of showing this error.
+  useEffect(() => {
+    if (isMissingCodeError(error)) reloadForNewVersion();
+  }, [error]);
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center bg-background px-6 py-16 text-petrol">
