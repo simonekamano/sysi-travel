@@ -80,8 +80,9 @@ export function RegisterPage() {
       <AuthLayout icon={UserPlus} title="Confirmez votre e-mail" subtitle="Dernière étape avant d'accéder à votre compte">
         <form onSubmit={verify}>
           <p className="mb-4 text-sm text-muted-foreground">
-            Un e-mail a été envoyé à <span className="font-semibold text-foreground">{email}</span>. Cliquez sur le lien qu'il
-            contient ou saisissez le code à 6 chiffres ci-dessous.
+            Un e-mail a été envoyé à <span className="font-semibold text-foreground">{email}</span>. Cliquez sur le bouton de
+            confirmation qu'il contient : votre compte est activé aussitôt. Vous pouvez aussi saisir ci-dessous le code à 6 chiffres
+            indiqué dans l'e-mail.
           </p>
           <AuthError>{error}</AuthError>
           <div className="mb-6 flex justify-center">

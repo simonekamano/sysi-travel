@@ -240,6 +240,20 @@ Le script sauvegarde `/opt/supabase/.env` avant de le modifier, redémarre le se
 vérifie le résultat. Un compte créé ainsi a le rôle « client » : aucun droit d'administration, il ne lit que
 ses propres commandes.
 
+Les e-mails du service de connexion (confirmation d'inscription avec le code à 6 chiffres, mot de passe
+oublié, lien de connexion, changement d'adresse, invitation) sont en français, aux couleurs du site : les
+modèles sont dans `public/emails/`. Pour que Supabase les utilise, une fois le site déployé :
+
+```bash
+cd /opt/sysi-travel/app
+bash deploy/emails-connexion.sh           # active les modèles du site
+bash deploy/emails-connexion.sh retirer   # revient aux e-mails par défaut de Supabase (anglais)
+```
+
+Le script ne touche pas au `docker-compose.yml` de Supabase : les réglages vont dans
+`/opt/supabase/docker-compose.sysi-emails.yml`, ajouté par `COMPOSE_FILE` dans `/opt/supabase/.env` (sauvegardé
+avant). Un modèle modifié dans `public/emails/` est pris en compte au déploiement suivant du site.
+
 ---
 
 ## 7. Pages du site et leur connexion à Supabase
