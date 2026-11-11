@@ -91,7 +91,7 @@ function VideosPage() {
                 </p>
                 <Link
                   to="/explorer"
-                  className="label-caps mt-6 inline-flex items-center gap-2 rounded-full bg-petrol px-6 py-3.5 text-ivory transition-colors hover:bg-petrol-deep"
+                  className="label-caps mt-6 inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-2.5 text-ivory transition-colors hover:bg-petrol-deep"
                 >
                   <Compass className="h-4 w-4" /> Explorer la Guinée
                 </Link>

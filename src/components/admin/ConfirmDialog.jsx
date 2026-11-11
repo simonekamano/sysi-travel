@@ -51,7 +51,7 @@ export default function ConfirmDialog({
         <AlertDialogFooter className="mt-6 gap-3 sm:justify-end">
           <AlertDialogCancel
             disabled={busy}
-            className="label-caps mt-0 rounded-full border border-petrol/25 bg-transparent px-5 py-3 text-petrol transition-colors hover:border-petrol hover:bg-petrol/5 hover:text-petrol"
+            className="label-caps mt-0 rounded-full border border-petrol/25 bg-transparent px-5 py-2.5 text-petrol transition-colors hover:border-petrol hover:bg-petrol/5 hover:text-petrol"
           >
             Annuler
           </AlertDialogCancel>
@@ -62,7 +62,7 @@ export default function ConfirmDialog({
               onConfirm();
             }}
             className={cn(
-              "label-caps inline-flex items-center gap-2 rounded-full px-5 py-3 text-ivory transition-colors",
+              "label-caps inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-ivory transition-colors",
               danger ? "bg-destructive hover:bg-destructive/90" : "bg-petrol hover:bg-petrol-deep",
             )}
           >

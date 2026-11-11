@@ -129,6 +129,8 @@ h4 {
   font-size: 0.78rem;
   letter-spacing: 0.16em;
   font-weight: 600;
+  /* Short capital text: a tight line keeps buttons compact. */
+  line-height: 1.25;
 }
 
 /* The kit's eyebrow above titles: Outfit 600, capitals, wide spacing (or foncé on light, or on pétrole). */

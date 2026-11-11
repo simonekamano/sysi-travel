@@ -15,7 +15,7 @@ export default function AccessDenied({ email }) {
         </p>
         <Link
           to="/"
-          className="label-caps mt-6 inline-flex rounded-full bg-petrol px-6 py-3 text-ivory transition-colors hover:bg-petrol-deep"
+          className="label-caps mt-6 inline-flex rounded-full bg-petrol px-5 py-2.5 text-ivory transition-colors hover:bg-petrol-deep"
         >
           Retour au site
         </Link>

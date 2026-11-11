@@ -124,7 +124,7 @@ export default function CircuitView({ circuit, others, destinations, formules, r
                   </dl>
                   <a
                     href="#contact"
-                    className="label-caps mt-7 flex w-full items-center justify-center rounded-full bg-petrol px-6 py-4 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol-deep"
+                    className="label-caps mt-7 flex w-full items-center justify-center rounded-full bg-petrol px-5 py-3 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol-deep"
                   >
                     Réserver ce circuit
                   </a>
@@ -132,7 +132,7 @@ export default function CircuitView({ circuit, others, destinations, formules, r
                     href={CONTACT.whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="label-caps mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-petrol/25 px-6 py-3.5 text-petrol transition-colors hover:border-[#25D366] hover:text-[#1a9e4b]"
+                    className="label-caps mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-petrol/25 px-5 py-2.5 text-petrol transition-colors hover:border-[#25D366] hover:text-[#1a9e4b]"
                   >
                     <MessageCircle className="h-4 w-4" /> Poser une question
                   </a>

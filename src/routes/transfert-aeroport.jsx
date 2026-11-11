@@ -92,7 +92,7 @@ function TransfertPage() {
             <Reveal className="mt-8">
               <a
                 href="#contact"
-                className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-7 py-4 text-ivory transition-colors hover:bg-petrol-deep"
+                className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-3 text-ivory transition-colors hover:bg-petrol-deep"
               >
                 <Plane className="h-4 w-4 text-gold" /> Demander ma prise en charge
               </a>

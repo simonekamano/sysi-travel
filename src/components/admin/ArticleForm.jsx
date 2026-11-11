@@ -239,7 +239,7 @@ export default function ArticleForm({ initial, sortOrder, onCancel, onSaved }) {
       {error ? <p className="text-[0.85rem] text-destructive">{error}</p> : null}
 
       <div className="flex flex-wrap gap-3">
-        <Button type="submit" disabled={saving} className="label-caps gap-2 rounded-full bg-petrol px-6 text-ivory hover:bg-petrol-deep">
+        <Button type="submit" disabled={saving} className="label-caps gap-2 rounded-full bg-petrol px-5 text-ivory hover:bg-petrol-deep">
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           Enregistrer
         </Button>

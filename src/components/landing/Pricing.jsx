@@ -93,7 +93,7 @@ export default function Pricing({ formules = [], onSelect }) {
                   type="button"
                   onClick={() => onSelect(formule.id)}
                   className={cn(
-                    "label-caps mt-8 w-full rounded-full px-6 py-3.5 transition-all duration-300",
+                    "label-caps mt-8 w-full rounded-full px-5 py-2.5 transition-all duration-300",
                     formule.highlight
                       ? "bg-gold text-petrol-deep hover:bg-ivory"
                       : "border border-petrol/25 text-petrol hover:border-petrol hover:bg-petrol hover:text-ivory"

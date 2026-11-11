@@ -206,7 +206,7 @@ export default function Nav({ home = true, solid = false, bookingHref = "#contac
         <a
           href={bookingHref}
           onClick={() => setOpen(false)}
-          className="label-caps mt-7 flex w-full items-center justify-center rounded-full bg-gold px-6 py-3.5 text-petrol-deep transition-colors hover:bg-ivory"
+          className="label-caps mt-7 flex w-full items-center justify-center rounded-full bg-gold px-5 py-2.5 text-petrol-deep transition-colors hover:bg-ivory"
         >
           Réserver mon séjour
         </a>

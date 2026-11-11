@@ -160,7 +160,7 @@ export default function ContactForm({
                 <button
                   type="button"
                   onClick={() => setStatus("idle")}
-                  className="label-caps mt-2 rounded-full border border-petrol/25 px-6 py-3 text-petrol transition-colors hover:border-petrol hover:bg-petrol hover:text-ivory"
+                  className="label-caps mt-2 rounded-full border border-petrol/25 px-5 py-2.5 text-petrol transition-colors hover:border-petrol hover:bg-petrol hover:text-ivory"
                 >
                   Envoyer une autre demande
                 </button>
@@ -372,7 +372,7 @@ export default function ContactForm({
                   <button
                     type="submit"
                     disabled={status === "sending"}
-                    className="label-caps inline-flex w-full items-center justify-center gap-3 rounded-full bg-petrol px-8 py-4 text-ivory transition-colors hover:bg-petrol-deep disabled:cursor-not-allowed disabled:opacity-70"
+                    className="label-caps inline-flex w-full items-center justify-center gap-3 rounded-full bg-petrol px-6 py-3 text-ivory transition-colors hover:bg-petrol-deep disabled:cursor-not-allowed disabled:opacity-70"
                   >
                     {status === "sending" ? (
                       <>

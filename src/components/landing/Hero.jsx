@@ -40,13 +40,13 @@ export default function Hero() {
           <div className="mt-10 flex animate-fade-up flex-col items-center justify-center gap-3 [animation-delay:240ms] sm:flex-row">
             <a
               href="#offre"
-              className="label-caps inline-flex w-full items-center justify-center rounded-full bg-gold px-8 py-4 text-petrol-deep transition-all duration-300 hover:bg-ivory sm:w-auto">
+              className="label-caps inline-flex w-full items-center justify-center rounded-full bg-gold px-6 py-3 text-petrol-deep transition-all duration-300 hover:bg-ivory sm:w-auto">
               
               Découvrir nos séjours
             </a>
             <a
               href="#contact"
-              className="label-caps inline-flex w-full items-center justify-center rounded-full border border-ivory/40 px-8 py-4 text-ivory transition-all duration-300 hover:border-gold hover:text-gold sm:w-auto">
+              className="label-caps inline-flex w-full items-center justify-center rounded-full border border-ivory/40 px-6 py-3 text-ivory transition-all duration-300 hover:border-gold hover:text-gold sm:w-auto">
               
               Parler à un expert
             </a>

@@ -33,7 +33,7 @@ export default function Books({ livres = [] }) {
         <Reveal className="mt-12 flex justify-center">
           <Link
             to="/boutique"
-            className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-7 py-4 text-petrol transition-colors duration-300 hover:border-gold hover:bg-petrol hover:text-ivory"
+            className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-5 py-3 text-petrol transition-colors duration-300 hover:border-gold hover:bg-petrol hover:text-ivory"
           >
             {livres.length > HOME_LIMIT ? `Voir les ${livres.length} livres et guides` : "Voir la boutique"}
             <ArrowRight className="h-4 w-4" />

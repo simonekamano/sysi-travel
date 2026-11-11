@@ -38,7 +38,7 @@ function Message({ icon: Icon = AlertCircle, title, children }) {
         href={CONTACT.whatsappHref}
         target="_blank"
         rel="noopener noreferrer"
-        className="label-caps mt-6 inline-flex items-center gap-2 rounded-full bg-petrol px-6 py-3.5 text-ivory transition-colors hover:bg-petrol-deep"
+        className="label-caps mt-6 inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-2.5 text-ivory transition-colors hover:bg-petrol-deep"
       >
         <MessageCircle className="h-4 w-4" /> Nous écrire sur WhatsApp
       </a>
@@ -112,7 +112,7 @@ function TelechargementPage() {
                       {livre.disponible && livre.id ? (
                         <a
                           href={`/api/telechargement/${token}/${livre.id}`}
-                          className="label-caps mt-auto inline-flex items-center justify-center gap-2 self-start rounded-full bg-gold px-5 py-3 text-petrol-deep transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol hover:text-ivory"
+                          className="label-caps mt-auto inline-flex items-center justify-center gap-2 self-start rounded-full bg-gold px-5 py-2.5 text-petrol-deep transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol hover:text-ivory"
                         >
                           <Download className="h-4 w-4" /> Télécharger
                           {livre.file_size ? <span className="normal-case tracking-normal opacity-70">({formatSize(livre.file_size)})</span> : null}

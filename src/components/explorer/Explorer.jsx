@@ -247,7 +247,7 @@ export default function Explorer({ sites, destinations, onRequestTrip }) {
               <button
                 type="button"
                 onClick={() => onRequestTrip(destination?.name ?? null)}
-                className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-3 text-ivory transition-colors hover:bg-petrol-deep"
+                className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-2.5 text-ivory transition-colors hover:bg-petrol-deep"
               >
                 Demander ce voyage
               </button>
@@ -255,7 +255,7 @@ export default function Explorer({ sites, destinations, onRequestTrip }) {
                 <Link
                   to="/destinations/$slug"
                   params={{ slug: destination.slug }}
-                  className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-5 py-3 text-petrol transition-colors hover:border-gold"
+                  className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-5 py-2.5 text-petrol transition-colors hover:border-gold"
                 >
                   La fiche <ArrowRight className="h-3.5 w-3.5" />
                 </Link>

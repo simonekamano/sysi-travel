@@ -166,7 +166,7 @@ function PanierPage() {
                   <p className="mt-4 text-[1rem] leading-relaxed text-petrol/75">Votre panier est vide.</p>
                   <Link
                     to="/boutique"
-                    className="label-caps mt-6 inline-flex items-center gap-2 rounded-full bg-petrol px-6 py-3.5 text-ivory transition-colors hover:bg-petrol-deep"
+                    className="label-caps mt-6 inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-2.5 text-ivory transition-colors hover:bg-petrol-deep"
                   >
                     Voir la boutique <ArrowRight className="h-4 w-4" />
                   </Link>
@@ -384,7 +384,7 @@ function PanierPage() {
                     <button
                       type="submit"
                       disabled={sending}
-                      className="label-caps flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-4 text-petrol-deep transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol hover:text-ivory disabled:pointer-events-none disabled:opacity-60"
+                      className="label-caps flex w-full items-center justify-center gap-2 rounded-full bg-gold px-5 py-3 text-petrol-deep transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol hover:text-ivory disabled:pointer-events-none disabled:opacity-60"
                     >
                       {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
                       Commander
@@ -435,7 +435,7 @@ function Confirmation({ done, signedIn }) {
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <a
           href={signedIn ? "/compte" : "/register?returnTo=/compte"}
-          className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-6 py-3.5 text-ivory transition-colors hover:bg-petrol-deep"
+          className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-2.5 text-ivory transition-colors hover:bg-petrol-deep"
         >
           <UserRound className="h-4 w-4" /> {signedIn ? "Suivre ma commande" : "Créer mon compte pour suivre ma commande"}
         </a>
@@ -443,7 +443,7 @@ function Confirmation({ done, signedIn }) {
           href={CONTACT.whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-6 py-3.5 text-petrol transition-colors hover:border-gold"
+          className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-5 py-2.5 text-petrol transition-colors hover:border-gold"
         >
           Nous écrire sur WhatsApp
         </a>

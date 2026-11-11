@@ -67,7 +67,7 @@ export default function ExplorerTeaser({ sitesCount = 0 }) {
           </dl>
           <Link
             to="/explorer"
-            className="label-caps mt-9 inline-flex items-center gap-2 rounded-full bg-gold px-7 py-4 text-petrol-deep transition-colors duration-300 hover:bg-ivory"
+            className="label-caps mt-9 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-petrol-deep transition-colors duration-300 hover:bg-ivory"
           >
             Ouvrir la carte <ArrowRight className="h-4 w-4" />
           </Link>

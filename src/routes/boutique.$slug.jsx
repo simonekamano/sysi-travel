@@ -120,7 +120,7 @@ function LivrePage() {
                     <button
                       type="button"
                       onClick={orderNow}
-                      className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-7 py-4 text-petrol transition-colors duration-300 hover:border-gold hover:bg-gold hover:text-petrol-deep"
+                      className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-5 py-3 text-petrol transition-colors duration-300 hover:border-gold hover:bg-gold hover:text-petrol-deep"
                     >
                       Commander <ArrowRight className="h-4 w-4" />
                     </button>

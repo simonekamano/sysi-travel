@@ -60,7 +60,7 @@ function ComptePage() {
               </p>
               <Link
                 to="/boutique"
-                className="label-caps mt-6 inline-flex items-center gap-2 rounded-full bg-petrol px-6 py-3.5 text-ivory transition-colors hover:bg-petrol-deep"
+                className="label-caps mt-6 inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-2.5 text-ivory transition-colors hover:bg-petrol-deep"
               >
                 Voir la boutique <ArrowRight className="h-4 w-4" />
               </Link>
@@ -163,7 +163,7 @@ function Commande({ commande }) {
       {linkOpen ? (
         <a
           href={`/telechargement/${commande.token}`}
-          className="label-caps mt-5 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-petrol-deep transition-colors hover:bg-petrol hover:text-ivory"
+          className="label-caps mt-5 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-petrol-deep transition-colors hover:bg-petrol hover:text-ivory"
         >
           <Download className="h-4 w-4" /> Télécharger mes livres
         </a>

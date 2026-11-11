@@ -75,7 +75,7 @@ export default function Partner() {
                     <span
                       className={`label-caps mt-6 inline-flex items-center gap-2 whitespace-nowrap transition-colors max-sm:!tracking-[0.1em] ${
                         item.primary
-                          ? "justify-center rounded-full bg-gold px-5 py-3 text-petrol-deep group-hover:bg-ivory sm:self-start"
+                          ? "justify-center rounded-full bg-gold px-5 py-2.5 text-petrol-deep group-hover:bg-ivory sm:self-start"
                           : "self-start text-ivory group-hover:text-gold"
                       }`}
                     >

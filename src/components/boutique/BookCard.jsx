@@ -26,7 +26,7 @@ export default function BookCard({ book, tone = "light" }) {
           {book.author ? <p className={cn("mt-1 text-[0.9rem]", dark ? "text-ivory/60" : "text-petrol/60")}>{book.author}</p> : null}
         </div>
       </Link>
-      <div className="mt-auto flex items-center justify-between gap-3 pt-5">
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-5">
         <span className={cn("font-display text-[1.25rem] font-bold", dark ? "text-ivory" : "text-petrol")}>{formatPrice(book.price_cents)}</span>
         <AddToCartButton book={book} tone={tone} />
       </div>

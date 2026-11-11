@@ -30,7 +30,7 @@ export default function Destinations({ destinations = [] }) {
         <Reveal className="mt-10 flex justify-center">
           <Link
             to="/destinations"
-            className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-7 py-4 text-petrol transition-colors duration-300 hover:border-gold hover:bg-petrol hover:text-ivory"
+            className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-5 py-3 text-petrol transition-colors duration-300 hover:border-gold hover:bg-petrol hover:text-ivory"
           >
             {destinations.length > HOME_LIMIT ? `Voir les ${destinations.length} destinations` : "Voir les destinations"}
             <ArrowRight className="h-4 w-4" />

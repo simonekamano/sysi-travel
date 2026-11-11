@@ -43,7 +43,7 @@ export default function CircuitsPanel({ circuits = [], destinations = [] }) {
           <button
             type="button"
             onClick={() => setEditing("new")}
-            className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-3 text-ivory transition-colors hover:bg-petrol-deep"
+            className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-2.5 text-ivory transition-colors hover:bg-petrol-deep"
           >
             <Plus className="h-4 w-4" /> Ajouter un circuit
           </button>

@@ -81,7 +81,7 @@ export function ProductsShowcase({ compact = false }) {
             {compact ? (
               <Link
                 to="/produits"
-                className="label-caps inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-petrol px-7 py-4 text-ivory transition-colors duration-300 hover:bg-petrol-deep sm:w-auto"
+                className="label-caps inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-petrol px-5 py-3 text-ivory transition-colors duration-300 hover:bg-petrol-deep sm:w-auto"
               >
                 Voir les {LOCAL_PRODUCTS.length} produits
                 <ArrowRight className="h-4 w-4 text-gold" />
@@ -92,7 +92,7 @@ export function ProductsShowcase({ compact = false }) {
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
-                "label-caps inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full px-7 py-4 transition-colors duration-300 sm:w-auto",
+                "label-caps inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 py-3 transition-colors duration-300 sm:w-auto",
                 compact
                   ? "border border-petrol/25 text-petrol hover:border-gold"
                   : "bg-petrol text-ivory hover:bg-petrol-deep",

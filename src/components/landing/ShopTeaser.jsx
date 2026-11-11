@@ -31,7 +31,7 @@ export default function ShopTeaser({ articles = [], count = 0 }) {
         <Reveal className="mt-10 flex flex-wrap justify-center gap-3">
           <Link
             to="/boutique"
-            className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-7 py-4 text-ivory transition-colors duration-300 hover:bg-petrol-deep"
+            className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-3 text-ivory transition-colors duration-300 hover:bg-petrol-deep"
           >
             Voir les {count} articles <ArrowRight className="h-4 w-4" />
           </Link>

@@ -61,7 +61,7 @@ export default function Videos({ videos = [] }) {
         <Reveal className="mt-12 flex justify-center">
           <Link
             to="/videos"
-            className="label-caps inline-flex items-center gap-2 rounded-full border border-ivory/25 px-7 py-4 text-ivory transition-colors duration-300 hover:border-gold hover:bg-gold hover:text-petrol-deep"
+            className="label-caps inline-flex items-center gap-2 rounded-full border border-ivory/25 px-5 py-3 text-ivory transition-colors duration-300 hover:border-gold hover:bg-gold hover:text-petrol-deep"
           >
             {videos.length > HOME_LIMIT ? `Voir les ${videos.length} vidéos` : "Toutes les vidéos"}
             <ArrowRight className="h-4 w-4" />

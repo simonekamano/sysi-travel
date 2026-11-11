@@ -289,7 +289,7 @@ function ArticleDetail({ article }) {
                 type="button"
                 onClick={() => setQuantity((value) => Math.max(1, value - 1))}
                 aria-label="Une pièce de moins"
-                className="flex h-12 w-11 items-center justify-center text-petrol/70 hover:text-petrol"
+                className="flex h-11 w-10 items-center justify-center text-petrol/70 hover:text-petrol"
               >
                 <Minus className="h-4 w-4" />
               </button>
@@ -300,7 +300,7 @@ function ArticleDetail({ article }) {
                 type="button"
                 onClick={() => setQuantity((value) => Math.min(20, value + 1))}
                 aria-label="Une pièce de plus"
-                className="flex h-12 w-11 items-center justify-center text-petrol/70 hover:text-petrol"
+                className="flex h-11 w-10 items-center justify-center text-petrol/70 hover:text-petrol"
               >
                 <Plus className="h-4 w-4" />
               </button>
@@ -309,7 +309,7 @@ function ArticleDetail({ article }) {
               type="button"
               onClick={addToCart}
               disabled={soldOut}
-              className="label-caps inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-gold px-7 py-4 text-petrol-deep transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol hover:text-ivory disabled:pointer-events-none disabled:opacity-50 sm:flex-none"
+              className="label-caps inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-gold px-5 py-3 text-petrol-deep transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol hover:text-ivory disabled:pointer-events-none disabled:opacity-50 sm:flex-none"
             >
               <ShoppingBag className="h-4 w-4" /> {soldOut ? "Épuisé" : "Ajouter au panier"}
             </button>

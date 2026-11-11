@@ -169,7 +169,7 @@ function BoutiquePage() {
                 </p>
                 <Link
                   to="/explorer"
-                  className="label-caps mt-6 inline-flex items-center gap-2 rounded-full bg-petrol px-6 py-3.5 text-ivory transition-colors hover:bg-petrol-deep"
+                  className="label-caps mt-6 inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-2.5 text-ivory transition-colors hover:bg-petrol-deep"
                 >
                   <Compass className="h-4 w-4" /> Explorer la Guinée
                 </Link>
@@ -262,7 +262,7 @@ function Pagination({ categorie, current, pages, total, books }) {
   const last = Math.min(current * PER_PAGE, total);
   const search = (number) => ({ categorie, page: number > 1 ? number : undefined });
   const stepClass =
-    "label-caps inline-flex h-11 items-center gap-2 rounded-full border border-petrol/20 px-4 text-petrol transition-colors hover:border-gold";
+    "label-caps inline-flex h-10 items-center gap-2 rounded-full border border-petrol/20 px-4 text-petrol transition-colors hover:border-gold";
 
   return (
     <nav aria-label="Pages du rayon" className="mt-12 flex flex-col items-center gap-4 border-t border-petrol/10 pt-8">
@@ -285,7 +285,7 @@ function Pagination({ categorie, current, pages, total, books }) {
             aria-label={`Page ${number}`}
             aria-current={number === current ? "page" : undefined}
             className={cn(
-              "inline-flex h-11 min-w-[2.75rem] items-center justify-center rounded-full border px-3 font-display text-[0.95rem] font-bold transition-colors",
+              "inline-flex h-10 min-w-[2.5rem] items-center justify-center rounded-full border px-3 font-display text-[0.95rem] font-bold transition-colors",
               number === current ? "border-petrol bg-petrol text-ivory" : "border-petrol/20 text-petrol hover:border-gold",
             )}
           >

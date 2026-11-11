@@ -92,7 +92,7 @@ function CircuitsPage() {
                 <div className="mt-6 flex flex-wrap gap-3">
                   <a
                     href="#contact"
-                    className="label-caps inline-flex items-center rounded-full bg-petrol px-6 py-3.5 text-ivory transition-colors hover:bg-petrol-deep"
+                    className="label-caps inline-flex items-center rounded-full bg-petrol px-5 py-2.5 text-ivory transition-colors hover:bg-petrol-deep"
                   >
                     Demander un itinéraire
                   </a>
@@ -100,7 +100,7 @@ function CircuitsPage() {
                     href={CONTACT.whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-6 py-3.5 text-petrol transition-colors hover:border-[#25D366] hover:text-[#1a9e4b]"
+                    className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-5 py-2.5 text-petrol transition-colors hover:border-[#25D366] hover:text-[#1a9e4b]"
                   >
                     <MessageCircle className="h-4 w-4" /> WhatsApp
                   </a>
