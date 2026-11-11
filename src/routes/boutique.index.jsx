@@ -82,7 +82,7 @@ function BoutiquePage() {
 
             {/* Sections of the shop, always in view: one tap to the right shelf. */}
             <nav aria-label="Rayons de la boutique" className="-mx-6 mt-8 overflow-x-auto px-6 [scrollbar-width:none]">
-              <ul className="flex w-max gap-2">
+              <ul className="flex w-max gap-2 lg:w-auto lg:flex-wrap">
                 <li>
                   <ShelfLink active={!categorie} search={{}}>
                     Tout <span className="opacity-60">({articles.length + livres.length})</span>
@@ -180,7 +180,7 @@ function ShelfLink({ active, search, children }) {
       search={search}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "label-caps inline-flex whitespace-nowrap rounded-full border px-5 py-2.5 transition-colors duration-300",
+        "label-caps inline-flex items-baseline gap-1.5 whitespace-nowrap rounded-full border px-5 py-2.5 transition-colors duration-300",
         active ? "border-petrol bg-petrol text-ivory" : "border-petrol/20 text-petrol/70 hover:border-gold hover:text-petrol",
       )}
     >
