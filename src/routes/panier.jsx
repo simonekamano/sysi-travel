@@ -7,7 +7,7 @@ import Footer from "@/components/landing/Footer";
 import WhatsAppButton from "@/components/landing/WhatsAppButton";
 import BookCover from "@/components/boutique/BookCover";
 import { CONTACT } from "@/data/site";
-import { BOOK_KIND_LABEL, CUSTOM_SIZE, DOWNLOAD_DAYS, articleImages, formatPrice, thumbOf, variantsOf } from "@/lib/boutique";
+import { BOOK_KIND_LABEL, CUSTOM_SIZE, DOWNLOAD_DAYS, VENTE_EN_LIGNE, articleImages, formatPrice, thumbOf, variantsOf } from "@/lib/boutique";
 import { lineKey, useCart } from "@/lib/cart";
 import { useAuth } from "@/lib/AuthContext";
 import { useLegalLinks } from "@/lib/legal";
@@ -20,8 +20,52 @@ import { Textarea } from "@/components/ui/textarea";
 export const Route = createFileRoute("/panier")({
   loader: () => getBoutiquePage(),
   head: () => noindex("Mon panier — Boutique SYSI TRAVEL"),
-  component: PanierPage,
+  // No cart and no order form while online sale is closed (VENTE_EN_LIGNE).
+  component: VENTE_EN_LIGNE ? PanierPage : VenteBientot,
 });
+
+// The cart's address while online sale is closed: where to reserve in the meantime.
+function VenteBientot() {
+  const { destinations, reseaux } = Route.useLoaderData();
+  return (
+    <div className="min-h-screen bg-background">
+      <Nav home={false} solid bookingHref="/contact" />
+      <main className="bg-background pb-20 pt-32 lg:pt-36">
+        <div className="mx-auto max-w-2xl px-6 text-center">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-gold/60 text-gold-deep">
+            <Lock className="h-6 w-6" strokeWidth={1.6} />
+          </span>
+          <p className="eyebrow mt-6 text-gold-deep">Boutique</p>
+          <h1 className="mt-3 text-[clamp(1.8rem,4vw,2.6rem)] font-extrabold leading-tight tracking-[-0.02em] text-petrol">
+            La vente en ligne ouvre bientôt
+          </h1>
+          <p className="mt-5 text-[1rem] leading-relaxed text-petrol/70">
+            Le paiement en ligne sécurisé arrive très prochainement. En attendant, réservez vos articles et vos livres sur
+            WhatsApp : nous vous répondons rapidement.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <a
+              href={CONTACT.whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="label-caps inline-flex items-center gap-2 rounded-full bg-[#1a9e4b] px-5 py-3 text-white transition-colors duration-300 hover:bg-[#15803d]"
+            >
+              Réserver sur WhatsApp
+            </a>
+            <Link
+              to="/boutique"
+              className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-5 py-3 text-petrol transition-colors duration-300 hover:border-gold"
+            >
+              Voir la boutique <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </main>
+      <Footer destinations={destinations} reseaux={reseaux} />
+      <WhatsAppButton />
+    </div>
+  );
+}
 
 const inputClass = "border-petrol/25 bg-white text-petrol placeholder:text-petrol/45 focus-visible:ring-gold";
 const COUNTRIES = ["France", "Belgique", "Guinée", "Suisse", "Luxembourg", "Canada", "Royaume-Uni", "Allemagne", "Italie", "Espagne", "Sénégal", "Côte d'Ivoire", "États-Unis"];

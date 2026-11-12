@@ -9,8 +9,9 @@ import WhatsAppButton from "@/components/landing/WhatsAppButton";
 import BookCover from "@/components/boutique/BookCover";
 import BookCard from "@/components/boutique/BookCard";
 import AddToCartButton from "@/components/boutique/AddToCartButton";
+import SaleSoon from "@/components/boutique/SaleSoon";
 import { absoluteUrl } from "@/data/site";
-import { BOOK_KIND_LABEL, DOWNLOAD_DAYS, formatPrice, formatSize } from "@/lib/boutique";
+import { BOOK_KIND_LABEL, DOWNLOAD_DAYS, VENTE_EN_LIGNE, formatPrice, formatSize } from "@/lib/boutique";
 import { useCart } from "@/lib/cart";
 import { getLivrePage } from "@/lib/server-fns";
 import { AGENCY_ID, breadcrumbLd, jsonLd, noindex, pageUrl, seo } from "@/lib/seo";
@@ -50,7 +51,7 @@ export const Route = createFileRoute("/boutique/$slug")({
             "@type": "Offer",
             price: ((livre.price_cents ?? 0) / 100).toFixed(2),
             priceCurrency: "EUR",
-            availability: "https://schema.org/InStock",
+            availability: VENTE_EN_LIGNE ? "https://schema.org/InStock" : "https://schema.org/PreOrder",
             url: pageUrl(path),
           },
         }),
@@ -69,11 +70,17 @@ export const Route = createFileRoute("/boutique/$slug")({
   component: LivrePage,
 });
 
-const STEPS = [
-  { icon: Mail, text: "Vous commandez : nous vous contactons sous 72 h pour le paiement." },
-  { icon: Download, text: `Paiement reçu : votre lien de téléchargement arrive par e-mail, valable ${DOWNLOAD_DAYS} jours.` },
-  { icon: Smartphone, text: "Vous lisez le PDF sur téléphone, tablette ou ordinateur." },
-];
+const STEPS = VENTE_EN_LIGNE
+  ? [
+      { icon: Mail, text: "Vous commandez : nous vous contactons sous 72 h pour le paiement." },
+      { icon: Download, text: `Paiement reçu : votre lien de téléchargement arrive par e-mail, valable ${DOWNLOAD_DAYS} jours.` },
+      { icon: Smartphone, text: "Vous lisez le PDF sur téléphone, tablette ou ordinateur." },
+    ]
+  : [
+      { icon: Mail, text: "Le paiement en ligne sécurisé ouvre très bientôt. En attendant, réservez le livre sur WhatsApp." },
+      { icon: Download, text: `Après le paiement, votre lien de téléchargement arrive par e-mail, valable ${DOWNLOAD_DAYS} jours.` },
+      { icon: Smartphone, text: "Vous lisez le PDF sur téléphone, tablette ou ordinateur." },
+    ];
 
 function LivrePage() {
   const { livre, others, destinations, reseaux } = Route.useLoaderData();
@@ -115,8 +122,10 @@ function LivrePage() {
 
                 <div className="mt-8 flex flex-wrap items-center gap-4 border-y border-petrol/10 py-6">
                   <span className="mr-2 font-display text-[2rem] font-extrabold text-petrol">{formatPrice(livre.price_cents)}</span>
-                  <AddToCartButton book={livre} size="lg" />
-                  {cart.has(livre.id) ? null : (
+                  {VENTE_EN_LIGNE ? <AddToCartButton book={livre} size="lg" /> : null}
+                  {!VENTE_EN_LIGNE ? (
+                    <SaleSoon item={`le livre « ${livre.title} »`} className="w-full" />
+                  ) : cart.has(livre.id) ? null : (
                     <button
                       type="button"
                       onClick={orderNow}

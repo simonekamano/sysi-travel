@@ -8,8 +8,9 @@ import Reveal from "@/components/landing/Reveal";
 import Footer from "@/components/landing/Footer";
 import WhatsAppButton from "@/components/landing/WhatsAppButton";
 import ArticleCard from "@/components/boutique/ArticleCard";
+import SaleSoon from "@/components/boutique/SaleSoon";
 import { CONTACT, absoluteUrl } from "@/data/site";
-import { ARTICLE_CATEGORY_LABEL, CUSTOM_SIZE, articleImages, formatPrice, thumbOf, variantsOf } from "@/lib/boutique";
+import { ARTICLE_CATEGORY_LABEL, CUSTOM_SIZE, VENTE_EN_LIGNE, articleImages, formatPrice, thumbOf, variantsOf } from "@/lib/boutique";
 import { useCart } from "@/lib/cart";
 import { AGENCY_ID, breadcrumbLd, jsonLd, noindex, pageUrl, seo } from "@/lib/seo";
 import { getArticlePage } from "@/lib/server-fns";
@@ -50,7 +51,12 @@ export const Route = createFileRoute("/boutique/article/$slug")({
             "@type": "Offer",
             price: (article.price_cents / 100).toFixed(2),
             priceCurrency: "EUR",
-            availability: available ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            // While online sale is closed, a piece can only be reserved.
+            availability: !available
+              ? "https://schema.org/OutOfStock"
+              : VENTE_EN_LIGNE
+                ? "https://schema.org/InStock"
+                : "https://schema.org/PreOrder",
             url: pageUrl(path),
             seller: { "@id": AGENCY_ID },
           },
@@ -276,13 +282,23 @@ function ArticleDetail({ article }) {
               </div>
               {size === CUSTOM_SIZE ? (
                 <p className="mt-3 flex items-start gap-2 text-[0.88rem] leading-relaxed text-petrol/65">
-                  <Ruler className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep" /> Vos mesures vous seront demandées après la commande
-                  (vous pouvez aussi les indiquer dans le panier).
+                  <Ruler className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep" />
+                  {VENTE_EN_LIGNE
+                    ? "Vos mesures vous seront demandées après la commande (vous pouvez aussi les indiquer dans le panier)."
+                    : "Vos mesures vous seront demandées lors de la réservation."}
                 </p>
               ) : null}
             </fieldset>
           ) : null}
 
+          {!VENTE_EN_LIGNE ? (
+            <SaleSoon
+              item={`l'article « ${article.name} »${variant ? ` (${variant})` : ""}${size ? `, taille ${size}` : ""}`}
+              className="mt-8"
+            />
+          ) : null}
+
+          {VENTE_EN_LIGNE ? (
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <div className="flex items-center rounded-full border border-petrol/20">
               <button
@@ -314,6 +330,7 @@ function ArticleDetail({ article }) {
               <ShoppingBag className="h-4 w-4" /> {soldOut ? "Épuisé" : "Ajouter au panier"}
             </button>
           </div>
+          ) : null}
           {error ? <p className="mt-3 text-[0.88rem] font-semibold text-destructive">{error}</p> : null}
           {added ? (
             <p role="status" className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl bg-[#1a7f4b]/10 px-4 py-3 text-[0.92rem] text-[#1a7f4b]">
@@ -324,14 +341,16 @@ function ArticleDetail({ article }) {
             </p>
           ) : null}
 
-          <a
-            href={whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="label-caps mt-5 inline-flex items-center gap-2 text-petrol/70 transition-colors hover:text-[#1a9e4b]"
-          >
-            <MessageCircle className="h-4 w-4" /> Une question sur cet article ?
-          </a>
+          {VENTE_EN_LIGNE ? (
+            <a
+              href={whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="label-caps mt-5 inline-flex items-center gap-2 text-petrol/70 transition-colors hover:text-[#1a9e4b]"
+            >
+              <MessageCircle className="h-4 w-4" /> Une question sur cet article ?
+            </a>
+          ) : null}
 
           {paragraphs.length ? (
             <div className="mt-10 space-y-4 border-t border-petrol/10 pt-8 text-[1rem] leading-relaxed text-petrol/75">
@@ -352,8 +371,17 @@ function ArticleDetail({ article }) {
             <li className="flex gap-3">
               <Mail className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
               <span>
-                <strong className="text-petrol">Rien n'est payé en ligne</strong> : nous vous contactons sous 72 h pour régler votre
-                commande simplement.
+                {VENTE_EN_LIGNE ? (
+                  <>
+                    <strong className="text-petrol">Rien n'est payé en ligne</strong> : nous vous contactons sous 72 h pour régler
+                    votre commande simplement.
+                  </>
+                ) : (
+                  <>
+                    <strong className="text-petrol">Paiement en ligne sécurisé</strong> : bientôt disponible. En attendant, réservez
+                    sur WhatsApp, nous vous répondons rapidement.
+                  </>
+                )}
               </span>
             </li>
             {article.custom_made ? (

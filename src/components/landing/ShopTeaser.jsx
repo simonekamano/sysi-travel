@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import Reveal from "@/components/landing/Reveal";
 import SectionHeading from "@/components/landing/SectionHeading";
 import ArticleCard from "@/components/boutique/ArticleCard";
+import { VENTE_EN_LIGNE } from "@/lib/boutique";
 
 // The shop on the home page: one article of each section, and the way to all of them.
 // Hidden while the shop has no article.
@@ -16,7 +17,11 @@ export default function ShopTeaser({ articles = [], count = 0 }) {
           <SectionHeading
             eyebrow="La boutique"
             title="Mode, sacs et bijoux de créateurs"
-            text="Robes, kaftans, ensembles en pagne tissé, sacs en wax faits main : commandez en ligne, nous vous accompagnons jusqu'à la livraison."
+            text={
+              VENTE_EN_LIGNE
+                ? "Robes, kaftans, ensembles en pagne tissé, sacs en wax faits main : commandez en ligne, nous vous accompagnons jusqu'à la livraison."
+                : "Robes, kaftans, ensembles en pagne tissé, sacs en wax faits main. La vente en ligne ouvre bientôt : réservez dès maintenant sur WhatsApp."
+            }
           />
         </Reveal>
 

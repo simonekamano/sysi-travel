@@ -8,7 +8,7 @@ import Footer from "@/components/landing/Footer";
 import WhatsAppButton from "@/components/landing/WhatsAppButton";
 import ArticleCard from "@/components/boutique/ArticleCard";
 import BookCard from "@/components/boutique/BookCard";
-import { SHOP_CATEGORIES } from "@/lib/boutique";
+import { SHOP_CATEGORIES, VENTE_EN_LIGNE } from "@/lib/boutique";
 import { getBoutiquePage } from "@/lib/server-fns";
 import { IMAGES } from "@/data/site";
 import { cn } from "@/lib/utils";
@@ -24,7 +24,9 @@ const SECTIONS = [...SHOP_CATEGORIES, { key: "livres", label: "Livres & guides",
 const SECTION_KEYS = SECTIONS.map((section) => section.key);
 
 const INTRO = {
-  "": "Mode, sacs et bijoux de créateurs, livres et guides sur la Guinée : commandez en ligne, nous vous accompagnons jusqu'à la livraison.",
+  "": VENTE_EN_LIGNE
+    ? "Mode, sacs et bijoux de créateurs, livres et guides sur la Guinée : commandez en ligne, nous vous accompagnons jusqu'à la livraison."
+    : "Mode, sacs et bijoux de créateurs, livres et guides sur la Guinée. La vente en ligne ouvre bientôt : réservez dès maintenant sur WhatsApp.",
   femme: "Robes, kaftans, kimonos et ensembles en wax, bazin, brocart ou pagne tissé, pour les cérémonies comme pour tous les jours.",
   homme: "Chemises, vestes, capes et ensembles en pagne tissé, kente ou wax : des pièces fortes, faciles à porter.",
   sacs: "Sacs à main, cabas et pochettes en pagne, cousus et finis à la main.",
@@ -42,7 +44,9 @@ const TITLE = {
 };
 
 const PROMISES = [
-  { icon: Mail, title: "Paiement accompagné", text: "Rien n'est payé en ligne : nous vous contactons sous 72 h pour régler votre commande simplement." },
+  VENTE_EN_LIGNE
+    ? { icon: Mail, title: "Paiement accompagné", text: "Rien n'est payé en ligne : nous vous contactons sous 72 h pour régler votre commande simplement." }
+    : { icon: Mail, title: "Paiement en ligne bientôt", text: "La vente en ligne ouvre très prochainement, avec un paiement sécurisé. En attendant, réservez sur WhatsApp." },
   { icon: Truck, title: "Livraison suivie", text: "Frais confirmés avant paiement, puis un e-mail à chaque étape : préparation, expédition, livraison." },
   { icon: Scissors, title: "Sur mesure", text: "La plupart des vêtements existent aussi sur mesure : vos mesures vous sont demandées après la commande." },
 ];

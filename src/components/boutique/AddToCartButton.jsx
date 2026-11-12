@@ -1,14 +1,31 @@
 import { Link } from "@tanstack/react-router";
 import { Check, ShoppingBag } from "lucide-react";
+import { VENTE_EN_LIGNE } from "@/lib/boutique";
 import { useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 
 // « Ajouter au panier », then « Dans le panier » (a link to the cart) once the book is in it.
 // `size`: "sm" on the cards, "lg" on a book's page. `tone`: "light" or "dark" background.
+// While online sale is closed (VENTE_EN_LIGNE), a plain « Bientôt en vente » label instead.
 export default function AddToCartButton({ book, size = "sm", tone = "light", className }) {
   const cart = useCart();
   const inCart = cart.has(book.id);
   const large = size === "lg";
+
+  if (!VENTE_EN_LIGNE) {
+    return (
+      <span
+        className={cn(
+          "label-caps inline-flex items-center justify-center whitespace-nowrap rounded-full border border-dashed",
+          large ? "px-5 py-3" : "px-3.5 py-2 text-[0.66rem]",
+          tone === "dark" ? "border-ivory/30 text-ivory/70" : "border-petrol/25 text-petrol/55",
+          className,
+        )}
+      >
+        Bientôt en vente
+      </span>
+    );
+  }
 
   if (inCart) {
     return (

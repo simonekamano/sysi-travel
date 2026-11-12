@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest, getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireAdmin, requireUser } from "@/lib/auth-middleware";
-import { ARTICLE_CATEGORY_KEYS, BOOK_PUBLIC_COLUMNS, CUSTOM_SIZE, DOWNLOAD_DAYS } from "@/lib/boutique";
+import { ARTICLE_CATEGORY_KEYS, BOOK_PUBLIC_COLUMNS, CUSTOM_SIZE, DOWNLOAD_DAYS, VENTE_EN_LIGNE } from "@/lib/boutique";
 import { LEGAL_PAGES, LEGAL_SLUGS, findPlaceholders } from "@/lib/legal";
 import { sendCommandeEmails, sendDemandeEmails, sendLienTelechargement, sendPaiementRecu, sendSuiviLivraison } from "@/lib/mail";
 import { siteUrl } from "@/lib/site-url";
@@ -281,6 +281,10 @@ export const createCommande = createServerFn({ method: "POST" })
       .refine((data) => data.livres.length === 0 || data.renonciation, "Confirmez la livraison immédiate des livres numériques."),
   )
   .handler(async ({ data, context }) => {
+    // No order until online payment is connected (VENTE_EN_LIGNE in src/lib/boutique.js).
+    if (!VENTE_EN_LIGNE) {
+      throw new Error("La vente en ligne ouvre bientôt. En attendant, réservez sur WhatsApp.");
+    }
     if (isRobot(data.site_web, data.delai)) return { reference: "", total_cents: 0, livraison: false };
     checkCommandeRate();
     const supabase = context.getSupabase();

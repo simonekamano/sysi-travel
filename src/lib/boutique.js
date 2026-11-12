@@ -1,5 +1,11 @@
 // Shared by the shop pages, the administration, the e-mails and the server.
 
+// Online sale. Off until online payment (Stripe) is connected: the shop is then a catalogue,
+// with no cart and no order. The server (createCommande) and the database
+// (supabase/migrations/0014_vente_en_ligne_fermee.sql) refuse orders as well. A visitor can
+// still reserve a piece on WhatsApp. Turn it on together with the payment page.
+export const VENTE_EN_LIGNE = false;
+
 export const BOOK_KINDS = [
   { key: "guide", label: "Guide", plural: "Guides" },
   { key: "livre", label: "Livre", plural: "Livres" },

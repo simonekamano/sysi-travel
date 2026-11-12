@@ -1,11 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { ShoppingBag } from "lucide-react";
+import { VENTE_EN_LIGNE } from "@/lib/boutique";
 import { useCart } from "@/lib/cart";
 
 // The cart in the navbar, shown once something is in it. The badge bounces at each addition.
+// Hidden while online sale is closed (VENTE_EN_LIGNE).
 export default function CartButton() {
   const { count } = useCart();
-  if (count === 0) return null;
+  if (count === 0 || !VENTE_EN_LIGNE) return null;
 
   return (
     <Link
