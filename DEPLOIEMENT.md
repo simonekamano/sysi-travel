@@ -178,10 +178,10 @@ Dans le dépôt GitHub → **Settings → Secrets and variables → Actions → 
 
 | Secret | Valeur |
 | --- | --- |
-| `VPS_HOST` | `2.24.51.140` |
+| `VPS_HOST` | `179.67.194.115` |
 | `VPS_USER` | `deploy` |
 | `VPS_SSH_KEY` | contenu complet de la clé **privée** `sysitravel_deploy` |
-| `VPS_KNOWN_HOSTS` | sortie de `ssh-keyscan -t ed25519 2.24.51.140` |
+| `VPS_KNOWN_HOSTS` | sortie de `ssh-keyscan -t ed25519 179.67.194.115` |
 
 ### 4.4 Déployer
 
@@ -209,7 +209,7 @@ nginx -t && systemctl reload nginx
 certbot --nginx --redirect -d sysitravel.com -d www.sysitravel.com -d api.sysitravel.com
 ```
 
-Prérequis : les enregistrements DNS `A` de `sysitravel.com`, `www` et `api` pointent vers `2.24.51.140`.
+Prérequis : les enregistrements DNS `A` de `sysitravel.com`, `www` et `api` pointent vers `179.67.194.115`.
 
 Le site répond sur `https://sysitravel.com`, le Studio Supabase sur `https://api.sysitravel.com`
 (protégé par `DASHBOARD_USERNAME` / `DASHBOARD_PASSWORD`).
