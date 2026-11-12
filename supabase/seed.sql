@@ -42,7 +42,7 @@ select * from (values
   ('Puis-je voyager avec des enfants ?',
    'Oui. Nous adaptons les étapes, le rythme et les hébergements à l''âge des enfants. Les formules en famille prévoient des journées plus courtes et des pauses régulières.', 3),
   ('Comment se passe le paiement ?',
-   'Un acompte de 30 % confirme votre réservation en ligne de façon sécurisée. Le solde est réglé quinze jours avant le départ. Chaque paiement est confirmé par écrit.', 4),
+   'Après votre demande, nous vous envoyons un devis détaillé. Les modalités de paiement (acompte, solde et moyens acceptés) vous sont confirmées par écrit avant toute réservation.', 4),
   ('Je ne sais pas encore quelles dates choisir, puis-je vous écrire ?',
    'Bien sûr. Décrivez simplement la période envisagée : nous vous proposerons les meilleures fenêtres selon la saison, les fêtes locales et votre budget.', 5)
 ) as v (question, answer, sort_order)

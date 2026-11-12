@@ -39,7 +39,7 @@ export default function Pricing({ formules = [], onSelect }) {
 
                 {formule.highlight ? (
                   <span className="label-caps mb-5 inline-flex w-fit rounded-full bg-gold px-3 py-1.5 text-petrol-deep">
-                    Le plus choisi
+                    Notre coup de cœur
                   </span>
                 ) : (
                   <span className="label-caps mb-5 inline-flex w-fit text-gold-deep">

@@ -63,7 +63,7 @@ export const NAV_LINKS = [
 export const HERO_BADGES = [
   { label: "Partenaires locaux vérifiés" },
   { label: "Itinéraire sous 72 h" },
-  { label: "Paiement sécurisé" },
+  { label: "Devis détaillé avant réservation" },
   { label: "Assistance 7j/7 sur place" },
 ];
 
@@ -172,7 +172,7 @@ export const STEPS = [
   {
     n: "03",
     title: "Voyagez sereinement",
-    text: "Paiement sécurisé, accueil à l'arrivée et un interlocuteur joignable pendant tout le séjour.",
+    text: "Accueil à l'arrivée et un interlocuteur joignable pendant tout le séjour, en français et en langues locales.",
   },
 ];
 
@@ -224,29 +224,9 @@ export const FORMULES = [
   },
 ];
 
-export const TESTIMONIALS = [
-  {
-    quote:
-      "J'ai emmené mes deux filles découvrir les îles de Loos. Tout était pensé, du bateau au dîner sur la plage. Pour la première fois, je n'ai pas eu à tout organiser moi-même.",
-    name: "Aïssatou D.",
-    city: "Paris",
-    detail: "Escapade Loos, en famille",
-  },
-  {
-    quote:
-      "Le Fouta Djallon m'a bouleversé. L'itinéraire était juste, sans course, avec des guides qui connaissaient chaque village et chaque sentier.",
-    name: "Mamadou C.",
-    city: "Montréal",
-    detail: "Signature Fouta, 8 jours",
-  },
-  {
-    quote:
-      "Un devis clair en 48 heures, des paiements sécurisés et quelqu'un sur place pour répondre. C'est exactement ce qui manquait à mes retours au pays.",
-    name: "Fatoumata B.",
-    city: "Bruxelles",
-    detail: "Grande Traversée, 14 jours",
-  },
-];
+// Reviews from real travellers only, with their consent: a made-up review is a misleading
+// commercial practice (French consumer code). The home page hides the section while it is empty.
+export const TESTIMONIALS = [];
 
 export const FAQ = [
   {
@@ -263,7 +243,7 @@ export const FAQ = [
   },
   {
     q: "Comment se passe le paiement ?",
-    a: "Un acompte de 30 % confirme votre réservation en ligne de façon sécurisée. Le solde est réglé quinze jours avant le départ. Chaque paiement est confirmé par écrit.",
+    a: "Après votre demande, nous vous envoyons un devis détaillé. Les modalités de paiement (acompte, solde et moyens acceptés) vous sont confirmées par écrit avant toute réservation.",
   },
   {
     q: "Je ne sais pas encore quelles dates choisir, puis-je vous écrire ?",

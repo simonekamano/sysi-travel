@@ -2,7 +2,10 @@ import Reveal from "@/components/landing/Reveal";
 import SectionHeading from "@/components/landing/SectionHeading";
 import { TESTIMONIALS } from "@/data/site";
 
+// Hidden while there is no real review (TESTIMONIALS in src/data/site.js).
 export default function Testimonials() {
+  if (TESTIMONIALS.length === 0) return null;
+
   return (
     <section className="bg-ivory-soft py-14 lg:py-20">
       <div className="mx-auto max-w-site px-6">

@@ -140,7 +140,23 @@ function BoutiquePage() {
               </ul>
             </nav>
 
-            {categorie ? (
+            {categorie && countOf(categorie) === 0 && articles.length + livres.length > 0 ? (
+              // A section with nothing in it yet (the menu always links to « Livres & guides »).
+              <div className="mt-10 max-w-2xl border border-petrol/15 bg-white p-8">
+                <p className="label-caps text-gold-deep">Bientôt disponible</p>
+                <p className="mt-3 text-[1rem] leading-relaxed text-petrol/75">
+                  {categorie === "livres"
+                    ? "Nos premiers livres et guides sur la Guinée arrivent bientôt. En attendant, découvrez nos créations."
+                    : "Les premières pièces de ce rayon arrivent bientôt. En attendant, découvrez le reste de la boutique."}
+                </p>
+                <Link
+                  to="/boutique"
+                  className="label-caps mt-6 inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-2.5 text-ivory transition-colors hover:bg-petrol-deep"
+                >
+                  Voir la boutique <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            ) : categorie ? (
               <Shelf categorie={categorie} articles={articles} livres={livres} page={page} />
             ) : (
               <div className="mt-10 space-y-14">
