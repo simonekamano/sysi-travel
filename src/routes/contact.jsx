@@ -15,7 +15,7 @@ export const Route = createFileRoute("/contact")({
   loader: () => getSiteContent(),
   head: () =>
     seo({
-      title: "Contact — SYSI TRAVEL Guinée",
+      title: "Contacter SYSI TRAVEL, agence de voyage à Conakry",
       description:
         "Contactez SYSI TRAVEL : téléphone, WhatsApp, e-mail et adresse à Conakry. Réponse sous 72 heures pour votre séjour en Guinée.",
       path: "/contact",

@@ -16,7 +16,7 @@ export const Route = createFileRoute("/explorer")({
   loader: () => getExplorerPage(),
   head: () =>
     seo({
-      title: "Explorer la Guinée : carte des sites touristiques — SYSI TRAVEL",
+      title: "Explorer la Guinée : carte touristique — SYSI TRAVEL",
       description:
         "La carte interactive des quatre régions de Guinée et de leurs sites : cascades, îles, monts, forêts et patrimoine. Visite guidée d'un site à l'autre.",
       path: "/explorer",

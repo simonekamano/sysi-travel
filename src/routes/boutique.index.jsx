@@ -35,9 +35,9 @@ const INTRO = {
 };
 
 const TITLE = {
-  "": "Boutique : mode africaine, sacs, bijoux et livres sur la Guinée — SYSI TRAVEL",
-  femme: "Mode femme : robes, kaftans et ensembles africains — Boutique SYSI TRAVEL",
-  homme: "Mode homme : chemises, vestes et ensembles africains — Boutique SYSI TRAVEL",
+  "": "Mode africaine, sacs, bijoux et livres — SYSI TRAVEL",
+  femme: "Robes, kaftans et ensembles africains — SYSI TRAVEL",
+  homme: "Mode homme africaine : chemises, vestes — SYSI TRAVEL",
   sacs: "Sacs en pagne et wax faits main — Boutique SYSI TRAVEL",
   bijoux: "Boucles d'oreilles en tissu et dorées — Boutique SYSI TRAVEL",
   livres: "Livres et guides sur la Guinée en PDF — Boutique SYSI TRAVEL",

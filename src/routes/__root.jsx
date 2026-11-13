@@ -25,7 +25,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "SYSI TRAVEL : plateforme touristique dédiée à la Guinée. Découvrez les plus beaux sites, réservez un circuit authentique et organisez votre séjour avec des partenaires locaux vérifiés.",
+          "SYSI TRAVEL, plateforme touristique dédiée à la Guinée : les plus beaux sites, des circuits authentiques et des partenaires locaux vérifiés.",
       },
       { property: "og:title", content: "SYSI TRAVEL — Voyagez en Guinée autrement" },
       {

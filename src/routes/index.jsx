@@ -27,9 +27,9 @@ export const Route = createFileRoute("/")({
   loader: () => getSiteContent(),
   head: ({ loaderData }) =>
     seo({
-      title: "SYSI TRAVEL — Voyage en Guinée : circuits, excursions et séjours accompagnés",
+      title: "Voyage en Guinée : circuits et excursions | SYSI TRAVEL",
       description:
-        "Découvrez la Guinée avec SYSI TRAVEL : îles de Loos, Fouta Djallon, cascades et mont Nimba. Circuits avec guides locaux, séjours accompagnés pour la diaspora, réponse sous 72 h.",
+        "Découvrez la Guinée avec SYSI TRAVEL : îles de Loos, Fouta Djallon, mont Nimba. Circuits avec guides locaux, séjours accompagnés pour la diaspora.",
       path: "/",
       links: [{ rel: "preload", as: "image", href: IMAGES.hero, fetchPriority: "high" }],
       // The questions of the home page, which search engines can show under the result.

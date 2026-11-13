@@ -4,7 +4,7 @@ import CircuitView from "@/components/circuit/CircuitView";
 import { LEAFLET_CSS } from "@/components/map/GuineaMap";
 import { CIRCUIT_KINDS, absoluteUrl } from "@/data/site";
 import { getCircuitPage } from "@/lib/server-fns";
-import { AGENCY_ID, breadcrumbLd, jsonLd, noindex, pageUrl, seo } from "@/lib/seo";
+import { AGENCY_ID, breadcrumbLd, jsonLd, fitDescription, fitTitle, noindex, pageUrl, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/circuits/$slug")({
   loader: async ({ params }) => {
@@ -16,11 +16,17 @@ export const Route = createFileRoute("/circuits/$slug")({
   head: ({ loaderData }) => {
     const circuit = loaderData?.circuit;
     if (!circuit) return noindex("Circuit introuvable — SYSI TRAVEL");
-    const description =
-      circuit.tagline || `${CIRCUIT_KINDS[circuit.kind]} ${circuit.duration} en Guinée avec SYSI TRAVEL : programme jour par jour et prix.`;
+    const description = fitDescription(
+      circuit.tagline,
+      `${CIRCUIT_KINDS[circuit.kind]} ${circuit.duration} en Guinée avec SYSI TRAVEL : programme jour par jour et prix.`,
+    );
     const path = `/circuits/${circuit.slug}`;
     return seo({
-      title: `${circuit.title} — ${CIRCUIT_KINDS[circuit.kind]} en Guinée | SYSI TRAVEL`,
+      title: fitTitle(
+        `${circuit.title} — ${CIRCUIT_KINDS[circuit.kind]} en Guinée | SYSI TRAVEL`,
+        `${circuit.title} — ${CIRCUIT_KINDS[circuit.kind]} | SYSI TRAVEL`,
+        `${circuit.title} | SYSI TRAVEL`,
+      ),
       description,
       path,
       image: circuit.image,

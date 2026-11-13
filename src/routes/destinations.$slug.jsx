@@ -13,7 +13,7 @@ import GuineaMap, { LEAFLET_CSS } from "@/components/map/GuineaMap";
 import { NotFound } from "@/components/NotFound";
 import { CONTACT, absoluteUrl } from "@/data/site";
 import { getDestinationPage } from "@/lib/server-fns";
-import { breadcrumbLd, jsonLd, noindex, pageUrl, seo } from "@/lib/seo";
+import { breadcrumbLd, jsonLd, fitDescription, fitTitle, noindex, pageUrl, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/destinations/$slug")({
   loader: async ({ params }) => {
@@ -24,11 +24,18 @@ export const Route = createFileRoute("/destinations/$slug")({
   head: ({ loaderData }) => {
     const destination = loaderData?.destination;
     if (!destination) return noindex("Destination introuvable — SYSI TRAVEL");
-    const description = destination.text || `${destination.name}, ${destination.region} : séjour sur mesure en Guinée avec SYSI TRAVEL.`;
+    const description = fitDescription(
+      destination.text,
+      `${destination.name}, ${destination.region} : séjour sur mesure en Guinée avec SYSI TRAVEL.`,
+    );
     const path = `/destinations/${destination.slug}`;
     const hasPosition = Number.isFinite(destination.latitude) && Number.isFinite(destination.longitude);
     return seo({
-      title: `${destination.name} (${destination.region}) : visiter en Guinée | SYSI TRAVEL`,
+      title: fitTitle(
+        `${destination.name} (${destination.region}) : visiter en Guinée | SYSI TRAVEL`,
+        `${destination.name} : visiter en Guinée | SYSI TRAVEL`,
+        `${destination.name} | SYSI TRAVEL`,
+      ),
       description,
       path,
       image: destination.image,

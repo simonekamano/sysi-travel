@@ -5,10 +5,34 @@ export const SITE_NAME = "SYSI TRAVEL";
 // The address search engines should keep for a page (no query string, no trailing slash).
 export const pageUrl = (path = "/") => `${SITE_ORIGIN}${path === "/" ? "/" : path.replace(/\/+$/, "")}`;
 
+// Search engines show a title of up to about 60 characters and a description of 70 to 160;
+// beyond that they cut it off, and a shorter description says too little.
+const TITLE_MAX = 60;
+const DESCRIPTION_MIN = 70;
+const DESCRIPTION_MAX = 160;
+
+// The first of the titles, from the most detailed to the shortest, that fits whole.
+export const fitTitle = (...titles) => titles.find((title) => title.length <= TITLE_MAX) ?? titles.at(-1);
+
+// A description of the right length: a short one is completed with `more`, a long one is cut
+// at the last whole word.
+export function fitDescription(text, more = "") {
+  let description = String(text || "").replace(/\s+/g, " ").trim();
+  if (description.length < DESCRIPTION_MIN && more) {
+    description = description ? `${/[.!?…]$/.test(description) ? description : `${description}.`} ${more}` : more;
+  }
+  if (description.length > DESCRIPTION_MAX) {
+    const cut = description.slice(0, DESCRIPTION_MAX);
+    description = `${cut.slice(0, cut.lastIndexOf(" ")).replace(/[\s,;:.—–-]+$/, "")}…`;
+  }
+  return description;
+}
+
 // Everything a public page tells search engines and social networks: title, description,
 // canonical address, sharing card (Open Graph, X) and, optionally, structured data.
 // `links` and `scripts` are the page's own extra head entries.
-export function seo({ title, description, path, image, imageAlt, type = "website", noindex = false, links = [], scripts = [], meta = [] }) {
+export function seo({ title, description: text, path, image, imageAlt, type = "website", noindex = false, links = [], scripts = [], meta = [] }) {
+  const description = fitDescription(text);
   const url = pageUrl(path);
   const picture = absoluteUrl(image || IMAGES.hero);
   return {

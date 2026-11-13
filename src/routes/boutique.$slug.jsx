@@ -14,7 +14,7 @@ import { absoluteUrl } from "@/data/site";
 import { BOOK_KIND_LABEL, DOWNLOAD_DAYS, VENTE_EN_LIGNE, formatPrice, formatSize } from "@/lib/boutique";
 import { useCart } from "@/lib/cart";
 import { getLivrePage } from "@/lib/server-fns";
-import { AGENCY_ID, breadcrumbLd, jsonLd, noindex, pageUrl, seo } from "@/lib/seo";
+import { AGENCY_ID, breadcrumbLd, jsonLd, fitDescription, fitTitle, noindex, pageUrl, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/boutique/$slug")({
   loader: async ({ params }) => {
@@ -25,11 +25,13 @@ export const Route = createFileRoute("/boutique/$slug")({
   head: ({ loaderData }) => {
     const livre = loaderData?.livre;
     if (!livre) return noindex("Livre introuvable — SYSI TRAVEL");
-    const description =
-      livre.subtitle || livre.description.slice(0, 160) || `${BOOK_KIND_LABEL[livre.kind]} en PDF sur la Guinée, par SYSI TRAVEL.`;
+    const description = fitDescription(
+      livre.subtitle || livre.description,
+      `${BOOK_KIND_LABEL[livre.kind]} en PDF sur la Guinée, par SYSI TRAVEL.`,
+    );
     const path = `/boutique/${livre.slug}`;
     return seo({
-      title: `${livre.title} — ${BOOK_KIND_LABEL[livre.kind]} PDF | SYSI TRAVEL`,
+      title: fitTitle(`${livre.title} — ${BOOK_KIND_LABEL[livre.kind]} PDF | SYSI TRAVEL`, `${livre.title} | SYSI TRAVEL`),
       description,
       path,
       image: livre.cover,

@@ -12,7 +12,7 @@ import SaleSoon from "@/components/boutique/SaleSoon";
 import { CONTACT, absoluteUrl } from "@/data/site";
 import { ARTICLE_CATEGORY_LABEL, CUSTOM_SIZE, VENTE_EN_LIGNE, articleImages, formatPrice, thumbOf, variantsOf } from "@/lib/boutique";
 import { useCart } from "@/lib/cart";
-import { AGENCY_ID, breadcrumbLd, jsonLd, noindex, pageUrl, seo } from "@/lib/seo";
+import { AGENCY_ID, breadcrumbLd, jsonLd, fitDescription, fitTitle, noindex, pageUrl, seo } from "@/lib/seo";
 import { getArticlePage } from "@/lib/server-fns";
 import { cn } from "@/lib/utils";
 
@@ -28,10 +28,17 @@ export const Route = createFileRoute("/boutique/article/$slug")({
     const path = `/boutique/article/${article.slug}`;
     const category = ARTICLE_CATEGORY_LABEL[article.category];
     const images = articleImages(article);
-    const description = article.tagline || `${article.name} : ${category.toLowerCase()} de la boutique SYSI TRAVEL.`;
+    const description = fitDescription(
+      article.tagline,
+      `${article.name}, ${category.toLowerCase()} de la boutique SYSI TRAVEL : photos, détails et prix.`,
+    );
     const available = variantsOf(article).some((variant) => variant.available !== false);
     return seo({
-      title: `${article.name} — ${category} | Boutique SYSI TRAVEL`,
+      title: fitTitle(
+        `${article.name} — ${category} | Boutique SYSI TRAVEL`,
+        `${article.name} — ${category} | SYSI TRAVEL`,
+        `${article.name} | SYSI TRAVEL`,
+      ),
       description,
       path,
       image: images[0],
