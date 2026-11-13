@@ -45,8 +45,13 @@ export const Route = createRootRoute({
       { rel: "apple-touch-icon", href: SYMBOL },
       { rel: "stylesheet", href: appCss },
     ],
-    // Who publishes the site, for search engines (schema.org).
-    scripts: [agencyLd(), websiteLd()],
+    // Who publishes the site, for search engines (schema.org); and the visit statistics
+    // (SaasClair: pages viewed and where visitors come from, no cookie, no IP address).
+    scripts: [
+      agencyLd(),
+      websiteLd(),
+      { src: "https://saasclair.com/s.js", async: true, "data-site": "f397ee36" },
+    ],
   }),
   errorComponent: DefaultCatchBoundary,
   notFoundComponent: () => <NotFound />,

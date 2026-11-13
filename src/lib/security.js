@@ -3,7 +3,8 @@ import { getRequestHeader, setResponseHeader } from "@tanstack/react-start/serve
 
 // Content Security Policy of the pages. Scripts run only from the site itself or carry the
 // page's nonce (a random value drawn for every page served), so a script injected into a page
-// cannot run; data can only be sent to the site, its Supabase API and the map tiles.
+// cannot run; data can only be sent to the site, its Supabase API, the map tiles and the visit
+// statistics (SaasClair).
 // Images and video files may come from any HTTPS host: the administration accepts their links.
 function contentSecurityPolicy(nonce) {
   const supabase = originOf(import.meta.env.VITE_SUPABASE_URL);
@@ -11,13 +12,14 @@ function contentSecurityPolicy(nonce) {
   const https = getRequestHeader("x-forwarded-proto") === "https";
   return [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}'`,
+    // SaasClair: the visit statistics script (it sends its page views to the same host).
+    `script-src 'self' 'nonce-${nonce}' https://saasclair.com`,
     // React and the maps set style attributes.
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
     "media-src 'self' blob: https:",
-    `connect-src 'self' ${supabase} ${realtime} https://tiles.openfreemap.org`,
+    `connect-src 'self' ${supabase} ${realtime} https://tiles.openfreemap.org https://saasclair.com`,
     "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com",
     "worker-src 'self' blob:",
     "manifest-src 'self'",
