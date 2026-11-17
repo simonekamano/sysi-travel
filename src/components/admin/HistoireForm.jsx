@@ -75,7 +75,7 @@ export default function HistoireForm({ histoire }) {
 
       <Group
         title="Le récit"
-        text="Une ligne vide entre deux paragraphes. Commencez chaque partie par « ## » suivi de son titre (par exemple « ## Pourquoi j'ai créé SYSI TRAVEL Guinée »). Une phrase entre astérisques, seule sur sa ligne (*comme ceci*), est mise en avant en grand."
+        text="Une ligne vide entre deux paragraphes. Commencez chaque partie par « ## » suivi de son titre (par exemple « ## Pourquoi j'ai créé SYSI TRAVEL Guinée »). Une phrase entre astérisques, seule sur sa ligne (*comme ceci*), est mise en avant en grand : dans une partie sans photo, la première s'affiche dans un encadré à côté du texte."
       >
         <TextAreaField label="Texte du récit" value={form.recit} onChange={set("recit")} rows={22} />
         <div className="grid gap-5 lg:grid-cols-2">

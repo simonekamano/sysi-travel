@@ -1,5 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { ArrowRight, MessagesSquare, NotebookPen, UsersRound } from "lucide-react";
+import { ArrowRight, Clapperboard, Map as MapIcon, MapPin, MessagesSquare, NotebookPen, Quote, Route as RouteIcon, UsersRound } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import StoryText from "@/components/histoire/StoryText";
 import Footer from "@/components/landing/Footer";
@@ -7,7 +7,7 @@ import Nav from "@/components/landing/Nav";
 import Reveal from "@/components/landing/Reveal";
 import SectionHeading from "@/components/landing/SectionHeading";
 import WhatsAppButton from "@/components/landing/WhatsAppButton";
-import { ACCOMPAGNEMENT, splitStory } from "@/lib/histoire";
+import { ACCOMPAGNEMENT, extractQuote, splitStory } from "@/lib/histoire";
 import { AGENCY_ID, breadcrumbLd, fitDescription, fitTitle, jsonLd, noindex, pageUrl, seo } from "@/lib/seo";
 import { getHistoirePage } from "@/lib/server-fns";
 import { absoluteUrl } from "@/data/site";
@@ -64,6 +64,56 @@ export const Route = createFileRoute("/notre-histoire")({
 
 const ICONS = { avant: MessagesSquare, pendant: UsersRound, apres: NotebookPen };
 
+// What « Bien plus qu'une agence de voyages » talks about, beside the first part that has
+// neither photo nor quote.
+const DECOUVRIR = [
+  { icon: RouteIcon, label: "Circuits & excursions", text: "Explorer ses richesses avec des guides locaux", href: "/circuits" },
+  { icon: MapIcon, label: "Explorer la Guinée", text: "La carte des sites, région par région", href: "/explorer" },
+  { icon: MapPin, label: "Destinations", text: "Les plus beaux lieux du pays", href: "/destinations" },
+  { icon: Clapperboard, label: "Vidéos", text: "La Guinée et nos voyages en images", href: "/videos" },
+];
+
+// A sentence of the story, standing large beside its part.
+function QuoteCard({ quote, author }) {
+  return (
+    <figure className="mx-auto max-w-md rounded-3xl bg-background px-8 pb-9 pt-8 lg:max-w-none lg:pb-10">
+      <Quote aria-hidden className="h-8 w-8 fill-gold/25 text-gold" strokeWidth={1.4} />
+      <blockquote className="mt-5 font-display text-[clamp(1.25rem,1.6vw,1.5rem)] italic leading-snug text-petrol">{quote}</blockquote>
+      {author ? (
+        <figcaption className="label-caps mt-7 flex items-center gap-3 text-gold-deep">
+          <span aria-hidden className="h-px w-8 bg-gold" />
+          {author}
+        </figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
+function DiscoverCard() {
+  return (
+    <nav aria-label="À découvrir sur SYSI TRAVEL" className="mx-auto max-w-md rounded-3xl bg-petrol p-8 text-ivory lg:max-w-none lg:p-10">
+      <p className="eyebrow text-gold">À découvrir</p>
+      <p className="mt-3 font-display text-[1.4rem] font-bold leading-snug">Tout ce qui vous attend sur SYSI TRAVEL</p>
+      <ul className="mt-6 divide-y divide-ivory/10 border-t border-ivory/10">
+        {DECOUVRIR.map(({ icon: Icon, label, text, href }) => (
+          <li key={href}>
+            <a href={href} className="group flex items-center gap-4 py-4">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ivory/10 text-gold transition-colors group-hover:bg-gold group-hover:text-petrol-deep">
+                <Icon className="h-[1.1rem] w-[1.1rem]" strokeWidth={1.7} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-semibold text-ivory transition-colors group-hover:text-gold">{label}</span>
+                <span className="block text-[0.88rem] text-ivory/65">{text}</span>
+              </span>
+              <ArrowRight className="h-4 w-4 shrink-0 text-gold transition-transform group-hover:translate-x-1" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
 // A framed photo of the story, standing next to its part on large screens.
 function Photo({ src, alt, priority = false, className }) {
   return (
@@ -82,7 +132,9 @@ function Photo({ src, alt, priority = false, className }) {
   );
 }
 
-function Part({ part, photo, alt, children }) {
+// A part of the story, with what stands beside it on large screens (below it on phones): its
+// photo, its quote or the « À découvrir » links. It follows the reader down the part.
+function Part({ part, aside, children }) {
   const text = (
     <div className="max-w-[40rem]">
       {part.title ? (
@@ -92,12 +144,12 @@ function Part({ part, photo, alt, children }) {
       {children}
     </div>
   );
-  if (!photo) return <Reveal>{text}</Reveal>;
+  if (!aside) return <Reveal>{text}</Reveal>;
   return (
-    <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,40rem)_minmax(0,1fr)] lg:gap-16">
+    <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,40rem)_minmax(0,1fr)] lg:gap-16">
       <Reveal>{text}</Reveal>
-      <Reveal delay={120} className="mx-auto w-full max-w-sm lg:sticky lg:top-32 lg:max-w-none">
-        <Photo src={photo} alt={alt} />
+      <Reveal delay={120} className="w-full lg:sticky lg:top-32">
+        {aside}
       </Reveal>
     </div>
   );
@@ -108,12 +160,22 @@ function HistoirePage() {
   const parts = splitStory(histoire.recit);
   const name = histoire.signature || "la fondatrice de SYSI TRAVEL";
   const steps = ACCOMPAGNEMENT.filter((step) => histoire[step.key]);
-  // The first story photo goes with the first part, the second with the last one.
+  // Beside each part: the first story photo for the first part, the second for the last one;
+  // otherwise the part's highlighted sentence, taken out of its text; otherwise, once, the
+  // « À découvrir » links.
   const photoFor = (index) => {
     if (index === 0) return histoire.photo_recit_1;
     if (index === parts.length - 1) return histoire.photo_recit_2;
     return "";
   };
+  const firstWithoutAside = parts.findIndex((part, index) => !photoFor(index) && !extractQuote(part.body).quote);
+  const sections = parts.map((part, index) => {
+    const photo = photoFor(index);
+    if (photo) return { part, aside: <Photo src={photo} alt={name} className="mx-auto w-full max-w-sm lg:max-w-none" /> };
+    const { quote, body } = extractQuote(part.body);
+    if (quote) return { part: { ...part, body }, aside: <QuoteCard quote={quote} author={histoire.signature} /> };
+    return { part, aside: index === firstWithoutAside ? <DiscoverCard /> : null };
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -160,9 +222,9 @@ function HistoirePage() {
         {parts.length ? (
           <section id="recit" className="scroll-mt-28 border-t border-petrol/10 bg-white py-16 lg:py-24">
             <div className="mx-auto max-w-site space-y-16 px-6 lg:space-y-24">
-              {parts.map((part, index) => (
-                <Part key={`${index}-${part.title}`} part={part} photo={photoFor(index)} alt={name}>
-                  {index === parts.length - 1 && histoire.signature ? (
+              {sections.map(({ part, aside }, index) => (
+                <Part key={`${index}-${part.title}`} part={part} aside={aside}>
+                  {index === sections.length - 1 && histoire.signature ? (
                     <div className="mt-12 border-t border-petrol/15 pt-6">
                       <p className="font-display text-[1.6rem] italic leading-tight text-petrol">{histoire.signature}</p>
                       {histoire.role ? <p className="label-caps mt-2 text-gold-deep">{histoire.role}</p> : null}

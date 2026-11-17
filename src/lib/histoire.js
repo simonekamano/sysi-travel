@@ -19,6 +19,18 @@ export function splitStory(text = "") {
     .filter((part) => part.title || part.body);
 }
 
+// The first paragraph made of one italic sentence only (« *…* » on its own line), taken out of
+// a part's text: the page shows it beside the part, as a large quote.
+export function extractQuote(body = "") {
+  const paragraphs = body.split(/\n\s*\n/);
+  const index = paragraphs.findIndex((paragraph) => /^\s*(?:\*[^*\n]+\*|_[^_\n]+_)\s*$/.test(paragraph));
+  if (index < 0) return { quote: "", body };
+  return {
+    quote: paragraphs[index].trim().slice(1, -1).trim(),
+    body: paragraphs.filter((_, i) => i !== index).join("\n\n"),
+  };
+}
+
 // The three moments of the support, in page order, with the database column of each text.
 export const ACCOMPAGNEMENT = [
   { key: "avant", title: "Avant le voyage" },
