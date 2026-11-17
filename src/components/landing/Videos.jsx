@@ -20,7 +20,7 @@ export default function Videos({ videos = [] }) {
   const [featured, ...others] = videos.slice(0, HOME_LIMIT);
 
   return (
-    <section id="videos" className="relative isolate overflow-hidden bg-petrol-deep py-10 text-ivory lg:py-12">
+    <section id="videos" className="relative isolate overflow-hidden bg-petrol-deep py-8 text-ivory lg:py-10">
       <div
         aria-hidden="true"
         className="absolute -right-40 -top-40 -z-10 h-[29.71rem] w-[29.71rem] rounded-full bg-[radial-gradient(circle,hsl(var(--gold)/0.16),transparent_65%)]"

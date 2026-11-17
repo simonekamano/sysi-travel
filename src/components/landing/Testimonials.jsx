@@ -7,7 +7,7 @@ export default function Testimonials() {
   if (TESTIMONIALS.length === 0) return null;
 
   return (
-    <section className="bg-ivory-soft py-10 lg:py-12">
+    <section className="bg-ivory-soft py-8 lg:py-10">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading

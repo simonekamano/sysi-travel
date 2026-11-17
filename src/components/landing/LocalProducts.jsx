@@ -112,7 +112,7 @@ export function ProductsShowcase({ compact = false }) {
 // The home page section: a short showcase leading to /produits.
 export default function LocalProducts() {
   return (
-    <section id="produits" className="bg-ivory-soft py-10 lg:py-12">
+    <section id="produits" className="bg-ivory-soft py-8 lg:py-10">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading

@@ -4,7 +4,7 @@ import { STEPS } from "@/data/site";
 
 export default function HowItWorks() {
   return (
-    <section className="bg-petrol py-10 text-ivory lg:py-12">
+    <section className="bg-petrol py-8 text-ivory lg:py-10">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading

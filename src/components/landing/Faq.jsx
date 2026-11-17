@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import Reveal from "@/components/landing/Reveal";
+import SectionHeading from "@/components/landing/SectionHeading";
 import { cn } from "@/lib/utils";
 
-// The questions: the title on the left and its text on the right from 640 px, then the
-// questions on two columns from 1024 px, so neither side of the section is left empty.
+// The questions: the heading, then the questions on two columns from 1024 px.
 export default function Faq({ faqs = [] }) {
   const [openIndex, setOpenIndex] = useState(0);
   const half = Math.ceil(faqs.length / 2);
@@ -41,21 +41,14 @@ export default function Faq({ faqs = [] }) {
   };
 
   return (
-    <section id="faq" className="bg-background py-10 lg:py-12">
+    <section id="faq" className="bg-background py-8 lg:py-10">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
-          <div className="grid gap-4 sm:grid-cols-2 sm:items-center sm:gap-8 md:gap-12">
-            <div>
-              <p className="eyebrow text-gold-deep">Bon à savoir</p>
-              <h2 className="mt-4 text-[clamp(1.9rem,3.6vw,3.1rem)] font-bold leading-[1.08] tracking-[-0.015em] text-petrol">
-                Les questions que l'on nous pose
-              </h2>
-            </div>
-            <p className="text-[1.02rem] leading-relaxed text-petrol/70">
-              Et si la vôtre n'y figure pas, le formulaire ci-dessous est le moyen le plus rapide d'avoir une
-              réponse claire.
-            </p>
-          </div>
+          <SectionHeading
+            eyebrow="Bon à savoir"
+            title="Les questions que l'on nous pose"
+            text="Et si la vôtre n'y figure pas, le formulaire ci-dessous est le moyen le plus rapide d'avoir une réponse claire."
+          />
         </Reveal>
 
         <Reveal delay={100} className="mt-8 grid lg:grid-cols-2 lg:gap-x-12">

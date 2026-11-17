@@ -9,7 +9,7 @@ const HOME_LIMIT = 3;
 
 export default function Destinations({ destinations = [] }) {
   return (
-    <section id="destinations" className="bg-background py-10 lg:py-12">
+    <section id="destinations" className="bg-background py-8 lg:py-10">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading

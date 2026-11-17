@@ -93,7 +93,7 @@ export default function CircuitView({ circuit, others, destinations, formules, r
 
         {/* The key facts as a band across the width, then the description (on two columns when
             it is long): no column left half empty beside a taller one. */}
-        <section className="py-10 lg:py-12">
+        <section className="py-8 lg:py-10">
           <div className="mx-auto max-w-site px-6">
             <Reveal>
               <div className="grid gap-6 border border-petrol/15 bg-white p-6 shadow-[0_30px_70px_-50px_rgba(18,61,67,0.7)] sm:grid-cols-2 lg:flex lg:items-center lg:gap-8 lg:p-7">
@@ -152,7 +152,7 @@ export default function CircuitView({ circuit, others, destinations, formules, r
         {programme.length ? <CircuitProgramme programme={programme} /> : null}
 
         {circuit.included?.length || circuit.excluded?.length ? (
-          <section className="bg-ivory-soft py-10 lg:py-12">
+          <section className="bg-ivory-soft py-8 lg:py-10">
             <div className="mx-auto max-w-site px-6">
               <Reveal>
                 <SectionHeading eyebrow="Pour bien préparer" title="Ce qui est compris" />
@@ -184,7 +184,7 @@ export default function CircuitView({ circuit, others, destinations, formules, r
         ) : null}
 
         {others.length ? (
-          <section className="py-10 lg:py-12">
+          <section className="py-8 lg:py-10">
             <div className="mx-auto max-w-site px-6">
               <Reveal>
                 <SectionHeading eyebrow="Autres idées de voyage" title="Vous aimerez aussi" />

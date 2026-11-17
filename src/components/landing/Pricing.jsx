@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export default function Pricing({ formules = [], onSelect }) {
   return (
-    <section id="offre" className="bg-background py-10 lg:py-12">
+    <section id="offre" className="bg-background py-8 lg:py-10">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading

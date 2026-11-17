@@ -41,22 +41,17 @@ function CircuitsPage() {
       <Nav home={false} solid />
 
       <main>
-        <section className="bg-background pb-10 pt-32 lg:pb-12 lg:pt-36">
+        <section className="bg-background pb-8 pt-32 lg:pb-10 lg:pt-36">
           <div className="mx-auto max-w-site px-6">
             <BackButton label="Retour" className="mb-8" />
-            {/* Title on the left, introduction on the right from 640 px: the band is filled. */}
-            <div className="grid gap-5 sm:grid-cols-2 sm:items-center sm:gap-8 md:gap-12">
-              <div>
-                <p className="eyebrow text-gold-deep">Circuits & excursions</p>
-                <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
-                  Des voyages prêts à vivre en Guinée
-                </h1>
-              </div>
-              <p className="text-[1rem] leading-relaxed text-petrol/70">
-                Chaque circuit a son programme jour par jour, son itinéraire sur la carte et un prix
-                clair. Choisissez-le tel quel, ou demandez-nous de l'adapter à vos dates et à vos envies.
-              </p>
-            </div>
+            <p className="eyebrow text-gold-deep">Circuits & excursions</p>
+            <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
+              Des voyages prêts à vivre en Guinée
+            </h1>
+            <p className="mt-6 max-w-2xl text-[1rem] leading-relaxed text-petrol/70">
+              Chaque circuit a son programme jour par jour, son itinéraire sur la carte et un prix
+              clair. Choisissez-le tel quel, ou demandez-nous de l'adapter à vos dates et à vos envies.
+            </p>
 
             {kinds.length > 1 ? (
               <div role="group" aria-label="Filtrer par type" className="mt-10 flex flex-wrap gap-2">

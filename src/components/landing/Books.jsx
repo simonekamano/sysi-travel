@@ -12,7 +12,7 @@ export default function Books({ livres = [] }) {
   if (livres.length === 0) return null;
 
   return (
-    <section id="boutique" className="bg-white py-10 lg:py-12">
+    <section id="boutique" className="bg-white py-8 lg:py-10">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading

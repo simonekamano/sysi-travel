@@ -50,23 +50,18 @@ function TransfertPage() {
       <Nav home={false} solid />
 
       <main>
-        <section className="bg-background pb-10 pt-32 lg:pb-12 lg:pt-36">
+        <section className="bg-background pb-8 pt-32 lg:pb-10 lg:pt-36">
           <div className="mx-auto max-w-site px-6">
             <BackButton label="Retour" className="mb-8" />
-            {/* Title on the left, introduction on the right from 640 px: the band is filled. */}
-            <div className="grid gap-5 sm:grid-cols-2 sm:items-center sm:gap-8 md:gap-12">
-              <div>
-                <p className="eyebrow text-gold-deep">Service à la demande</p>
-                <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
-                  Prise en charge à l'aéroport
-                </h1>
-              </div>
-              <p className="text-[1rem] leading-relaxed text-petrol/70">
-                Atterrissez à Conakry l'esprit léger : un chauffeur vous attend à votre arrivée et vous
-                conduit jusqu'à votre hôtel ou votre lieu de séjour. Le service se réserve seul, ou avec
-                un séjour ou un circuit.
-              </p>
-            </div>
+            <p className="eyebrow text-gold-deep">Service à la demande</p>
+            <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
+              Prise en charge à l'aéroport
+            </h1>
+            <p className="mt-6 max-w-2xl text-[1rem] leading-relaxed text-petrol/70">
+              Atterrissez à Conakry l'esprit léger : un chauffeur vous attend à votre arrivée et vous
+              conduit jusqu'à votre hôtel ou votre lieu de séjour. Le service se réserve seul, ou avec
+              un séjour ou un circuit.
+            </p>
 
             <ol className="mt-12 grid gap-6 md:grid-cols-3">
               {STEPS.map(({ icon: Icon, title, text }, index) => (

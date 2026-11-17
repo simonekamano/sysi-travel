@@ -4,7 +4,7 @@ import { PAINS } from "@/data/site";
 
 export default function Problem() {
   return (
-    <section id="constat" className="bg-background py-10 lg:py-12">
+    <section id="constat" className="bg-background py-8 lg:py-10">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading

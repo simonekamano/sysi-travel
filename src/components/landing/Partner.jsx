@@ -25,7 +25,7 @@ const LINKS = [
 
 export default function Partner() {
   return (
-    <section id="ambassadeur" className="bg-background pb-10 lg:pb-12">
+    <section id="ambassadeur" className="bg-background pb-8 lg:pb-10">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <div className="relative overflow-hidden rounded-[1.6rem] bg-petrol-deep px-5 py-10 text-ivory sm:px-10 lg:px-14 lg:py-14">

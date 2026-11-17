@@ -184,7 +184,7 @@ function HistoirePage() {
       <Nav home={false} solid bookingHref="/contact" />
 
       <main>
-        <section className="overflow-hidden bg-background pb-10 pt-32 md:pb-12 lg:pb-12 lg:pt-36">
+        <section className="overflow-hidden bg-background pb-8 pt-32 md:pb-10 lg:pb-10 lg:pt-36">
           <div className="mx-auto grid max-w-site items-center gap-10 px-6 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] sm:gap-8 md:gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-20">
             <div>
               <BackButton label="Retour" className="mb-8" />
@@ -222,7 +222,7 @@ function HistoirePage() {
         </section>
 
         {parts.length ? (
-          <section id="recit" className="scroll-mt-28 border-t border-petrol/10 bg-white py-10 lg:py-12">
+          <section id="recit" className="scroll-mt-28 border-t border-petrol/10 bg-white py-8 lg:py-10">
             <div className="mx-auto max-w-[50rem] space-y-12 px-6 lg:space-y-16 xl:max-w-[54rem]">
               {sections.map(({ part, aside, band }, index) => (
                 <Part key={`${index}-${part.title}`} part={part} aside={aside} band={band}>
@@ -239,7 +239,7 @@ function HistoirePage() {
         ) : null}
 
         {steps.length ? (
-          <section id="accompagnement" className="scroll-mt-28 bg-petrol py-10 text-ivory lg:py-12">
+          <section id="accompagnement" className="scroll-mt-28 bg-petrol py-8 text-ivory lg:py-10">
             <div className="mx-auto max-w-site px-6">
               <Reveal>
                 <SectionHeading
@@ -274,7 +274,7 @@ function HistoirePage() {
           </section>
         ) : null}
 
-        <section className="bg-background py-10 lg:py-12">
+        <section className="bg-background py-8 lg:py-10">
           <Reveal className="mx-auto max-w-5xl px-6 text-center">
             <p className="eyebrow text-gold-deep">Votre voyage</p>
             <h2 className="mt-4 text-[clamp(1.8rem,3.4vw,2.7rem)] font-bold leading-[1.1] tracking-[-0.015em] text-petrol [text-wrap:balance]">

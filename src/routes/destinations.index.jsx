@@ -34,23 +34,18 @@ function DestinationsPage() {
       <Nav home={false} solid />
 
       <main>
-        <section className="bg-background pb-10 pt-32 lg:pb-12 lg:pt-36">
+        <section className="bg-background pb-8 pt-32 lg:pb-10 lg:pt-36">
           <div className="mx-auto max-w-site px-6">
             <BackButton label="Retour" className="mb-8" />
-            {/* Title on the left, introduction on the right from 640 px: the band is filled. */}
-            <div className="grid gap-5 sm:grid-cols-2 sm:items-center sm:gap-8 md:gap-12">
-              <div>
-                <p className="eyebrow text-gold-deep">Découvrir la Guinée</p>
-                <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
-                  Destinations iconiques
-                </h1>
-              </div>
-              <p className="text-[1rem] leading-relaxed text-petrol/70">
-                Des îles de l'Atlantique aux hauts plateaux du Fouta, des cascades de Pita aux forêts
-                classées du Nimba : chaque lieu a sa fiche, ses photos et ses informations pratiques,
-                et se visite dans nos circuits avec un guide local.
-              </p>
-            </div>
+            <p className="eyebrow text-gold-deep">Découvrir la Guinée</p>
+            <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
+              Destinations iconiques
+            </h1>
+            <p className="mt-6 max-w-2xl text-[1rem] leading-relaxed text-petrol/70">
+              Des îles de l'Atlantique aux hauts plateaux du Fouta, des cascades de Pita aux forêts
+              classées du Nimba : chaque lieu a sa fiche, ses photos et ses informations pratiques,
+              et se visite dans nos circuits avec un guide local.
+            </p>
 
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {destinations.map((destination, index) => (
@@ -62,7 +57,7 @@ function DestinationsPage() {
           </div>
         </section>
 
-        <section className="bg-ivory-soft py-10 lg:py-12">
+        <section className="bg-ivory-soft py-8 lg:py-10">
           <div className="mx-auto max-w-site px-6">
             <Reveal>
               <div className="grid items-center gap-8 lg:grid-cols-[1fr_2fr]">
