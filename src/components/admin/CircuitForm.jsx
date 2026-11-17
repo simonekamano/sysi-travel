@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ImageField, TextAreaField, TextField } from "@/components/admin/fields";
 import { CIRCUIT_KINDS } from "@/data/site";
 import { formatCoordinates, parseCoordinates } from "@/lib/coordinates";
+import { parsePrice, priceInput } from "@/lib/boutique";
 
 const EMPTY = {
   title: "",
@@ -22,6 +23,10 @@ const EMPTY = {
   included: "",
   excluded: "",
   programme: [],
+  // Online booking: price per person in euros (empty: « Tarif sur demande ») and the share paid
+  // when booking, in percent (100: the whole price).
+  prix_en_ligne: "",
+  acompte_pourcent: "100",
   published: false,
 };
 
@@ -30,6 +35,8 @@ const toForm = (record) =>
     ? {
         ...EMPTY,
         ...record,
+        prix_en_ligne: priceInput(record.prix_en_ligne_cents),
+        acompte_pourcent: String(record.acompte_pourcent ?? 100),
         included: (record.included || []).join("\n"),
         excluded: (record.excluded || []).join("\n"),
         programme: (record.programme || []).map((day) => ({
@@ -190,6 +197,16 @@ export default function CircuitForm({ initial, destinations = [], onCancel, onSa
       setError("L'adresse de la page ne peut contenir que des lettres minuscules, des chiffres et des tirets.");
       return;
     }
+    const prixEnLigne = form.prix_en_ligne.trim() ? parsePrice(form.prix_en_ligne) : null;
+    if (form.prix_en_ligne.trim() && (prixEnLigne === null || prixEnLigne < 100)) {
+      setError("Prix en ligne invalide : indiquez un montant en euros, par exemple 450 ou 450,00 (1 € au moins), ou laissez vide.");
+      return;
+    }
+    const acompte = Number(form.acompte_pourcent);
+    if (!Number.isInteger(acompte) || acompte < 10 || acompte > 100) {
+      setError("La part payée à la réservation doit être un nombre entre 10 et 100 %.");
+      return;
+    }
     const days = form.programme.filter((day) => day.title.trim() || day.description.trim());
     if (days.some((day) => !day.title.trim())) {
       setError("Chaque jour du programme doit avoir un titre.");
@@ -223,6 +240,8 @@ export default function CircuitForm({ initial, destinations = [], onCancel, onSa
       included: lines(form.included),
       excluded: lines(form.excluded),
       programme,
+      prix_en_ligne_cents: prixEnLigne,
+      acompte_pourcent: acompte,
       published: form.published,
       sort_order: initial?.sort_order ?? Date.now(),
     };
@@ -261,6 +280,25 @@ export default function CircuitForm({ initial, destinations = [], onCancel, onSa
         <TextField label="Prix affiché" value={form.price} onChange={set("price")} placeholder="À partir de … par personne" />
         <TextField label="Départ" value={form.departure} onChange={set("departure")} placeholder="Au départ de Conakry" />
         <TextField label="Dates" value={form.dates} onChange={set("dates")} placeholder="Tous les jours, ou du 14 au 20 décembre" />
+      </div>
+      <div className="space-y-4 border border-petrol/15 bg-ivory-soft p-4">
+        <div>
+          <p className="label-caps text-gold-deep">Réservation et paiement en ligne</p>
+          <p className="mt-1 text-[0.85rem] leading-relaxed text-petrol/65">
+            Avec un prix en ligne, les voyageurs réservent et paient sur le site (carte bancaire, par Stripe). Laissez vide pour garder
+            « Tarif sur demande » et le formulaire de devis.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <TextField label="Prix en ligne par personne (€)" value={form.prix_en_ligne} onChange={set("prix_en_ligne")} placeholder="Vide : tarif sur demande" />
+          <TextField
+            label="Payé à la réservation (%)"
+            type="number"
+            value={form.acompte_pourcent}
+            onChange={set("acompte_pourcent")}
+            placeholder="100 : la totalité ; 30 : un acompte de 30 %"
+          />
+        </div>
       </div>
       <TextAreaField
         label="Accroche (carte de l'accueil)"

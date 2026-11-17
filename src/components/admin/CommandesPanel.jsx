@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "@tanstack/react-router";
-import { Check, Copy, Loader2, Mail, MapPin, MessageCircle, PackageCheck, RotateCcw, Send, Trash2, Truck, X } from "lucide-react";
+import { Check, Copy, CreditCard, Loader2, Mail, MapPin, MessageCircle, PackageCheck, RotateCcw, Send, Trash2, Truck, X } from "lucide-react";
 import { toast } from "sonner";
 import { deleteCommande, renvoyerLienCommande, setCommandeLivraison, setCommandeStatut } from "@/lib/server-fns";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
@@ -169,6 +169,11 @@ export default function CommandesPanel({ commandes = [] }) {
                     <span className={cn("label-caps rounded-full px-3 py-1 text-[0.68rem]", STATUT_STYLE[commande.statut])}>
                       {ORDER_STATUSES[commande.statut]}
                     </span>
+                    {commande.paiement_mode === "stripe" && commande.statut === "payee" ? (
+                      <span className="label-caps inline-flex items-center gap-1 rounded-full bg-petrol/10 px-3 py-1 text-[0.68rem] text-petrol">
+                        <CreditCard className="h-3 w-3" /> Payée en ligne
+                      </span>
+                    ) : null}
                     {commande.livraison && commande.livraison !== "sans" && commande.statut !== "annulee" ? (
                       <span className={cn("label-caps inline-flex items-center gap-1 rounded-full px-3 py-1 text-[0.68rem]", LIVRAISON_STYLE[commande.livraison])}>
                         <Truck className="h-3 w-3" /> {DELIVERY_STATUSES[commande.livraison]}
@@ -177,7 +182,7 @@ export default function CommandesPanel({ commandes = [] }) {
                   </p>
                   <p className="mt-1 text-[0.85rem] text-petrol/55">{dateFormat.format(new Date(commande.created_at))}</p>
                 </div>
-                <p className="font-display text-[1.25rem] font-bold text-petrol">{formatPrice(commande.total_cents)}</p>
+                <p className="font-display text-[1.25rem] font-bold text-petrol">{formatPrice(commande.total_cents + (commande.frais_livraison_cents ?? 0))}</p>
               </div>
 
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -212,6 +217,12 @@ export default function CommandesPanel({ commandes = [] }) {
                       <span className="whitespace-nowrap text-petrol/55">{formatPrice(ligne.price_cents)}</span>
                     </li>
                   ))}
+                  {commande.frais_livraison_cents > 0 ? (
+                    <li className="flex justify-between gap-4">
+                      <span>Livraison</span>
+                      <span className="whitespace-nowrap text-petrol/55">{formatPrice(commande.frais_livraison_cents)}</span>
+                    </li>
+                  ) : null}
                 </ul>
               </div>
 

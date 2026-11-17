@@ -19,6 +19,10 @@ services:
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       MAIL_FROM: ${MAIL_FROM:-SYSI TRAVEL <no-reply@sysitravel.com>}
       MAIL_NOTIFY_TO: ${MAIL_NOTIFY_TO:-}
+      # Paiement en ligne par carte (Stripe), voir DEPLOIEMENT.md § 4.5. Vides : paiement désactivé.
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
     # Seulement en local : Nginx est la seule porte d'entrée publique.
     ports:
       - "127.0.0.1:3000:3000"

@@ -2,9 +2,10 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest, getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireAdmin, requireUser } from "@/lib/auth-middleware";
-import { ARTICLE_CATEGORY_KEYS, BOOK_PUBLIC_COLUMNS, CUSTOM_SIZE, DOWNLOAD_DAYS, VENTE_EN_LIGNE } from "@/lib/boutique";
+import { ARTICLE_CATEGORY_KEYS, BOOK_PUBLIC_COLUMNS, CUSTOM_SIZE, VENTE_EN_LIGNE } from "@/lib/boutique";
 import { LEGAL_PAGES, LEGAL_SLUGS, findPlaceholders } from "@/lib/legal";
-import { sendCommandeEmails, sendDemandeEmails, sendLienTelechargement, sendPaiementRecu, sendSuiviLivraison } from "@/lib/mail";
+import { sendCommandeEmails, sendDemandeEmails, sendSuiviLivraison } from "@/lib/mail";
+import { checkoutCommande, checkoutReservation, confirmerPaiement, marquerCommandePayee, paiementActif, stripeMode } from "@/lib/paiement";
 import { siteUrl } from "@/lib/site-url";
 import { parseVideo } from "@/lib/video";
 
@@ -92,14 +93,20 @@ const listPublishedArticles = (supabase) =>
 // The shop (/boutique) and the cart: articles, books, and what the footer needs.
 export const getBoutiquePage = createServerFn({ method: "GET" }).handler(async ({ context }) => {
   const supabase = context.getSupabase();
-  const [articles, livres, destinations, reseaux] = await Promise.all([
+  const [articles, livres, destinations, reseaux, reglages] = await Promise.all([
     listPublishedArticles(supabase),
     listPublishedBooks(supabase),
     listOrdered(supabase, "destinations", 200),
     listOrdered(supabase, "reseaux_sociaux", 20),
+    getReglagesPaiementPublics(supabase),
   ]);
-  return { articles, livres, destinations, reseaux };
+  // Online payment (Stripe), and the articles' shipping fee (null: not set yet).
+  return { articles, livres, destinations, reseaux, paiementEnLigne: paiementActif(), livraisonCents: reglages.livraison_cents };
 });
+
+// The payment settings a visitor may read (supabase/migrations/0017_paiement_stripe.sql).
+const getReglagesPaiementPublics = async (supabase) =>
+  (await supabase.from("reglages_paiement").select("livraison_cents").maybeSingle()).data ?? { livraison_cents: null };
 
 // An article's page and four others to suggest (same section first). `article` is null for an
 // unknown or hidden article; the route answers 404.
@@ -152,7 +159,7 @@ export const getCircuitPage = createServerFn({ method: "GET" })
       listOrdered(supabase, "reseaux_sociaux", 20),
     ]);
     const others = circuits.filter((item) => item.slug !== data.slug).slice(0, 3);
-    return { circuit, others, destinations, formules, reseaux };
+    return { circuit, others, destinations, formules, reseaux, paiementEnLigne: paiementActif() };
   });
 
 // A destination's page: the destination, three others to suggest, and what the contact form lists.
@@ -291,6 +298,11 @@ export const createCommande = createServerFn({ method: "POST" })
     if (!data.cgv && (await isLegalPagePublished(supabase, "conditions-generales-de-vente"))) {
       throw new Error("Cochez la case pour accepter les conditions générales de vente.");
     }
+    const enLigne = paiementActif();
+    const { livraison_cents: livraisonCents } = await getReglagesPaiementPublics(supabase);
+    if (enLigne && data.articles.length && livraisonCents === null) {
+      throw new Error("Les frais de livraison ne sont pas encore fixés. Réservez vos articles sur WhatsApp.");
+    }
     const { data: commande, error } = await supabase.rpc("passer_commande", {
       p_nom: data.nom,
       p_email: data.email,
@@ -304,6 +316,16 @@ export const createCommande = createServerFn({ method: "POST" })
     if (error) {
       const known = ORDER_ERRORS.find(([pattern]) => pattern.test(error.message));
       throw new Error(known ? known[1] : publicError(error, "La commande n'a pas pu être enregistrée. Réessayez ou écrivez-nous sur WhatsApp."));
+    }
+    if (enLigne) {
+      const paymentUrl = await checkoutCommande({
+        reference: commande.reference,
+        email: data.email,
+        lignes: commande.lignes,
+        fraisLivraisonCents: commande.livraison ? livraisonCents : 0,
+        baseUrl: siteUrl(getRequest()),
+      });
+      return { reference: commande.reference, total_cents: commande.total_cents, livraison: commande.livraison, paymentUrl };
     }
     await sendCommandeEmails({
       ...commande,
@@ -551,6 +573,10 @@ const circuitInput = z.object({
       }),
     )
     .max(60),
+  // Online booking (supabase/migrations/0017_paiement_stripe.sql): price per person in cents
+  // (null: « Tarif sur demande », no online payment) and the share paid when booking.
+  prix_en_ligne_cents: z.number().int().min(100).max(10000000).nullable().default(null),
+  acompte_pourcent: z.number().int().min(10).max(100).default(100),
   published: z.boolean(),
   sort_order: z.number(),
 });
@@ -691,15 +717,6 @@ const ORDER_COLUMNS =
 
 const getOrder = async (supabase, id) => unwrap(await supabase.from("commandes").select(ORDER_COLUMNS).eq("id", id).single());
 
-// Opens the download link for DOWNLOAD_DAYS days (counter back to zero) and e-mails it.
-async function openDownloadLink(supabase, id, values = {}) {
-  const lienExpireLe = new Date(Date.now() + DOWNLOAD_DAYS * 24 * 60 * 60 * 1000).toISOString();
-  unwrap(await supabase.from("commandes").update({ ...values, lien_expire_le: lienExpireLe, telechargements: 0 }).eq("id", id));
-  const commande = await getOrder(supabase, id);
-  const url = `${siteUrl(getRequest())}/telechargement/${commande.token}`;
-  const emailed = await sendLienTelechargement(commande, url);
-  return { ok: true, emailed };
-}
 
 // « Payée »: an order with books opens their download link and sends it; an order of articles
 // only gets a « paiement reçu » e-mail. « Annulée » or « En attente » closes the link (it only
@@ -710,11 +727,8 @@ export const setCommandeStatut = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const supabase = context.getSupabase();
     if (data.statut === "payee") {
-      const payment = { statut: "payee", payee_le: new Date().toISOString() };
-      const order = await getOrder(supabase, data.id);
-      if (order.lignes.length) return openDownloadLink(supabase, data.id, payment);
-      unwrap(await supabase.from("commandes").update(payment).eq("id", data.id));
-      const emailed = await sendPaiementRecu({ ...order, ...payment });
+      const payment = { statut: "payee", payee_le: new Date().toISOString(), paiement_mode: "manuel" };
+      const emailed = await marquerCommandePayee(supabase, data.id, payment, siteUrl(getRequest()));
       return { ok: true, emailed };
     }
     return saveRecord(supabase, "commandes", data);
@@ -740,9 +754,10 @@ export const renvoyerLienCommande = createServerFn({ method: "POST" })
   .validator(idInput)
   .handler(async ({ data, context }) => {
     const supabase = context.getSupabase();
-    const { statut } = unwrap(await supabase.from("commandes").select("statut").eq("id", data.id).single());
-    if (statut !== "payee") throw new Error("Seule une commande payée a un lien de téléchargement.");
-    return openDownloadLink(supabase, data.id);
+    const order = unwrap(await supabase.from("commandes").select("statut, payee_le, paiement_mode").eq("id", data.id).single());
+    if (order.statut !== "payee") throw new Error("Seule une commande payée a un lien de téléchargement.");
+    const emailed = await marquerCommandePayee(supabase, data.id, order, siteUrl(getRequest()));
+    return { ok: true, emailed };
   });
 
 // --- Articles (clothes, bags, jewels: supabase/migrations/0013_boutique_articles.sql) ---
@@ -834,3 +849,121 @@ export const deleteDemande = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .validator(idInput)
   .handler(({ data, context }) => deleteRecord(context.getSupabase(), "demandes_sejour", data.id));
+
+// --- Online booking and payment of circuits (Stripe: src/lib/paiement.js) ---
+
+const checkReservationRate = rateLimiter(
+  5,
+  15 * 60 * 1000,
+  "Trop de réservations envoyées. Réessayez dans quelques minutes ou écrivez-nous sur WhatsApp.",
+);
+
+// A circuit with an online price, booked by a visitor: the booking is created at the database's
+// price (reserver_circuit), then the visitor pays on Stripe's page. Returns its address.
+export const reserverCircuit = createServerFn({ method: "POST" })
+  .validator(
+    z.object({
+      circuit_id: z.uuid(),
+      date_souhaitee: text(100).min(1),
+      voyageurs: z.number().int().min(1).max(30),
+      nom: text(200).min(1),
+      email: z.email().max(320),
+      telephone: text(50).min(6),
+      message: text(2000).default(""),
+      cgv: z.boolean().default(false),
+      site_web: text(500).optional(),
+      delai: z.number().int().min(0).max(1e10).optional(),
+    }),
+  )
+  .handler(async ({ data, context }) => {
+    if (!paiementActif()) throw new Error("La réservation en ligne n'est pas encore ouverte. Écrivez-nous sur WhatsApp.");
+    if (isRobot(data.site_web, data.delai)) throw new Error("La réservation n'a pas pu être envoyée. Réessayez dans un instant.");
+    checkReservationRate();
+    const supabase = context.getSupabase();
+    if (!data.cgv && (await isLegalPagePublished(supabase, "conditions-generales-de-vente"))) {
+      throw new Error("Cochez la case pour accepter les conditions générales de vente.");
+    }
+    const circuit = unwrap(await supabase.from("circuits").select("slug").eq("id", data.circuit_id).maybeSingle());
+    if (!circuit) throw new Error("Ce voyage n'est plus disponible.");
+    const { slug } = circuit;
+    const { data: reservation, error } = await supabase.rpc("reserver_circuit", {
+      p_circuit_id: data.circuit_id,
+      p_date: data.date_souhaitee,
+      p_voyageurs: data.voyageurs,
+      p_nom: data.nom,
+      p_email: data.email,
+      p_telephone: data.telephone,
+      p_message: data.message,
+    });
+    if (error) {
+      throw new Error(
+        /ne se réserve pas en ligne/.test(error.message)
+          ? "Ce voyage ne se réserve pas en ligne pour le moment. Écrivez-nous sur WhatsApp."
+          : publicError(error, "La réservation n'a pas pu être enregistrée. Réessayez ou écrivez-nous sur WhatsApp."),
+      );
+    }
+    const paymentUrl = await checkoutReservation({ reservation, email: data.email, slug, baseUrl: siteUrl(getRequest()) });
+    return { reference: reservation.reference, paymentUrl };
+  });
+
+// Back from Stripe's page (/paiement/confirmation?session_id=…): asks Stripe whether it is paid,
+// records the payment (once) and returns what the page shows. Null for an unknown session.
+export const getPaiementConfirmation = createServerFn({ method: "GET" })
+  .validator(z.object({ session_id: text(300).regex(/^cs_[A-Za-z0-9_]+$/) }))
+  .handler(async ({ data }) => {
+    if (!paiementActif()) return null;
+    try {
+      return await confirmerPaiement(data.session_id, siteUrl(getRequest()));
+    } catch (error) {
+      console.error("Confirmation du paiement :", error);
+      return null;
+    }
+  });
+
+// --- Administration: bookings and payment settings ---
+
+export const listReservations = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(({ context }) =>
+    context.getSupabase().from("reservations").select("*").order("created_at", { ascending: false }).limit(500).then(unwrap),
+  );
+
+export const setReservationStatut = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(z.object({ id: z.uuid(), statut: z.enum(["en_attente", "payee", "annulee"]) }))
+  .handler(async ({ data, context }) => {
+    const values = { statut: data.statut, ...(data.statut === "payee" ? { payee_le: new Date().toISOString() } : {}) };
+    unwrap(await context.getSupabase().from("reservations").update(values).eq("id", data.id));
+    return { ok: true };
+  });
+
+export const deleteReservation = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(idInput)
+  .handler(({ data, context }) => deleteRecord(context.getSupabase(), "reservations", data.id));
+
+// Whether Stripe is connected (and in which mode), and the articles' shipping fee.
+export const getReglagesPaiement = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(async ({ context }) => {
+    const reglages = await getReglagesPaiementPublics(context.getSupabase());
+    return {
+      livraison_cents: reglages.livraison_cents,
+      stripe: {
+        actif: paiementActif(),
+        mode: stripeMode(),
+        cleSecrete: Boolean(process.env.STRIPE_SECRET_KEY),
+        cleService: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+        notifications: Boolean(process.env.STRIPE_WEBHOOK_SECRET),
+      },
+      adresseNotifications: `${siteUrl(getRequest())}/api/stripe-webhook`,
+    };
+  });
+
+export const saveReglagesPaiement = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(z.object({ livraison_cents: z.number().int().min(0).max(100000).nullable() }))
+  .handler(async ({ data, context }) => {
+    unwrap(await context.getSupabase().from("reglages_paiement").update({ livraison_cents: data.livraison_cents }).eq("id", true));
+    return { ok: true };
+  });

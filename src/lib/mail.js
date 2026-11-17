@@ -131,7 +131,9 @@ function orderLines(commande) {
     item.quantite > 1 ? articleTitle(item) + " × " + item.quantite : articleTitle(item),
     formatPrice(item.price_cents * item.quantite),
   ]);
-  return [...books, ...items, ["Total", formatPrice(commande.total_cents)]];
+  // Shipping paid online with the order (commandes.frais_livraison_cents).
+  const shipping = commande.frais_livraison_cents > 0 ? [["Livraison", formatPrice(commande.frais_livraison_cents)]] : [];
+  return [...books, ...items, ...shipping, ["Total", formatPrice(commande.total_cents + (commande.frais_livraison_cents ?? 0))]];
 }
 
 const hasDelivery = (commande) =>
@@ -286,5 +288,107 @@ ${shipping}<p style="margin:0 0 24px"><a href="${escapeHtml(url)}" style="displa
   } catch (error) {
     console.error("Lien de téléchargement non envoyé :", error);
     return false;
+  }
+}
+
+// --- Online payment (Stripe: src/lib/paiement.js) ---
+
+// An order paid online: the agency is told (the buyer already has the link or the « paiement
+// reçu » e-mail). Never throws: the payment is already recorded.
+export async function sendCommandePayeeAgence(commande) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("RESEND_API_KEY absente : avis de commande payée non envoyé.");
+    return;
+  }
+  const delivery = (commande.articles ?? []).length > 0;
+  const fields = [
+    ["Référence", commande.reference],
+    ["Nom", commande.nom],
+    ["E-mail", commande.email],
+    ["Téléphone", commande.telephone],
+    ...(delivery ? [["Livraison", [commande.adresse, commande.pays].filter(Boolean).join("\n")]] : []),
+    ...(commande.message ? [["Précisions", commande.message]] : []),
+  ];
+  const lines = orderLines(commande);
+  const p = (text) => '<p style="margin:0 0 14px;font-size:15px;line-height:1.6">' + text + "</p>";
+  try {
+    await sendEmail({
+      to: process.env.MAIL_NOTIFY_TO || CONTACT.email,
+      replyTo: commande.email,
+      subject: "Commande payée en ligne " + commande.reference + " : " + formatPrice(commande.total_cents + (commande.frais_livraison_cents ?? 0)),
+      html: layout(
+        "Commande payée en ligne " + escapeHtml(commande.reference),
+        p(
+          "Le paiement par carte est reçu (Stripe)." +
+            (commande.lignes?.length ? " Le lien de téléchargement des livres est parti tout seul." : "") +
+            (delivery ? " Préparez les articles, puis suivez la livraison dans Administration › Commandes." : ""),
+        ) +
+          rows(fields) +
+          '<p style="margin:22px 0 10px;font-size:15px">Commande :</p>' +
+          rows(lines),
+      ),
+      text: "Commande payée en ligne " + commande.reference + "\n\n" + asText(fields) + "\n\nCommande :\n" + asText(lines),
+    });
+  } catch (error) {
+    console.error("Avis de commande payée non envoyé :", error);
+  }
+}
+
+// A circuit booked and paid online: confirmation to the traveller, notification to the agency.
+// Never throws: the payment is already recorded.
+export async function sendReservationEmails(reservation) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("RESEND_API_KEY absente : e-mails de la réservation non envoyés.");
+    return;
+  }
+  const agency = process.env.MAIL_NOTIFY_TO || CONTACT.email;
+  const reste = reservation.total_cents - reservation.montant_en_ligne_cents;
+  const details = [
+    ["Référence", reservation.reference],
+    ["Voyage", reservation.circuit_title],
+    ["Date souhaitée", reservation.date_souhaitee],
+    ["Voyageurs", String(reservation.voyageurs)],
+    ["Prix du voyage", formatPrice(reservation.total_cents)],
+    ["Payé en ligne", formatPrice(reservation.montant_en_ligne_cents) + (reste > 0 ? " (acompte de " + reservation.acompte_pourcent + " %)" : "")],
+    ...(reste > 0 ? [["Reste à régler", formatPrice(reste)]] : []),
+  ];
+  const client = [["Nom", reservation.nom], ["E-mail", reservation.email], ["Téléphone", reservation.telephone], ...(reservation.message ? [["Précisions", reservation.message]] : [])];
+  const p = (text) => '<p style="margin:0 0 14px;font-size:15px;line-height:1.6">' + text + "</p>";
+  const next =
+    "Nous vous contactons sous 72 heures pour confirmer la date et organiser votre voyage" +
+    (reste > 0 ? ", et vous indiquer comment régler le solde." : ".");
+
+  const notification = sendEmail({
+    to: agency,
+    replyTo: reservation.email,
+    subject: "Réservation payée " + reservation.reference + " : " + reservation.circuit_title,
+    html: layout(
+      "Réservation payée en ligne " + escapeHtml(reservation.reference),
+      p("Contactez " + escapeHtml(reservation.nom) + " sous 72 heures pour confirmer la date et organiser le voyage.") +
+        rows([...details, ...client]),
+    ),
+    text: "Réservation payée en ligne " + reservation.reference + "\n\n" + asText([...details, ...client]),
+  });
+
+  const confirmation = sendEmail({
+    to: reservation.email,
+    replyTo: agency,
+    subject: "Votre réservation " + reservation.reference + " · SYSI TRAVEL",
+    html: layout(
+      "Merci " + escapeHtml(reservation.nom) + ", votre réservation est confirmée",
+      p("Votre paiement est bien reçu. " + escapeHtml(next)) +
+        rows(details) +
+        '<p style="margin:22px 0 0;font-size:15px;line-height:1.6">Une question ? Répondez simplement à cet e-mail, ou écrivez-nous sur WhatsApp au ' +
+        escapeHtml(CONTACT.phone) +
+        ".</p>",
+    ),
+    text:
+      "Bonjour " + reservation.nom + ",\n\nVotre paiement est bien reçu. " + next + "\n\n" + asText(details) +
+      "\n\nUne question ? Répondez à cet e-mail, ou écrivez-nous sur WhatsApp au " + CONTACT.phone + ".\n\nSYSI TRAVEL",
+  });
+
+  const results = await Promise.allSettled([notification, confirmation]);
+  for (const result of results) {
+    if (result.status === "rejected") console.error("E-mail de réservation non envoyé :", result.reason);
   }
 }

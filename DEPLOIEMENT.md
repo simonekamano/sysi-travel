@@ -170,7 +170,9 @@ SUPABASE_ANON_KEY=<la même ANON_KEY>
 SITE_URL=https://sysitravel.com
 ```
 
-> La `SERVICE_ROLE_KEY` n'est **jamais** nécessaire à l'application : ne la mettez pas dans ce fichier.
+> La `SERVICE_ROLE_KEY` ne sert qu'au paiement en ligne (§ 4.5) : ne l'ajoutez qu'à ce moment-là,
+> sous le nom `SUPABASE_SERVICE_ROLE_KEY`, et jamais dans une variable `VITE_*` (elle partirait
+> dans le navigateur).
 
 ### 4.3 Secrets GitHub
 
@@ -195,6 +197,55 @@ Chaque push sur `main` lance `.github/workflows/deploy.yml` :
 
 Relancer un déploiement sans nouveau commit : onglet **Actions → CI et déploiement → Run workflow**.
 À la main sur le VPS : `sudo -u deploy bash /opt/sysi-travel/app/deploy/deploy.sh`.
+
+### 4.5 Paiement en ligne par carte (Stripe)
+
+Le compte Stripe est au nom de la Cliente ; le développeur y est invité (rôle Développeur).
+**Les prix restent dans l'administration du site** : au moment du paiement, le site envoie à
+Stripe le nom et le montant de chaque ligne (`price_data`, `src/lib/paiement.js`). Il n'y a ni
+produit ni prix à créer dans Stripe, et un prix changé dans l'administration vaut dès le
+paiement suivant.
+
+| Ce qui se paie | Où se règle le prix |
+| --- | --- |
+| Circuits et excursions | Administration › Circuits : « Prix en ligne par personne » (vide : « Tarif sur demande », pas de réservation en ligne) et « Payé à la réservation (%) » (100 : tout ; 30 : acompte de 30 %) |
+| Articles, livres et guides | Administration › Articles et › Livres & guides ; frais de livraison des articles dans Administration › Paiement en ligne. La vente reste fermée tant que `VENTE_EN_LIGNE` vaut `false` (n° 17 d'ORDRE.md) |
+
+**1. Mode test d'abord** (interrupteur « Test mode » du Dashboard Stripe) :
+
+1. *Developers › API keys* : copier la **Secret key** `sk_test_…`.
+2. *Developers › Webhooks › Add endpoint* :
+   - URL : `https://sysitravel.com/api/stripe-webhook` ;
+   - événements : `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
+     `checkout.session.async_payment_failed`, `checkout.session.expired` ;
+   - copier le **Signing secret** `whsec_…`.
+3. Dans `/opt/sysi-travel/.env` :
+
+   ```dotenv
+   STRIPE_SECRET_KEY=sk_test_…
+   STRIPE_WEBHOOK_SECRET=whsec_…
+   SUPABASE_SERVICE_ROLE_KEY=<SERVICE_ROLE_KEY de /opt/supabase/.env>
+   ```
+
+4. Relancer le déploiement (*Actions › Run workflow*) pour que le conteneur lise les clés.
+5. Administration › Paiement en ligne doit afficher « mode test » et trois coches.
+6. Essai : un circuit avec un prix en ligne, carte `4242 4242 4242 4242`, date future, code
+   `123`. La réservation passe en « Payée » dans Administration › Réservations et les deux e-mails
+   partent (agence et voyageur).
+
+**2. Passage en réel**, quand la Cliente a activé son compte (identité, IBAN : elle seule peut
+le faire) : refaire les étapes 1 à 4 avec l'interrupteur « Test mode » coupé (`sk_live_…`,
+nouveau point de notification et son `whsec_…`).
+
+**Réglages utiles dans Stripe** : *Settings › Payment methods* (carte, Apple Pay, Google Pay…),
+*Settings › Branding* (logo et couleurs de la page de paiement), *Settings › Public details*
+(nom affiché sur le relevé bancaire : SYSI TRAVEL), *Settings › Customer emails* (reçus envoyés
+par Stripe). Remboursements : *Payments*, ouvrir le paiement › *Refund*.
+
+**Sécurité** : la carte est saisie sur la page de Stripe, jamais sur le site. Une commande ou une
+réservation ne passe en « Payée » qu'après vérification auprès de Stripe (montant et devise
+compris), au retour du client ou à la notification signée. La clé de service Supabase n'est
+lue que par `src/lib/paiement.js`, côté serveur.
 
 ---
 

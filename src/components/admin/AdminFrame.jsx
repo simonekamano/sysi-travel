@@ -3,7 +3,9 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   BookOpen,
+  CalendarCheck,
   Clapperboard,
+  CreditCard,
   ExternalLink,
   Feather,
   HelpCircle,
@@ -33,6 +35,7 @@ const GROUPS = [
     links: [
       { to: "/admin/demandes", label: "Demandes", icon: Inbox },
       { to: "/admin/commandes", label: "Commandes", icon: Receipt },
+      { to: "/admin/reservations", label: "Réservations", icon: CalendarCheck },
     ],
   },
   {
@@ -64,6 +67,7 @@ const GROUPS = [
     links: [
       { to: "/admin/reseaux", label: "Réseaux sociaux", icon: Share2 },
       { to: "/admin/pages-legales", label: "Pages légales", icon: Scale },
+      { to: "/admin/paiement", label: "Paiement en ligne", icon: CreditCard },
     ],
   },
 ];

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import { CalendarDays, Check, Clock, MapPin, MessageCircle, X } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import Nav from "@/components/landing/Nav";
@@ -8,7 +8,9 @@ import SectionHeading from "@/components/landing/SectionHeading";
 import ContactForm from "@/components/landing/ContactForm";
 import Footer from "@/components/landing/Footer";
 import WhatsAppButton from "@/components/landing/WhatsAppButton";
+import CircuitBooking from "@/components/circuit/CircuitBooking";
 import CircuitProgramme from "@/components/circuit/CircuitProgramme";
+import { formatPrice } from "@/lib/boutique";
 import { CIRCUIT_KINDS, CONTACT } from "@/data/site";
 
 function Fact({ icon: Icon, label, value }) {
@@ -26,7 +28,13 @@ function Fact({ icon: Icon, label, value }) {
 
 // The page of a circuit, shared by the public route (/circuits/$slug) and the admins' preview
 // of drafts (/apercu/circuits/$slug), whose data only a signed-in admin can load.
-export default function CircuitView({ circuit, others, destinations, formules, reseaux }) {
+export default function CircuitView({ circuit, others, destinations, formules, reseaux, paiementEnLigne = false }) {
+  // Booked and paid online when it has an online price and Stripe is connected (never in the
+  // admins' preview of a draft). ?paiement=annule: back from Stripe's page without paying.
+  const online = Boolean(paiementEnLigne && circuit.published && circuit.prix_en_ligne_cents);
+  const { paiement } = useSearch({ strict: false });
+  // The price shown: the admin's text, or else the online price per person.
+  const priceLabel = circuit.price || (circuit.prix_en_ligne_cents ? `${formatPrice(circuit.prix_en_ligne_cents)} par personne` : "");
   // The circuit is offered first in the form's « Formule » list, and preselected.
   const [formule, setFormule] = useState(circuit.id);
   const options = useMemo(
@@ -84,8 +92,8 @@ export default function CircuitView({ circuit, others, destinations, formules, r
                   {item}
                 </span>
               ))}
-              {circuit.price ? (
-                <span className="label-caps rounded-full bg-gold px-4 py-2 text-petrol-deep">{circuit.price}</span>
+              {priceLabel ? (
+                <span className="label-caps rounded-full bg-gold px-4 py-2 text-petrol-deep">{priceLabel}</span>
               ) : null}
             </div>
           </div>
@@ -99,8 +107,8 @@ export default function CircuitView({ circuit, others, destinations, formules, r
               <div className="grid gap-6 border border-petrol/15 bg-white p-6 shadow-[0_30px_70px_-50px_rgba(18,61,67,0.7)] sm:grid-cols-2 lg:flex lg:items-center lg:gap-8 lg:p-7">
                 <div className="lg:flex-[1.3]">
                   <p className="label-caps text-gold-deep">En bref</p>
-                  {circuit.price ? (
-                    <p className="mt-3 font-display text-[1.6rem] font-bold leading-tight text-petrol">{circuit.price}</p>
+                  {priceLabel ? (
+                    <p className="mt-3 font-display text-[1.6rem] font-bold leading-tight text-petrol">{priceLabel}</p>
                   ) : (
                     <p className="mt-3 font-display text-[1.25rem] font-bold leading-tight text-petrol">
                       Tarif sur demande
@@ -117,10 +125,10 @@ export default function CircuitView({ circuit, others, destinations, formules, r
                 </dl>
                 <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row lg:flex-none lg:flex-col">
                   <a
-                    href="#contact"
+                    href={online ? "#reserver" : "#contact"}
                     className="label-caps flex flex-1 items-center justify-center whitespace-nowrap rounded-full bg-petrol px-5 py-3 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol-deep"
                   >
-                    Réserver ce circuit
+                    {online ? "Réserver et payer" : "Réserver ce circuit"}
                   </a>
                   <a
                     href={CONTACT.whatsappHref}
@@ -216,6 +224,8 @@ export default function CircuitView({ circuit, others, destinations, formules, r
             </div>
           </section>
         ) : null}
+
+        {online ? <CircuitBooking circuit={circuit} cancelled={paiement === "annule"} /> : null}
 
         <ContactForm
           key={circuit.id}

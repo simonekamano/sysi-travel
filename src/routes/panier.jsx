@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, CheckCircle2, Loader2, Lock, Minus, Plus, ShoppingBag, Truck, UserRound, X } from "lucide-react";
+import { ArrowRight, CheckCircle2, CreditCard, Info, Loader2, Lock, Minus, Plus, ShoppingBag, Truck, UserRound, X } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import Nav from "@/components/landing/Nav";
 import Footer from "@/components/landing/Footer";
@@ -18,6 +18,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/panier")({
+  // ?paiement=annule: back from Stripe's page without paying (the cart is still there).
+  validateSearch: (search) => ({ paiement: search.paiement === "annule" ? "annule" : undefined }),
   loader: () => getBoutiquePage(),
   head: () => noindex("Mon panier — Boutique SYSI TRAVEL"),
   // No cart and no order form while online sale is closed (VENTE_EN_LIGNE).
@@ -83,7 +85,8 @@ function resolveLine(line, articles) {
 }
 
 function PanierPage() {
-  const { articles, livres, destinations, reseaux } = Route.useLoaderData();
+  const { articles, livres, destinations, reseaux, paiementEnLigne, livraisonCents } = Route.useLoaderData();
+  const { paiement } = Route.useSearch();
   const cart = useCart();
   const { user } = useAuth();
   const [form, setForm] = useState({
@@ -120,6 +123,8 @@ function PanierPage() {
   const total = books.reduce((sum, livre) => sum + livre.price_cents, 0) + items.reduce((sum, item) => sum + item.article.price_cents * item.quantite, 0);
   const count = books.length + items.reduce((sum, item) => sum + item.quantite, 0);
   const withDelivery = items.length > 0;
+  // With online payment (Stripe), the articles' shipping is paid with the order.
+  const shipping = paiementEnLigne && withDelivery ? (livraisonCents ?? 0) : 0;
 
   // What is no longer for sale leaves the cart.
   const unavailable = cart.ids.length - books.length + cart.lines.length - items.length;
@@ -169,6 +174,11 @@ function PanierPage() {
           delai: Date.now() - openedAt.current,
         },
       });
+      // Online payment: on to Stripe's page; the cart is emptied once the payment is confirmed.
+      if (result.paymentUrl) {
+        window.location.assign(result.paymentUrl);
+        return;
+      }
       setDone({
         ...result,
         email: form.email.trim(),
@@ -181,9 +191,9 @@ function PanierPage() {
       });
       cart.clear();
       window.scrollTo({ top: 0, behavior: "smooth" });
+      setSending(false);
     } catch (caught) {
       setError(caught?.message || "La commande n'a pas pu être envoyée. Réessayez ou écrivez-nous sur WhatsApp.");
-    } finally {
       setSending(false);
     }
   };
@@ -203,6 +213,12 @@ function PanierPage() {
               <h1 className="mt-3 text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
                 Mon panier
               </h1>
+              {paiement === "annule" && count > 0 ? (
+                <p className="mt-5 flex max-w-2xl items-start gap-2 rounded-xl bg-gold/15 px-4 py-3 text-[0.92rem] leading-relaxed text-petrol">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep" /> Paiement annulé : rien n'a été débité. Votre panier est
+                  toujours là, vous pouvez réessayer quand vous voulez.
+                </p>
+              ) : null}
 
               {count === 0 ? (
                 <div className="mt-10 max-w-xl border border-petrol/15 bg-white p-8">
@@ -301,11 +317,18 @@ function PanierPage() {
                       <span className="label-caps text-petrol/65">
                         Total ({count} article{count > 1 ? "s" : ""})
                       </span>
-                      <span className="font-display text-[1.7rem] font-extrabold text-petrol">{formatPrice(total)}</span>
+                      <span className="font-display text-[1.7rem] font-extrabold text-petrol">{formatPrice(total + shipping)}</span>
                     </div>
                     {withDelivery ? (
                       <p className="flex items-start gap-2 text-[0.85rem] leading-relaxed text-petrol/60">
-                        <Truck className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep" /> Frais de livraison en plus, confirmés avec vous avant le paiement.
+                        <Truck className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep" />
+                        {paiementEnLigne
+                          ? shipping > 0
+                            ? `Dont livraison : ${formatPrice(shipping)}.`
+                            : livraisonCents === 0
+                              ? "Livraison offerte."
+                              : "Frais de livraison à confirmer."
+                          : "Frais de livraison en plus, confirmés avec vous avant le paiement."}
                       </p>
                     ) : null}
 
@@ -431,13 +454,24 @@ function PanierPage() {
                       className="label-caps flex w-full items-center justify-center gap-2 rounded-full bg-gold px-5 py-3 text-petrol-deep transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol hover:text-ivory disabled:pointer-events-none disabled:opacity-60"
                     >
                       {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
-                      Commander
+                      {paiementEnLigne ? `Payer ${formatPrice(total + shipping)}` : "Commander"}
                     </button>
-                    <p className="text-[0.82rem] leading-relaxed text-petrol/55">
-                      Rien n'est payé maintenant : nous vous contactons sous 72 h pour le paiement
-                      {withDelivery ? " et la livraison" : ""}.
-                      {books.length ? ` Vos livres arrivent par e-mail dès le paiement reçu (lien valable ${DOWNLOAD_DAYS} jours).` : ""}
-                    </p>
+                    {paiementEnLigne ? (
+                      <p className="flex items-start gap-2 text-[0.82rem] leading-relaxed text-petrol/55">
+                        <CreditCard className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep" />
+                        <span>
+                          Paiement sécurisé par carte bancaire sur la page de notre partenaire Stripe : vos coordonnées bancaires ne passent
+                          jamais par notre site.
+                          {books.length ? ` Vos livres arrivent par e-mail dès le paiement reçu (lien valable ${DOWNLOAD_DAYS} jours).` : ""}
+                        </span>
+                      </p>
+                    ) : (
+                      <p className="text-[0.82rem] leading-relaxed text-petrol/55">
+                        Rien n'est payé maintenant : nous vous contactons sous 72 h pour le paiement
+                        {withDelivery ? " et la livraison" : ""}.
+                        {books.length ? ` Vos livres arrivent par e-mail dès le paiement reçu (lien valable ${DOWNLOAD_DAYS} jours).` : ""}
+                      </p>
+                    )}
                   </form>
                 </div>
               )}
