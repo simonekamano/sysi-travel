@@ -5,6 +5,7 @@ import {
   BookOpen,
   Clapperboard,
   ExternalLink,
+  Feather,
   HelpCircle,
   Inbox,
   LogOut,
@@ -53,6 +54,7 @@ const GROUPS = [
   {
     title: "Contenus",
     links: [
+      { to: "/admin/notre-histoire", label: "Notre histoire", icon: Feather },
       { to: "/admin/videos", label: "Vidéos", icon: Clapperboard },
       { to: "/admin/faq", label: "FAQ", icon: HelpCircle },
     ],

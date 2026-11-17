@@ -87,7 +87,7 @@ export default function Nav({ home = true, solid = false, bookingHref = "#contac
             />
           </a>
 
-          <nav className="hidden items-center gap-6 lg:flex xl:gap-9">
+          <nav className="hidden items-center gap-7 xl:flex 2xl:gap-9">
             {NAV_LINKS.map((link) =>
               link.children ? (
                 // « Boutique » and its sections: the menu opens on hover or keyboard focus.
@@ -151,7 +151,7 @@ export default function Nav({ home = true, solid = false, bookingHref = "#contac
               aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
               aria-expanded={open}
               aria-controls="menu-mobile"
-              className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-ivory/25 text-ivory transition-colors hover:border-gold hover:text-gold lg:hidden"
+              className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-ivory/25 text-ivory transition-colors hover:border-gold hover:text-gold xl:hidden"
             >
               <Menu className={cn("absolute h-5 w-5 transition-all duration-300", open ? "rotate-90 scale-50 opacity-0" : "opacity-100")} />
               <X className={cn("absolute h-5 w-5 transition-all duration-300", open ? "opacity-100" : "-rotate-90 scale-50 opacity-0")} />
@@ -164,7 +164,7 @@ export default function Nav({ home = true, solid = false, bookingHref = "#contac
         id="menu-mobile"
         inert={!open}
         className={cn(
-          "mx-3 mt-2 origin-top rounded-3xl bg-petrol px-6 py-7 shadow-2xl transition-all duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] lg:hidden",
+          "mx-3 mt-2 origin-top rounded-3xl bg-petrol px-6 py-7 shadow-2xl transition-all duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] xl:hidden",
           open ? "pointer-events-auto translate-y-0 scale-100 opacity-100" : "pointer-events-none -translate-y-3 scale-[0.98] opacity-0"
         )}
       >

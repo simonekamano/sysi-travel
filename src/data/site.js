@@ -58,6 +58,7 @@ export const NAV_LINKS = [
   { label: "Circuits", to: "/circuits" },
   { label: "Explorer", to: "/explorer" },
   { label: "Boutique", to: "/boutique", active: ["/boutique", "/panier", "/produits"], children: SHOP_MENU },
+  { label: "Notre histoire", to: "/notre-histoire" },
 ];
 
 export const HERO_BADGES = [

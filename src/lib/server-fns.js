@@ -385,7 +385,50 @@ export const getLegalPage = createServerFn({ method: "GET" })
     return { page, destinations, reseaux };
   });
 
+const HISTOIRE_COLUMNS =
+  "titre, role, accroche, signature, photo_portrait, photo_recit_1, photo_recit_2, recit, avant, pendant, apres, updated_at";
+
+// The « Notre histoire » page (supabase/migrations/0016_notre_histoire.sql) and what the footer
+// needs. `histoire` is null only before that migration has run: the route then answers 404.
+export const getHistoirePage = createServerFn({ method: "GET" }).handler(async ({ context }) => {
+  const supabase = context.getSupabase();
+  const [histoire, destinations, reseaux] = await Promise.all([
+    supabase.from("notre_histoire").select(HISTOIRE_COLUMNS).maybeSingle().then(unwrap),
+    listOrdered(supabase, "destinations", 200),
+    listOrdered(supabase, "reseaux_sociaux", 20),
+  ]);
+  return { histoire, destinations, reseaux };
+});
+
 // --- Administration: admin role checked here, and again by row level security ---
+
+export const getHistoireAdmin = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(async ({ context }) =>
+    unwrap(await context.getSupabase().from("notre_histoire").select(HISTOIRE_COLUMNS).maybeSingle()),
+  );
+
+export const saveHistoire = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .validator(
+    z.object({
+      titre: text(120).min(1),
+      role: text(120),
+      accroche: text(300),
+      signature: text(120),
+      photo_portrait: text(2000),
+      photo_recit_1: text(2000),
+      photo_recit_2: text(2000),
+      recit: text(30000),
+      avant: text(1000),
+      pendant: text(1000),
+      apres: text(1000),
+    }),
+  )
+  .handler(async ({ data, context }) => {
+    unwrap(await context.getSupabase().from("notre_histoire").update(data).eq("id", true));
+    return { ok: true };
+  });
 
 export const listLegalPages = createServerFn({ method: "GET" })
   .middleware([requireAdmin])

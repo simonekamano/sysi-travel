@@ -14,6 +14,7 @@ const DECOUVRIR = [
 ];
 
 const SERVICES = [
+  { label: "Notre histoire", to: "/notre-histoire" },
   { label: "Prise en charge aéroport", to: "/transfert-aeroport" },
   { label: "Nos formules", hash: "offre" },
   { label: "La plateforme", hash: "solution" },

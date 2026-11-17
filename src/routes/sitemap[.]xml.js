@@ -34,6 +34,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { loc: `${base}/produits`, priority: "0.7" },
           { loc: `${base}/videos`, priority: "0.7" },
           { loc: `${base}/boutique`, priority: "0.8" },
+          { loc: `${base}/notre-histoire`, priority: "0.7" },
           { loc: `${base}/transfert-aeroport`, priority: "0.7" },
           { loc: `${base}/contact`, priority: "0.6" },
           ...destinations.data.map(page("destinations", "0.8")),
