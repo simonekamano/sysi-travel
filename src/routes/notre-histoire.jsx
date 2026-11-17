@@ -73,15 +73,17 @@ const DECOUVRIR = [
   { icon: Clapperboard, label: "Vidéos", text: "La Guinée et nos voyages en images", href: "/videos" },
 ];
 
-// A sentence of the story, standing large beside its part.
+// A sentence of the story, standing large on the right of its part.
 function QuoteCard({ quote, author }) {
   return (
-    <figure className="mx-auto max-w-md rounded-3xl bg-background px-8 pb-9 pt-8 lg:max-w-none lg:pb-10">
-      <Quote aria-hidden className="h-8 w-8 fill-gold/25 text-gold" strokeWidth={1.4} />
-      <blockquote className="mt-5 font-display text-[clamp(1.25rem,1.6vw,1.5rem)] italic leading-snug text-petrol">{quote}</blockquote>
+    <figure className="rounded-3xl bg-background px-6 pb-7 pt-6 sm:px-5 sm:pb-6 sm:pt-5 lg:px-7 lg:pb-8 lg:pt-7">
+      <Quote aria-hidden className="h-7 w-7 fill-gold/25 text-gold" strokeWidth={1.4} />
+      <blockquote className="mt-3 font-display text-[1.2rem] italic leading-snug text-petrol sm:text-[1.05rem] md:text-[1.1rem] lg:text-[1.2rem] xl:text-[1.3rem]">
+        {quote}
+      </blockquote>
       {author ? (
-        <figcaption className="label-caps mt-7 flex items-center gap-3 text-gold-deep">
-          <span aria-hidden className="h-px w-8 bg-gold" />
+        <figcaption className="label-caps mt-5 flex items-center gap-3 text-[0.7rem] text-gold-deep">
+          <span aria-hidden className="h-px w-6 bg-gold" />
           {author}
         </figcaption>
       ) : null}
@@ -89,23 +91,25 @@ function QuoteCard({ quote, author }) {
   );
 }
 
-function DiscoverCard() {
+// The « À découvrir » links, as a band across the width at the end of their part.
+function DiscoverBand() {
   return (
-    <nav aria-label="À découvrir sur SYSI TRAVEL" className="mx-auto max-w-md rounded-3xl bg-petrol p-8 text-ivory lg:max-w-none lg:p-10">
+    <nav aria-label="À découvrir sur SYSI TRAVEL" className="rounded-3xl bg-petrol p-6 text-ivory sm:p-7">
       <p className="eyebrow text-gold">À découvrir</p>
-      <p className="mt-3 font-display text-[1.4rem] font-bold leading-snug">Tout ce qui vous attend sur SYSI TRAVEL</p>
-      <ul className="mt-6 divide-y divide-ivory/10 border-t border-ivory/10">
+      <p className="mt-2 font-display text-[1.3rem] font-bold leading-snug">Tout ce qui vous attend sur SYSI TRAVEL</p>
+      <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {DECOUVRIR.map(({ icon: Icon, label, text, href }) => (
           <li key={href}>
-            <a href={href} className="group flex items-center gap-4 py-4">
+            <a href={href} className="group flex h-full items-start gap-3 rounded-2xl bg-ivory/[0.06] p-4 transition-colors hover:bg-ivory/10 lg:flex-col">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ivory/10 text-gold transition-colors group-hover:bg-gold group-hover:text-petrol-deep">
                 <Icon className="h-[1.1rem] w-[1.1rem]" strokeWidth={1.7} />
               </span>
-              <span className="min-w-0 flex-1">
-                <span className="block font-semibold text-ivory transition-colors group-hover:text-gold">{label}</span>
-                <span className="block text-[0.88rem] text-ivory/65">{text}</span>
+              <span className="min-w-0">
+                <span className="flex items-center gap-1.5 font-semibold text-ivory transition-colors group-hover:text-gold">
+                  {label} <ArrowRight className="h-3.5 w-3.5 shrink-0 text-gold transition-transform group-hover:translate-x-0.5" />
+                </span>
+                <span className="mt-0.5 block text-[0.86rem] leading-snug text-ivory/65">{text}</span>
               </span>
-              <ArrowRight className="h-4 w-4 shrink-0 text-gold transition-transform group-hover:translate-x-1" />
             </a>
           </li>
         ))}
@@ -132,26 +136,24 @@ function Photo({ src, alt, priority = false, className }) {
   );
 }
 
-// A part of the story, with what stands beside it on large screens (below it on phones): its
-// photo, its quote or the « À découvrir » links. It follows the reader down the part.
-function Part({ part, aside, children }) {
-  const text = (
-    <div className="max-w-[40rem]">
+// A part of the story. From 640 px its photo or quote stands on the right and the text flows
+// around it, then under it across the whole width: no empty column. On phones it comes after
+// the text (the flex order). `band`: a block across the width that closes the part.
+function Part({ part, aside, band, children }) {
+  return (
+    <Reveal className="flex flex-col sm:flow-root">
       {part.title ? (
-        <h2 className="mb-6 font-display text-[clamp(1.5rem,2.6vw,2rem)] font-bold leading-tight text-petrol">{part.title}</h2>
+        <h2 className="mb-5 font-display text-[clamp(1.5rem,2.6vw,2rem)] font-bold leading-tight text-petrol">{part.title}</h2>
+      ) : null}
+      {aside ? (
+        <div className="order-last mt-8 sm:float-right sm:mb-4 sm:ml-6 sm:mt-1.5 sm:w-56 md:ml-8 md:w-64 lg:ml-10 lg:w-72 xl:w-[18.5rem]">
+          {aside}
+        </div>
       ) : null}
       <StoryText body={part.body} />
+      {band ? <div className="order-last mt-8 sm:clear-both">{band}</div> : null}
       {children}
-    </div>
-  );
-  if (!aside) return <Reveal>{text}</Reveal>;
-  return (
-    <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,40rem)_minmax(0,1fr)] lg:gap-16">
-      <Reveal>{text}</Reveal>
-      <Reveal delay={120} className="w-full lg:sticky lg:top-32">
-        {aside}
-      </Reveal>
-    </div>
+    </Reveal>
   );
 }
 
@@ -160,9 +162,9 @@ function HistoirePage() {
   const parts = splitStory(histoire.recit);
   const name = histoire.signature || "la fondatrice de SYSI TRAVEL";
   const steps = ACCOMPAGNEMENT.filter((step) => histoire[step.key]);
-  // Beside each part: the first story photo for the first part, the second for the last one;
-  // otherwise the part's highlighted sentence, taken out of its text; otherwise, once, the
-  // « À découvrir » links.
+  // On the right of each part: the first story photo for the first part, the second for the
+  // last one; otherwise the part's highlighted sentence, taken out of its text. The first part
+  // with neither ends with the « À découvrir » links.
   const photoFor = (index) => {
     if (index === 0) return histoire.photo_recit_1;
     if (index === parts.length - 1) return histoire.photo_recit_2;
@@ -171,10 +173,10 @@ function HistoirePage() {
   const firstWithoutAside = parts.findIndex((part, index) => !photoFor(index) && !extractQuote(part.body).quote);
   const sections = parts.map((part, index) => {
     const photo = photoFor(index);
-    if (photo) return { part, aside: <Photo src={photo} alt={name} className="mx-auto w-full max-w-sm lg:max-w-none" /> };
+    if (photo) return { part, aside: <Photo src={photo} alt={name} className="mb-3 mr-3 sm:mb-4 sm:mr-4" /> };
     const { quote, body } = extractQuote(part.body);
     if (quote) return { part: { ...part, body }, aside: <QuoteCard quote={quote} author={histoire.signature} /> };
-    return { part, aside: index === firstWithoutAside ? <DiscoverCard /> : null };
+    return { part, band: index === firstWithoutAside ? <DiscoverBand /> : null };
   });
 
   return (
@@ -182,8 +184,8 @@ function HistoirePage() {
       <Nav home={false} solid bookingHref="/contact" />
 
       <main>
-        <section className="overflow-hidden bg-background pb-16 pt-36 lg:pb-24 lg:pt-40">
-          <div className="mx-auto grid max-w-site items-center gap-14 px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-20">
+        <section className="overflow-hidden bg-background pb-12 pt-32 md:pb-16 lg:pb-24 lg:pt-40">
+          <div className="mx-auto grid max-w-site items-center gap-10 px-6 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] sm:gap-8 md:gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-20">
             <div>
               <BackButton label="Retour" className="mb-8" />
               <p className="eyebrow text-gold-deep">Notre histoire</p>
@@ -214,18 +216,18 @@ function HistoirePage() {
               </div>
             </div>
             {histoire.photo_portrait ? (
-              <Photo src={histoire.photo_portrait} alt={name} priority className="mx-auto w-full max-w-md lg:mr-4" />
+              <Photo src={histoire.photo_portrait} alt={name} priority className="mx-auto w-full max-w-sm sm:max-w-none lg:mr-4" />
             ) : null}
           </div>
         </section>
 
         {parts.length ? (
-          <section id="recit" className="scroll-mt-28 border-t border-petrol/10 bg-white py-16 lg:py-24">
-            <div className="mx-auto max-w-site space-y-16 px-6 lg:space-y-24">
-              {sections.map(({ part, aside }, index) => (
-                <Part key={`${index}-${part.title}`} part={part} aside={aside}>
+          <section id="recit" className="scroll-mt-28 border-t border-petrol/10 bg-white py-14 lg:py-20">
+            <div className="mx-auto max-w-[50rem] space-y-12 px-6 lg:space-y-16 xl:max-w-[54rem]">
+              {sections.map(({ part, aside, band }, index) => (
+                <Part key={`${index}-${part.title}`} part={part} aside={aside} band={band}>
                   {index === sections.length - 1 && histoire.signature ? (
-                    <div className="mt-12 border-t border-petrol/15 pt-6">
+                    <div className="order-last mt-10 flow-root border-t border-petrol/15 pt-6">
                       <p className="font-display text-[1.6rem] italic leading-tight text-petrol">{histoire.signature}</p>
                       {histoire.role ? <p className="label-caps mt-2 text-gold-deep">{histoire.role}</p> : null}
                     </div>
@@ -237,7 +239,7 @@ function HistoirePage() {
         ) : null}
 
         {steps.length ? (
-          <section id="accompagnement" className="scroll-mt-28 bg-petrol py-16 text-ivory lg:py-24">
+          <section id="accompagnement" className="scroll-mt-28 bg-petrol py-14 text-ivory lg:py-20">
             <div className="mx-auto max-w-site px-6">
               <Reveal>
                 <SectionHeading
@@ -247,13 +249,13 @@ function HistoirePage() {
                   text="Un voyage qui commence bien avant le départ et qui continue après le retour."
                 />
               </Reveal>
-              <ol className="mt-12 grid gap-6 md:grid-cols-3">
+              <ol className="mt-10 grid gap-5 md:grid-cols-3 lg:gap-6">
                 {steps.map((step, index) => {
                   const Icon = ICONS[step.key];
                   return (
                     <li key={step.key}>
                       <Reveal delay={index * 110} className="h-full">
-                        <div className="h-full rounded-2xl border border-ivory/15 bg-ivory/[0.04] p-7">
+                        <div className="h-full rounded-2xl border border-ivory/15 bg-ivory/[0.04] p-6 lg:p-7">
                           <div className="flex items-center gap-4">
                             <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gold text-petrol-deep">
                               <Icon className="h-5 w-5" strokeWidth={1.7} />
