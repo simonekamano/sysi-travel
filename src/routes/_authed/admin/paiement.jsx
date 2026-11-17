@@ -4,7 +4,7 @@ import PaiementPanel from "@/components/admin/PaiementPanel";
 
 export const Route = createFileRoute("/_authed/admin/paiement")({
   loader: () => getReglagesPaiement(),
-  head: () => ({ meta: [{ title: "Paiement en ligne — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Paiement en ligne - Administration SYSI TRAVEL" }] }),
   component: AdminPaiementPage,
 });
 

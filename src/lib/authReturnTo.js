@@ -1,5 +1,5 @@
 // Post-auth destination, shared by the auth pages and the MCP consent page.
-// Keep the check in one place — it is security-sensitive.
+// Keep the check in one place - it is security-sensitive.
 //
 // Reads ?returnTo= (our pages) or ?from_url= (what the platform's redirectToLogin
 // and login-gate redirects send). A same-origin check alone is not enough: a

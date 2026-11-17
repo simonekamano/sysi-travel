@@ -4,7 +4,7 @@ import ArticlesPanel from "@/components/admin/ArticlesPanel";
 
 export const Route = createFileRoute("/_authed/admin/articles")({
   loader: () => listAllArticles(),
-  head: () => ({ meta: [{ title: "Articles — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Articles - Administration SYSI TRAVEL" }] }),
   component: AdminArticlesPage,
 });
 

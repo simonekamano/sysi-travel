@@ -14,7 +14,7 @@ export const Route = createFileRoute("/telechargement/$token")({
   loader: ({ params }) => getTelechargement({ data: { token: params.token } }),
   head: () => ({
     meta: [
-      { title: "Mes livres à télécharger — SYSI TRAVEL" },
+      { title: "Mes livres à télécharger - SYSI TRAVEL" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

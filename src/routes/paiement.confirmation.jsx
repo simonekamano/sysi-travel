@@ -16,7 +16,7 @@ export const Route = createFileRoute("/paiement/confirmation")({
   validateSearch: (search) => ({ session_id: typeof search.session_id === "string" ? search.session_id : "" }),
   loaderDeps: ({ search }) => ({ sessionId: search.session_id }),
   loader: ({ deps }) => (/^cs_[A-Za-z0-9_]+$/.test(deps.sessionId) ? getPaiementConfirmation({ data: { session_id: deps.sessionId } }) : null),
-  head: () => noindex("Paiement — SYSI TRAVEL"),
+  head: () => noindex("Paiement - SYSI TRAVEL"),
   component: ConfirmationPage,
 });
 

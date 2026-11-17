@@ -12,8 +12,8 @@ export const CONTACT = {
     "Bonjour SYSI TRAVEL, je souhaite organiser un séjour en Guinée.",
   )}`,
   email: "simone.kamano@yahoo.fr",
-  address: "Kaloum — Conakry, Guinée",
-  hours: "Lundi – samedi, 9h – 19h (GMT)",
+  address: "Kaloum - Conakry, Guinée",
+  hours: "Lundi - samedi, 9h - 19h (GMT)",
 };
 
 // Illustrations generated on Base44, copied here (public/images/illustrations/) until the

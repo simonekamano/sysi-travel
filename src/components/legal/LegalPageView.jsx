@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 // <head> of a legal page: its title and the start of its text as description.
 export function legalHead(page) {
-  if (!page) return noindex("Page introuvable — SYSI TRAVEL");
+  if (!page) return noindex("Page introuvable - SYSI TRAVEL");
   const description = page.body
     .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
     .replace(/^\s*(#+|[-*]|\d+\.)\s+/gm, "")
@@ -20,7 +20,7 @@ export function legalHead(page) {
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, 155);
-  return seo({ title: `${page.title} — SYSI TRAVEL`, description, path: `/${page.slug}` });
+  return seo({ title: `${page.title} - SYSI TRAVEL`, description, path: `/${page.slug}` });
 }
 
 // A published legal page (/mentions-legales, /conditions-generales-de-vente, /confidentialite,

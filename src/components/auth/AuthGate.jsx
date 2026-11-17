@@ -10,7 +10,7 @@ import { authQuery } from "@/lib/AuthContext";
  * TanStack Router's authenticated-routes pattern: beforeLoad reads the visitor from the
  * router context (the QueryClient's cached `authQuery`, shared with useAuth()), so a
  * child's loader never runs as an anonymous visitor. Signed out → /login with the way
- * back. Children read the visitor with `Route.useRouteContext().user`. `ssr: false` —
+ * back. Children read the visitor with `Route.useRouteContext().user`. `ssr: false` -
  * the server is anonymous, so these pages render in the browser only, and children inherit that.
  */
 export async function requireSignedIn({ context, location }) {

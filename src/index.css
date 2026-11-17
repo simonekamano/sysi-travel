@@ -92,7 +92,7 @@ body {
   border-color: hsl(var(--border));
 }
 
-/* Typography — Sysi-Travel-Brand-Kit (v1, octobre 2026): two Google Fonts only.
+/* Typography - Sysi-Travel-Brand-Kit (v1, octobre 2026): two Google Fonts only.
    Outfit (400 / 600 / 700 / 800): titles, logo, buttons, eyebrows.
    Source Sans 3 (400 / 600): running text and interface. */
 h1,
@@ -558,7 +558,7 @@ h4 {
   animation: cart-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* A card grid on two columns (640 – 767 px): a last card alone on its row is centred instead of
+/* A card grid on two columns (640 - 767 px): a last card alone on its row is centred instead of
    leaving half of the row empty. From 768 px these grids have as many columns as cards. */
 @media (min-width: 640px) and (max-width: 767.98px) {
   .orphan-center > :last-child:nth-child(odd) {

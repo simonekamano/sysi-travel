@@ -4,7 +4,7 @@ import LegalPagesPanel from "@/components/admin/LegalPagesPanel";
 
 export const Route = createFileRoute("/_authed/admin/pages-legales")({
   loader: () => listLegalPages(),
-  head: () => ({ meta: [{ title: "Pages légales — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Pages légales - Administration SYSI TRAVEL" }] }),
   component: AdminLegalPage,
 });
 

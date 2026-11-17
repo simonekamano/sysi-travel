@@ -4,7 +4,7 @@ import ReseauxPanel from "@/components/admin/ReseauxPanel";
 
 export const Route = createFileRoute("/_authed/admin/reseaux")({
   loader: () => listReseauxSociaux(),
-  head: () => ({ meta: [{ title: "Réseaux sociaux — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Réseaux sociaux - Administration SYSI TRAVEL" }] }),
   component: AdminReseauxPage,
 });
 

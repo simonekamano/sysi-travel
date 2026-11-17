@@ -18,7 +18,7 @@ export const Route = createFileRoute("/videos")({
   loader: () => getSiteContent(),
   head: () =>
     seo({
-      title: "La Guinée en vidéo — SYSI TRAVEL",
+      title: "La Guinée en vidéo - SYSI TRAVEL",
       description:
         "Les vidéos de SYSI TRAVEL : qui nous sommes, nos voyages accompagnés et la Guinée, de la côte atlantique à la forêt.",
       path: "/videos",

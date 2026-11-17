@@ -24,14 +24,14 @@ export const Route = createFileRoute("/boutique/$slug")({
   },
   head: ({ loaderData }) => {
     const livre = loaderData?.livre;
-    if (!livre) return noindex("Livre introuvable — SYSI TRAVEL");
+    if (!livre) return noindex("Livre introuvable - SYSI TRAVEL");
     const description = fitDescription(
       livre.subtitle || livre.description,
       `${BOOK_KIND_LABEL[livre.kind]} en PDF sur la Guinée, par SYSI TRAVEL.`,
     );
     const path = `/boutique/${livre.slug}`;
     return seo({
-      title: fitTitle(`${livre.title} — ${BOOK_KIND_LABEL[livre.kind]} PDF | SYSI TRAVEL`, `${livre.title} | SYSI TRAVEL`),
+      title: fitTitle(`${livre.title} - ${BOOK_KIND_LABEL[livre.kind]} PDF | SYSI TRAVEL`, `${livre.title} | SYSI TRAVEL`),
       description,
       path,
       image: livre.cover,

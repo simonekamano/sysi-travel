@@ -23,7 +23,7 @@ export const Route = createFileRoute("/destinations/$slug")({
   },
   head: ({ loaderData }) => {
     const destination = loaderData?.destination;
-    if (!destination) return noindex("Destination introuvable — SYSI TRAVEL");
+    if (!destination) return noindex("Destination introuvable - SYSI TRAVEL");
     const description = fitDescription(
       destination.text,
       `${destination.name}, ${destination.region} : séjour sur mesure en Guinée avec SYSI TRAVEL.`,

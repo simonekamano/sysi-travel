@@ -199,7 +199,7 @@ export default function AdminFrame({ user, children }) {
       <aside className="hidden overflow-hidden bg-petrol-deep lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col">
         {collapsed ? (
           <div className="flex flex-col items-center gap-2 border-b border-ivory/10 px-2 py-4">
-            <Link to="/admin" aria-label="Administration — accueil" title="Administration" className="flex h-10 w-10 items-center justify-center rounded-full bg-ivory">
+            <Link to="/admin" aria-label="Administration - accueil" title="Administration" className="flex h-10 w-10 items-center justify-center rounded-full bg-ivory">
               <img src={SYMBOL} alt="SYSI TRAVEL" width={326} height={360} className="h-7 w-auto" />
             </Link>
             <button
@@ -215,7 +215,7 @@ export default function AdminFrame({ user, children }) {
         ) : (
           <div className="flex items-start justify-between gap-2 border-b border-ivory/10 py-4 pl-6 pr-3">
             <div>
-              <Link to="/admin" aria-label="Administration — accueil" className="inline-flex">
+              <Link to="/admin" aria-label="Administration - accueil" className="inline-flex">
                 <img src={LOGO_INVERSE} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[2.4rem] w-auto object-contain" />
               </Link>
               <p className="label-caps mt-1.5 text-[0.66rem] text-gold">Administration</p>

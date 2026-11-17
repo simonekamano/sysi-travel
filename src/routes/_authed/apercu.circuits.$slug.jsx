@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_authed/apercu/circuits/$slug")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: `Aperçu : ${loaderData?.circuit?.title ?? "circuit"} — SYSI TRAVEL` },
+      { title: `Aperçu : ${loaderData?.circuit?.title ?? "circuit"} - SYSI TRAVEL` },
       { name: "robots", content: "noindex" },
     ],
     links: [{ rel: "stylesheet", href: LEAFLET_CSS }],

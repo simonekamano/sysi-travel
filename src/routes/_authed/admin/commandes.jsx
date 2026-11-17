@@ -4,7 +4,7 @@ import CommandesPanel from "@/components/admin/CommandesPanel";
 
 export const Route = createFileRoute("/_authed/admin/commandes")({
   loader: () => listCommandes(),
-  head: () => ({ meta: [{ title: "Commandes — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Commandes - Administration SYSI TRAVEL" }] }),
   component: AdminCommandesPage,
 });
 

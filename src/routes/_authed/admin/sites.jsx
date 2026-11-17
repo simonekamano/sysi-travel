@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_authed/admin/sites")({
     const [sites, destinations] = await Promise.all([listAllSites(), listDestinations()]);
     return { sites, destinations };
   },
-  head: () => ({ meta: [{ title: "Sites de la carte — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Sites de la carte - Administration SYSI TRAVEL" }] }),
   component: AdminSitesPage,
 });
 

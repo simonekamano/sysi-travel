@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_authed/admin/circuits")({
     const [circuits, destinations] = await Promise.all([listAllCircuits(), listDestinations()]);
     return { circuits, destinations };
   },
-  head: () => ({ meta: [{ title: "Circuits — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Circuits - Administration SYSI TRAVEL" }] }),
   component: AdminCircuitsPage,
 });
 

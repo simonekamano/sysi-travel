@@ -24,7 +24,7 @@ export const Route = createFileRoute("/boutique/article/$slug")({
   },
   head: ({ loaderData }) => {
     const article = loaderData?.article;
-    if (!article) return noindex("Article introuvable — SYSI TRAVEL");
+    if (!article) return noindex("Article introuvable - SYSI TRAVEL");
     const path = `/boutique/article/${article.slug}`;
     const category = ARTICLE_CATEGORY_LABEL[article.category];
     const images = articleImages(article);
@@ -35,8 +35,8 @@ export const Route = createFileRoute("/boutique/article/$slug")({
     const available = variantsOf(article).some((variant) => variant.available !== false);
     return seo({
       title: fitTitle(
-        `${article.name} — ${category} | Boutique SYSI TRAVEL`,
-        `${article.name} — ${category} | SYSI TRAVEL`,
+        `${article.name} - ${category} | Boutique SYSI TRAVEL`,
+        `${article.name} - ${category} | SYSI TRAVEL`,
         `${article.name} | SYSI TRAVEL`,
       ),
       description,
@@ -178,7 +178,7 @@ function ArticleDetail({ article }) {
         <div className="sm:sticky sm:top-28 sm:self-start">
           <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-ivory-soft ring-1 ring-petrol/10">
             {current ? (
-              <img key={current} src={current} alt={`${article.name}${variant ? ` — ${variant}` : ""}`} className="h-full w-full animate-fade-in object-cover" />
+              <img key={current} src={current} alt={`${article.name}${variant ? ` - ${variant}` : ""}`} className="h-full w-full animate-fade-in object-cover" />
             ) : null}
             {images.length > 1 ? (
               <>

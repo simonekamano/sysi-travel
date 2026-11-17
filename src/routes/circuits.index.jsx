@@ -17,7 +17,7 @@ export const Route = createFileRoute("/circuits/")({
   loader: () => getSiteContent(),
   head: () =>
     seo({
-      title: "Circuits et excursions en Guinée — SYSI TRAVEL",
+      title: "Circuits et excursions en Guinée - SYSI TRAVEL",
       description:
         "Tous les circuits, excursions et visites guidées de SYSI TRAVEL en Guinée : programme jour par jour, itinéraire sur la carte, dates et prix.",
       path: "/circuits",

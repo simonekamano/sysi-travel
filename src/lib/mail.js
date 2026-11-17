@@ -1,6 +1,6 @@
 // E-mails sent by the site through the Resend API (server only, called from server functions).
 // Settings, read at run time: RESEND_API_KEY, MAIL_FROM, MAIL_NOTIFY_TO (see .env.example).
-import { CONTACT } from "@/data/site";
+import { CONTACT, LOGO_INVERSE, SITE_ORIGIN } from "@/data/site";
 import { DOWNLOAD_DAYS, DOWNLOAD_LIMIT, formatPrice } from "@/lib/boutique";
 
 const escapeHtml = (value) =>
@@ -27,17 +27,19 @@ async function sendEmail({ to, subject, html, text, replyTo }) {
 
 // Brand-coloured frame shared by both messages (inline styles: mail clients ignore stylesheets).
 const layout = (title, body) => `<!doctype html>
-<html lang="fr"><body style="margin:0;background:#F7F5F0;font-family:Arial,Helvetica,sans-serif;color:#1C2B2D">
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0;background:#F7F5F0;font-family:Arial,Helvetica,sans-serif;color:#1C2B2D">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F7F5F0;padding:24px 12px">
 <tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border:1px solid #E3DED3">
-<tr><td style="background:#123D43;padding:22px 28px;color:#E6B45C;font-size:13px;font-weight:bold;letter-spacing:3px">SYSI TRAVEL · GUINÉE</td></tr>
+<tr><td style="background:#123D43;padding:20px 28px"><a href="${SITE_ORIGIN}" style="text-decoration:none"><img src="${SITE_ORIGIN}${LOGO_INVERSE}" width="150" height="69" alt="SYSI TRAVEL · Guinée" style="display:block;border:0;color:#E6B45C;font-size:15px;font-weight:bold;letter-spacing:2px"></a></td></tr>
 <tr><td style="padding:28px">
 <h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:#123D43">${title}</h1>
 ${body}
 </td></tr>
-<tr><td style="padding:18px 28px;border-top:1px solid #E3DED3;font-size:12px;color:#5E6B6A">
-SYSI TRAVEL · ${escapeHtml(CONTACT.address)} · WhatsApp ${escapeHtml(CONTACT.phone)}
+<tr><td style="padding:18px 28px;border-top:1px solid #E3DED3;font-size:12px;line-height:1.7;color:#5E6B6A">
+SYSI TRAVEL · ${escapeHtml(CONTACT.address)}<br>
+WhatsApp ${escapeHtml(CONTACT.phone)} · ${escapeHtml(CONTACT.hours)}<br>
+<a href="${SITE_ORIGIN}" style="color:#123D43">sysitravel.com</a>
 </td></tr>
 </table>
 </td></tr>
@@ -49,11 +51,28 @@ const rows = (fields) =>
     .map(
       ([label, value]) =>
         `<tr><td style="padding:8px 12px 8px 0;border-bottom:1px solid #E3DED3;color:#5E6B6A;white-space:nowrap;vertical-align:top">${escapeHtml(label)}</td>` +
-        `<td style="padding:8px 0;border-bottom:1px solid #E3DED3">${escapeHtml(value || "—").replace(/\n/g, "<br>")}</td></tr>`,
+        `<td style="padding:8px 0;border-bottom:1px solid #E3DED3">${escapeHtml(value || "-").replace(/\n/g, "<br>")}</td></tr>`,
     )
     .join("")}</table>`;
 
-const asText = (fields) => fields.map(([label, value]) => `${label} : ${value || "—"}`).join("\n");
+const asText = (fields) => fields.map(([label, value]) => `${label} : ${value || "-"}`).join("\n");
+
+// How to reach the agency, at the end of every e-mail to a customer: WhatsApp first (what the
+// travellers use), the e-mail address, and the hours. `about`: what the WhatsApp message is about.
+const whatsappLink = (about) =>
+  `https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(`Bonjour SYSI TRAVEL, j'ai une question${about ? ` sur ${about}` : ""}.`)}`;
+const button = (href, label, primary) =>
+  `<a href="${escapeHtml(href)}" style="display:inline-block;margin:0 8px 8px 0;padding:11px 20px;border-radius:999px;font-size:14px;font-weight:bold;text-decoration:none;${
+    primary ? "background:#1F9D55;color:#ffffff" : "border:1px solid #123D43;color:#123D43"
+  }">${escapeHtml(label)}</a>`;
+const helpBlock = (about) =>
+  `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:26px 0 0;background:#F7F5F0;border-radius:12px"><tr><td style="padding:20px 22px">
+<p style="margin:0 0 6px;font-size:15px;font-weight:bold;color:#123D43">Besoin d'aide ?</p>
+<p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#3F4D4F">Écrivez-nous sur WhatsApp, ou répondez directement à cet e-mail.<br>Horaires : ${escapeHtml(CONTACT.hours)}.</p>
+${button(whatsappLink(about), `WhatsApp ${CONTACT.phone}`, true)}${button(`mailto:${CONTACT.email}`, CONTACT.email, false)}
+</td></tr></table>`;
+const helpText = () =>
+  `Besoin d'aide ? WhatsApp : ${CONTACT.phone} · E-mail : ${CONTACT.email} (ou répondez à cet e-mail). Horaires : ${CONTACT.hours}.`;
 
 // A new travel request: notify the agency, and acknowledge receipt to the traveller.
 // Never throws: the request is already saved, a mail failure is only logged.
@@ -106,9 +125,9 @@ export async function sendDemandeEmails(demande) {
       `Merci ${escapeHtml(demande.nom)}, votre demande est bien reçue`,
       `<p style="margin:0 0 14px;font-size:15px;line-height:1.6">Un expert SYSI TRAVEL vous répond sous <strong>72 heures</strong> avec un premier itinéraire et une estimation de budget claire.</p>
 <p style="margin:0 0 18px;font-size:15px;line-height:1.6">Votre projet :</p>${rows(trip)}
-<p style="margin:22px 0 0;font-size:15px;line-height:1.6">Une question d'ici là ? Répondez simplement à cet e-mail, ou écrivez-nous sur WhatsApp au ${escapeHtml(CONTACT.phone)}.</p>`,
+${helpBlock("ma demande de voyage")}`,
     ),
-    text: `Bonjour ${demande.nom},\n\nNous avons bien reçu votre demande. Un expert SYSI TRAVEL vous répond sous 72 heures avec un premier itinéraire et une estimation de budget claire.\n\nVotre projet :\n${asText(trip)}\n\nUne question d'ici là ? Répondez à cet e-mail, ou écrivez-nous sur WhatsApp au ${CONTACT.phone}.\n\nSYSI TRAVEL`,
+    text: `Bonjour ${demande.nom},\n\nNous avons bien reçu votre demande. Un expert SYSI TRAVEL vous répond sous 72 heures avec un premier itinéraire et une estimation de budget claire.\n\nVotre projet :\n${asText(trip)}\n\n${helpText()}\n\nSYSI TRAVEL`,
   });
 
   const results = await Promise.allSettled([notification, acknowledgement]);
@@ -193,14 +212,12 @@ export async function sendCommandeEmails(commande) {
         p("Référence : <strong>" + escapeHtml(commande.reference) + "</strong>") +
         rows(lines) +
         (delivery ? '<p style="margin:18px 0 0;font-size:15px;line-height:1.6">Adresse de livraison : ' + escapeHtml(address).replace(/\n/g, "<br>") + "</p>" : "") +
-        '<p style="margin:22px 0 0;font-size:15px;line-height:1.6">Une question ? Répondez simplement à cet e-mail, ou écrivez-nous sur WhatsApp au ' +
-        escapeHtml(CONTACT.phone) +
-        ".</p>",
+        helpBlock("ma commande " + commande.reference),
     ),
     text:
       "Bonjour " + commande.nom + ",\n\nNous avons bien reçu votre commande " + commande.reference + ". " + next + "\n\n" + asText(lines) +
       (delivery ? "\n\nAdresse de livraison : " + address.replace(/\n/g, ", ") : "") +
-      "\n\nUne question ? Répondez à cet e-mail, ou écrivez-nous sur WhatsApp au " + CONTACT.phone + ".\n\nSYSI TRAVEL",
+      "\n\n" + helpText() + "\n\nSYSI TRAVEL",
   });
 
   const results = await Promise.allSettled([notification, acknowledgement]);
@@ -226,11 +243,9 @@ async function notifyBuyer(commande, subject, title, paragraphs) {
         escapeHtml(title),
         paragraphs.map((text) => '<p style="margin:0 0 14px;font-size:15px;line-height:1.6">' + escapeHtml(text) + "</p>").join("") +
           rows(lines) +
-          '<p style="margin:22px 0 0;font-size:15px;line-height:1.6">Une question ? Répondez à cet e-mail, ou écrivez-nous sur WhatsApp au ' +
-          escapeHtml(CONTACT.phone) +
-          ".</p>",
+          helpBlock("ma commande " + commande.reference),
       ),
-      text: "Bonjour " + commande.nom + ",\n\n" + paragraphs.join("\n\n") + "\n\n" + asText(lines) + "\n\nSYSI TRAVEL",
+      text: "Bonjour " + commande.nom + ",\n\n" + paragraphs.join("\n\n") + "\n\n" + asText(lines) + "\n\n" + helpText() + "\n\nSYSI TRAVEL",
     });
     return true;
   } catch (error) {
@@ -280,9 +295,10 @@ export async function sendLienTelechargement(commande, url) {
         `<p style="margin:0 0 14px;font-size:15px;line-height:1.6">Merci ${escapeHtml(commande.nom)}, votre paiement est bien reçu. Vos livres :</p>
 <ul style="margin:0 0 22px;padding-left:20px;font-size:15px;line-height:1.5">${titles}</ul>
 ${shipping}<p style="margin:0 0 24px"><a href="${escapeHtml(url)}" style="display:inline-block;background:#E6B45C;color:#0B2A2E;text-decoration:none;font-weight:bold;padding:14px 26px;border-radius:999px">Télécharger mes livres</a></p>
-<p style="margin:0;font-size:13px;line-height:1.6;color:#5E6B6A">Ce lien personnel est valable ${DOWNLOAD_DAYS} jours (${DOWNLOAD_LIMIT} téléchargements au plus). Gardez-le pour vous : il donne accès à vos fichiers. Les PDF se lisent sur téléphone, tablette et ordinateur.</p>`,
+<p style="margin:0;font-size:13px;line-height:1.6;color:#5E6B6A">Ce lien personnel est valable ${DOWNLOAD_DAYS} jours (${DOWNLOAD_LIMIT} téléchargements au plus). Gardez-le pour vous : il donne accès à vos fichiers. Les PDF se lisent sur téléphone, tablette et ordinateur.</p>
+${helpBlock(`ma commande ${commande.reference}`)}`,
       ),
-      text: `Bonjour ${commande.nom},\n\nVotre paiement est bien reçu. Téléchargez vos livres ici :\n${url}\n\nCe lien personnel est valable ${DOWNLOAD_DAYS} jours (${DOWNLOAD_LIMIT} téléchargements au plus). Gardez-le pour vous.\n\nSYSI TRAVEL`,
+      text: `Bonjour ${commande.nom},\n\nVotre paiement est bien reçu. Téléchargez vos livres ici :\n${url}\n\nCe lien personnel est valable ${DOWNLOAD_DAYS} jours (${DOWNLOAD_LIMIT} téléchargements au plus). Gardez-le pour vous.\n\n${helpText()}\n\nSYSI TRAVEL`,
     });
     return true;
   } catch (error) {
@@ -336,6 +352,8 @@ export async function sendCommandePayeeAgence(commande) {
 
 // A circuit booked and paid online: confirmation to the traveller, notification to the agency.
 // Never throws: the payment is already recorded.
+const dayFormat = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "Africa/Conakry" });
+
 export async function sendReservationEmails(reservation) {
   if (!process.env.RESEND_API_KEY) {
     console.warn("RESEND_API_KEY absente : e-mails de la réservation non envoyés.");
@@ -370,21 +388,58 @@ export async function sendReservationEmails(reservation) {
     text: "Réservation payée en ligne " + reservation.reference + "\n\n" + asText([...details, ...client]),
   });
 
+  // The traveller's confirmation: what is paid (highlighted), the trip, what happens next, and how
+  // to reach the agency.
+  const paidOn = dayFormat.format(reservation.payee_le ? new Date(reservation.payee_le) : new Date());
+  const trip = [
+    ["Référence", reservation.reference],
+    ["Voyage", reservation.circuit_title],
+    ["Départ souhaité", reservation.date_souhaitee],
+    ["Voyageurs", reservation.voyageurs + " × " + formatPrice(reservation.prix_unitaire_cents)],
+    ["Total du voyage", formatPrice(reservation.total_cents)],
+    ...(reste > 0
+      ? [
+          ["Payé à la réservation", formatPrice(reservation.montant_en_ligne_cents) + " (acompte de " + reservation.acompte_pourcent + " %)"],
+          ["Reste à régler", formatPrice(reste) + ", avant le départ"],
+        ]
+      : []),
+  ];
+  const steps = [
+    "Nous vous appelons sous 72 heures pour confirmer la date et le lieu de prise en charge.",
+    ...(reste > 0 ? ["Vous réglez le solde de " + formatPrice(reste) + " avant le départ : nous vous indiquons comment."] : []),
+    "Gardez votre référence " + reservation.reference + " : elle facilite tous nos échanges.",
+  ];
+  const paidBox =
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:6px 0 22px;border:1px solid #E6B45C;border-radius:12px;background:#FDF8EE"><tr><td style="padding:18px 22px">' +
+    '<p style="margin:0;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#8A6A2E">Paiement reçu</p>' +
+    '<p style="margin:4px 0;font-size:28px;font-weight:bold;color:#123D43">' + formatPrice(reservation.montant_en_ligne_cents) + "</p>" +
+    '<p style="margin:0;font-size:14px;line-height:1.5;color:#3F4D4F">Par carte bancaire, le ' + escapeHtml(paidOn) + ". " +
+    (reste > 0 ? "Acompte de " + reservation.acompte_pourcent + " % : solde de " + formatPrice(reste) + " avant le départ." : "Votre voyage est entièrement réglé.") +
+    "</p></td></tr></table>";
+
   const confirmation = sendEmail({
     to: reservation.email,
     replyTo: agency,
-    subject: "Votre réservation " + reservation.reference + " · SYSI TRAVEL",
+    subject: "Réservation confirmée " + reservation.reference + " · " + reservation.circuit_title,
     html: layout(
-      "Merci " + escapeHtml(reservation.nom) + ", votre réservation est confirmée",
-      p("Votre paiement est bien reçu. " + escapeHtml(next)) +
-        rows(details) +
-        '<p style="margin:22px 0 0;font-size:15px;line-height:1.6">Une question ? Répondez simplement à cet e-mail, ou écrivez-nous sur WhatsApp au ' +
-        escapeHtml(CONTACT.phone) +
-        ".</p>",
+      "Votre réservation est confirmée",
+      p("Bonjour " + escapeHtml(reservation.nom) + ",") +
+        p("Merci pour votre confiance ! Votre place pour « " + escapeHtml(reservation.circuit_title) + " » est réservée.") +
+        paidBox +
+        rows(trip) +
+        '<p style="margin:24px 0 10px;font-size:16px;font-weight:bold;color:#123D43">Et maintenant ?</p>' +
+        '<ol style="margin:0;padding-left:20px;font-size:15px;line-height:1.6">' +
+        steps.map((step) => '<li style="margin:0 0 8px">' + escapeHtml(step) + "</li>").join("") +
+        "</ol>" +
+        '<p style="margin:14px 0 0;font-size:13px;line-height:1.6;color:#5E6B6A">Un reçu de paiement vous est aussi envoyé par Stripe, notre partenaire de paiement sécurisé.</p>' +
+        helpBlock("ma réservation " + reservation.reference),
     ),
     text:
-      "Bonjour " + reservation.nom + ",\n\nVotre paiement est bien reçu. " + next + "\n\n" + asText(details) +
-      "\n\nUne question ? Répondez à cet e-mail, ou écrivez-nous sur WhatsApp au " + CONTACT.phone + ".\n\nSYSI TRAVEL",
+      "Bonjour " + reservation.nom + ",\n\nMerci pour votre confiance ! Votre place pour « " + reservation.circuit_title + " » est réservée.\n\n" +
+      "Paiement reçu : " + formatPrice(reservation.montant_en_ligne_cents) + ", par carte bancaire, le " + paidOn + ".\n\n" +
+      asText(trip) +
+      "\n\nEt maintenant ?\n" + steps.map((step, index) => index + 1 + ". " + step).join("\n") +
+      "\n\n" + helpText() + "\n\nSYSI TRAVEL",
   });
 
   const results = await Promise.allSettled([notification, confirmation]);

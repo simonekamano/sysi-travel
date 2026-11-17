@@ -50,7 +50,7 @@ export default function Footer({ destinations = [], reseaux = [] }) {
       <div className="mx-auto max-w-site px-6 py-14">
         {/* The brand on one row: logo, what SYSI TRAVEL is, the promise and the social networks. */}
         <div className="flex flex-col gap-6 border-b border-ivory/10 pb-10 lg:flex-row lg:items-center lg:gap-12">
-          <Link to="/" aria-label="SYSI TRAVEL Guinée — accueil" className="inline-flex shrink-0 items-center">
+          <Link to="/" aria-label="SYSI TRAVEL Guinée - accueil" className="inline-flex shrink-0 items-center">
             <img src={LOGO_INVERSE} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[4.91rem] w-auto object-contain" />
           </Link>
           <p className="max-w-xl text-[0.95rem] leading-relaxed text-ivory/70">
@@ -141,7 +141,7 @@ export default function Footer({ destinations = [], reseaux = [] }) {
       <div className="border-t border-ivory/10">
         <div className="mx-auto flex max-w-site flex-col gap-4 px-6 pb-24 pt-6 text-[0.82rem] text-ivory/55 sm:flex-row sm:pb-6 sm:pr-24 sm:items-center sm:justify-between">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-8">
-            <p>© 2026 SYSI TRAVEL — Guinée. Tous droits réservés.</p>
+            <p>© 2026 SYSI TRAVEL - Guinée. Tous droits réservés.</p>
             {legal.length ? (
               <ul aria-label="Informations légales" className="flex flex-wrap gap-x-5 gap-y-2">
                 {legal.map((link) => (

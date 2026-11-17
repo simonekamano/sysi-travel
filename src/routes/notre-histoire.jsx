@@ -23,11 +23,11 @@ export const Route = createFileRoute("/notre-histoire")({
   },
   head: ({ loaderData }) => {
     const histoire = loaderData?.histoire;
-    if (!histoire) return noindex("Notre histoire — SYSI TRAVEL");
+    if (!histoire) return noindex("Notre histoire - SYSI TRAVEL");
     const name = histoire.signature || histoire.titre;
     const role = histoire.role ? histoire.role.charAt(0).toLowerCase() + histoire.role.slice(1) : "";
     return seo({
-      title: fitTitle(`Notre histoire — ${name} | SYSI TRAVEL`, "Notre histoire | SYSI TRAVEL"),
+      title: fitTitle(`Notre histoire - ${name} | SYSI TRAVEL`, "Notre histoire | SYSI TRAVEL"),
       description: fitDescription(
         `${[name, role].filter(Boolean).join(", ")}, raconte pourquoi elle a créé SYSI TRAVEL : faire découvrir la Guinée à la diaspora et aux voyageurs.`,
       ),

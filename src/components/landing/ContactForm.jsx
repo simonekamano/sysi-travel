@@ -288,7 +288,7 @@ export default function ContactForm({
                     <option value="">À définir ensemble</option>
                     {formules.map((item) => (
                       <option key={item.id} value={item.id}>
-                        {item.name} — {item.duration}
+                        {item.name} - {item.duration}
                       </option>
                     ))}
                     <option value="sur-mesure">Séjour sur mesure</option>

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/destinations/")({
   loader: () => getSiteContent(),
   head: () =>
     seo({
-      title: "Destinations en Guinée — SYSI TRAVEL",
+      title: "Destinations en Guinée - SYSI TRAVEL",
       description:
         "Îles de Loos, Fouta Djallon, Mont Nimba, cascades et plages : toutes les destinations de SYSI TRAVEL en Guinée, sur la carte et en détail.",
       path: "/destinations",

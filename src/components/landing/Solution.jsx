@@ -15,7 +15,7 @@ export default function Solution() {
               align="left"
               eyebrow="La réponse SYSI TRAVEL"
               title="Une seule plateforme, pensée pour la diaspora"
-              text="SYSI TRAVEL réunit les plus beaux sites de Guinée, des circuits conçus par des guides locaux et un accompagnement de bout en bout — depuis votre canapé à Paris, Montréal ou Bruxelles jusqu'à votre arrivée à Conakry."
+              text="SYSI TRAVEL réunit les plus beaux sites de Guinée, des circuits conçus par des guides locaux et un accompagnement de bout en bout - depuis votre canapé à Paris, Montréal ou Bruxelles jusqu'à votre arrivée à Conakry."
             />
           </Reveal>
 

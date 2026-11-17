@@ -15,7 +15,7 @@ export const Route = createFileRoute("/circuits/$slug")({
   },
   head: ({ loaderData }) => {
     const circuit = loaderData?.circuit;
-    if (!circuit) return noindex("Circuit introuvable — SYSI TRAVEL");
+    if (!circuit) return noindex("Circuit introuvable - SYSI TRAVEL");
     const description = fitDescription(
       circuit.tagline,
       `${CIRCUIT_KINDS[circuit.kind]} ${circuit.duration} en Guinée avec SYSI TRAVEL : programme jour par jour et prix.`,
@@ -23,8 +23,8 @@ export const Route = createFileRoute("/circuits/$slug")({
     const path = `/circuits/${circuit.slug}`;
     return seo({
       title: fitTitle(
-        `${circuit.title} — ${CIRCUIT_KINDS[circuit.kind]} en Guinée | SYSI TRAVEL`,
-        `${circuit.title} — ${CIRCUIT_KINDS[circuit.kind]} | SYSI TRAVEL`,
+        `${circuit.title} - ${CIRCUIT_KINDS[circuit.kind]} en Guinée | SYSI TRAVEL`,
+        `${circuit.title} - ${CIRCUIT_KINDS[circuit.kind]} | SYSI TRAVEL`,
         `${circuit.title} | SYSI TRAVEL`,
       ),
       description,

@@ -4,7 +4,7 @@ import HistoireForm from "@/components/admin/HistoireForm";
 
 export const Route = createFileRoute("/_authed/admin/notre-histoire")({
   loader: () => getHistoireAdmin(),
-  head: () => ({ meta: [{ title: "Notre histoire — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Notre histoire - Administration SYSI TRAVEL" }] }),
   component: AdminHistoirePage,
 });
 

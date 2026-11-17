@@ -14,7 +14,7 @@ export const Route = createFileRoute("/produits")({
   loader: () => getSiteContent(),
   head: () =>
     seo({
-      title: "Produits locaux de Guinée — SYSI TRAVEL",
+      title: "Produits locaux de Guinée - SYSI TRAVEL",
       description:
         "Pagnes, sacs, beurre de karité, jarres, calebasses et chaussures traditionnelles : l'artisanat de Guinée, à commander sur WhatsApp auprès de SYSI TRAVEL.",
       path: "/produits",

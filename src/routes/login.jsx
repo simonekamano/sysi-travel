@@ -4,6 +4,6 @@ import { LoginPage } from "@/components/auth/LoginPage";
 
 export const Route = createFileRoute("/login")({
   ssr: false,
-  head: () => noindex("Connexion — SYSI TRAVEL"),
+  head: () => noindex("Connexion - SYSI TRAVEL"),
   component: LoginPage,
 });

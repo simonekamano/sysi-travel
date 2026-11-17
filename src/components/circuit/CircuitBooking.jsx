@@ -1,19 +1,47 @@
 import { useRef, useState } from "react";
-import { CalendarDays, CreditCard, Info, Loader2, Lock, Minus, Plus, Users } from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { CalendarDays, ChevronDown, CreditCard, Info, Loader2, Lock, Minus, Plus, Users } from "lucide-react";
 import Reveal from "@/components/landing/Reveal";
 import { formatPrice } from "@/lib/boutique";
 import { useLegalLinks } from "@/lib/legal";
 import { reserverCircuit } from "@/lib/server-fns";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 
 const inputClass = "border-petrol/25 bg-white text-petrol placeholder:text-petrol/45 focus-visible:ring-gold";
 const MAX_TRAVELLERS = 30;
 
-// « 2026-12-14 » → « 14 décembre 2026 » (what the agency and the traveller read in the e-mails).
-const frenchDate = (iso) =>
-  new Date(`${iso}T12:00:00Z`).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+// The chosen day → « 14 décembre 2026 » (what the agency and the traveller read in the e-mails).
+const frenchDate = (date) => format(date, "d MMMM yyyy", { locale: fr });
+
+// The departure calendar: large days, in French, weeks from Monday. The browser's own date picker
+// is too small to read on some screens, and its language follows the visitor's system.
+const calendarClasses = {
+  months: "flex flex-col",
+  month: "space-y-3",
+  caption: "relative flex items-center justify-center pt-1",
+  caption_label: "text-[1rem] font-semibold capitalize text-petrol",
+  nav: "flex items-center",
+  nav_button:
+    "inline-flex h-9 w-9 items-center justify-center rounded-full border border-petrol/20 text-petrol transition-colors hover:border-gold hover:bg-gold/15 disabled:pointer-events-none disabled:opacity-30",
+  nav_button_previous: "absolute left-0",
+  nav_button_next: "absolute right-0",
+  table: "w-full border-collapse",
+  head_row: "flex",
+  head_cell: "w-10 text-[0.72rem] font-semibold uppercase tracking-wide text-petrol/55 sm:w-11",
+  row: "mt-1 flex w-full",
+  cell: "relative h-10 w-10 p-0 text-center sm:h-11 sm:w-11",
+  day: "inline-flex h-10 w-10 items-center justify-center rounded-full text-[0.95rem] text-petrol transition-colors hover:bg-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold sm:h-11 sm:w-11",
+  day_selected: "!bg-petrol font-semibold !text-ivory hover:!bg-petrol",
+  day_today: "font-semibold",
+  day_outside: "text-petrol/30",
+  day_disabled: "pointer-events-none text-petrol/25 line-through",
+  day_hidden: "invisible",
+};
 
 // Booking and paying a circuit online (circuits.prix_en_ligne_cents set, Stripe connected): the
 // traveller chooses a date and the number of travellers, then pays the whole price or the deposit
@@ -21,9 +49,10 @@ const frenchDate = (iso) =>
 export default function CircuitBooking({ circuit, cancelled = false }) {
   const legal = useLegalLinks();
   const hasCgv = legal.some((link) => link.slug === "conditions-generales-de-vente");
-  const [form, setForm] = useState({ date: "", voyageurs: 2, nom: "", email: "", telephone: "", message: "", cgv: false, site_web: "" });
+  const [form, setForm] = useState({ date: null, voyageurs: 2, nom: "", email: "", telephone: "", message: "", cgv: false, site_web: "" });
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const openedAt = useRef(Date.now());
   const set = (key) => (event) =>
     setForm((prev) => ({ ...prev, [key]: event.target.type === "checkbox" ? event.target.checked : event.target.value }));
@@ -33,7 +62,13 @@ export default function CircuitBooking({ circuit, cancelled = false }) {
   const total = unit * form.voyageurs;
   const deposit = circuit.acompte_pourcent < 100;
   const now = Math.round((total * circuit.acompte_pourcent) / 100);
-  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const tomorrow = new Date();
+  tomorrow.setHours(0, 0, 0, 0);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const chooseDate = (date) => {
+    setForm((prev) => ({ ...prev, date: date ?? null }));
+    if (date) setCalendarOpen(false);
+  };
 
   const submit = async (event) => {
     event.preventDefault();
@@ -110,7 +145,35 @@ export default function CircuitBooking({ circuit, cancelled = false }) {
                 <Label htmlFor="reservation-date" className="label-caps flex items-center gap-1.5 text-petrol/65">
                   <CalendarDays className="h-3.5 w-3.5" /> Date de départ
                 </Label>
-                <Input id="reservation-date" type="date" min={tomorrow} value={form.date} onChange={set("date")} className={inputClass} required />
+                <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      id="reservation-date"
+                      type="button"
+                      className="flex h-10 w-full items-center justify-between gap-2 rounded-md border border-petrol/25 bg-white px-3 text-left text-[0.95rem] text-petrol focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    >
+                      <span className={form.date ? "block truncate first-letter:uppercase" : "block truncate text-petrol/45"}>
+                        {form.date ? format(form.date, "EEEE d MMMM yyyy", { locale: fr }) : "Choisir une date"}
+                      </span>
+                      <ChevronDown className="h-4 w-4 shrink-0 text-petrol/55" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="start" collisionPadding={12} className="w-auto rounded-2xl border-petrol/15 bg-white p-4 shadow-xl">
+                    <Calendar
+                      mode="single"
+                      locale={fr}
+                      weekStartsOn={1}
+                      selected={form.date ?? undefined}
+                      onSelect={chooseDate}
+                      defaultMonth={form.date ?? tomorrow}
+                      fromMonth={tomorrow}
+                      disabled={{ before: tomorrow }}
+                      showOutsideDays={false}
+                      className="p-0"
+                      classNames={calendarClasses}
+                    />
+                  </PopoverContent>
+                </Popover>
                 {circuit.dates ? <p className="text-[0.8rem] text-petrol/55">{circuit.dates}</p> : null}
               </div>
               <div className="space-y-2">

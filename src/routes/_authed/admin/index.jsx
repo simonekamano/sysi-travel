@@ -4,7 +4,7 @@ import DestinationsPanel from "@/components/admin/DestinationsPanel";
 
 export const Route = createFileRoute("/_authed/admin/")({
   loader: () => listDestinations(),
-  head: () => ({ meta: [{ title: "Destinations — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Destinations - Administration SYSI TRAVEL" }] }),
   component: AdminDestinationsPage,
 });
 

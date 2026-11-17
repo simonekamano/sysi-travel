@@ -4,7 +4,7 @@ import DemandesPanel from "@/components/admin/DemandesPanel";
 
 export const Route = createFileRoute("/_authed/admin/demandes")({
   loader: () => listDemandes(),
-  head: () => ({ meta: [{ title: "Demandes de séjour — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Demandes de séjour - Administration SYSI TRAVEL" }] }),
   component: AdminDemandesPage,
 });
 

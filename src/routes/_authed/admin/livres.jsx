@@ -4,7 +4,7 @@ import LivresPanel from "@/components/admin/LivresPanel";
 
 export const Route = createFileRoute("/_authed/admin/livres")({
   loader: () => listAllLivres(),
-  head: () => ({ meta: [{ title: "Livres & guides — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Livres & guides - Administration SYSI TRAVEL" }] }),
   component: AdminLivresPage,
 });
 

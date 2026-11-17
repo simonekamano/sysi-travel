@@ -4,7 +4,7 @@ import VideosPanel from "@/components/admin/VideosPanel";
 
 export const Route = createFileRoute("/_authed/admin/videos")({
   loader: () => listAllVideos(),
-  head: () => ({ meta: [{ title: "Vidéos — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Vidéos - Administration SYSI TRAVEL" }] }),
   component: AdminVideosPage,
 });
 

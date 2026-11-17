@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authed/compte")({
   loader: () => listMesCommandes(),
-  head: () => ({ meta: [{ title: "Mon compte — SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Mon compte - SYSI TRAVEL" }] }),
   component: ComptePage,
 });
 

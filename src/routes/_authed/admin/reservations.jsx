@@ -4,7 +4,7 @@ import ReservationsPanel from "@/components/admin/ReservationsPanel";
 
 export const Route = createFileRoute("/_authed/admin/reservations")({
   loader: () => listReservations(),
-  head: () => ({ meta: [{ title: "Réservations — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Réservations - Administration SYSI TRAVEL" }] }),
   component: AdminReservationsPage,
 });
 

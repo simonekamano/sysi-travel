@@ -4,6 +4,6 @@ import { RegisterPage } from "@/components/auth/RegisterPage";
 
 export const Route = createFileRoute("/register")({
   ssr: false,
-  head: () => noindex("Créer un compte — SYSI TRAVEL"),
+  head: () => noindex("Créer un compte - SYSI TRAVEL"),
   component: RegisterPage,
 });

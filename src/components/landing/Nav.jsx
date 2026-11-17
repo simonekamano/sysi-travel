@@ -103,7 +103,7 @@ export default function Nav({ home = true, solid = false, bookingHref = "#contac
           >
             <a
               href={home ? "#accueil" : "/"}
-              aria-label="SYSI TRAVEL Guinée — accueil"
+              aria-label="SYSI TRAVEL Guinée - accueil"
               className="flex shrink-0 items-center px-2"
             >
               <img

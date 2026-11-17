@@ -35,12 +35,12 @@ const INTRO = {
 };
 
 const TITLE = {
-  "": "Mode africaine, sacs, bijoux et livres — SYSI TRAVEL",
-  femme: "Robes, kaftans et ensembles africains — SYSI TRAVEL",
-  homme: "Mode homme africaine : chemises, vestes — SYSI TRAVEL",
-  sacs: "Sacs en pagne et wax faits main — Boutique SYSI TRAVEL",
-  bijoux: "Boucles d'oreilles en tissu et dorées — Boutique SYSI TRAVEL",
-  livres: "Livres et guides sur la Guinée en PDF — Boutique SYSI TRAVEL",
+  "": "Mode africaine, sacs, bijoux et livres - SYSI TRAVEL",
+  femme: "Robes, kaftans et ensembles africains - SYSI TRAVEL",
+  homme: "Mode homme africaine : chemises, vestes - SYSI TRAVEL",
+  sacs: "Sacs en pagne et wax faits main - Boutique SYSI TRAVEL",
+  bijoux: "Boucles d'oreilles en tissu et dorées - Boutique SYSI TRAVEL",
+  livres: "Livres et guides sur la Guinée en PDF - Boutique SYSI TRAVEL",
 };
 
 const PROMISES = [
@@ -283,7 +283,7 @@ function Shelf({ categorie, articles, livres, limit, page = 1 }) {
   );
 }
 
-// « 13–24 sur 35 articles » and the page links. Each link is a real address (?page=2), so a page
+// « 13-24 sur 35 articles » and the page links. Each link is a real address (?page=2), so a page
 // can be shared and the browser's back button returns to the previous one.
 function Pagination({ categorie, current, pages, total, books }) {
   const first = (current - 1) * PER_PAGE + 1;
@@ -295,7 +295,7 @@ function Pagination({ categorie, current, pages, total, books }) {
   return (
     <nav aria-label="Pages du rayon" className="mt-12 flex flex-col items-center gap-4 border-t border-petrol/10 pt-8">
       <p className="text-[0.9rem] text-petrol/60">
-        {first}–{last} sur {total} {books ? "livres" : "articles"}
+        {first}-{last} sur {total} {books ? "livres" : "articles"}
       </p>
       <div className="flex flex-wrap items-center justify-center gap-2">
         {current > 1 ? (

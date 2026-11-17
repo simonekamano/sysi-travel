@@ -57,7 +57,12 @@ serve({
   port,
   hostname,
   middleware: [
-    async (request, next) => withSecurityHeaders(await next()),
+    async (request, next) => {
+      const response = withSecurityHeaders(await next());
+      // The brand logos also appear in the site's e-mails, which mail apps load from elsewhere.
+      if (new URL(request.url).pathname.startsWith("/brand/")) response.headers.set("cross-origin-resource-policy", "cross-origin");
+      return response;
+    },
     async (request, next) => {
       const { pathname } = new URL(request.url);
       if (ICON_ALIASES.has(pathname)) {

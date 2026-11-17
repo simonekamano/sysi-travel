@@ -10,7 +10,7 @@ export function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
         <img src={IMAGES.fouta} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full animate-kenburns object-cover" />
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-petrol-deep via-petrol-deep/55 to-petrol-deep/30" />
         <div className="relative flex h-full flex-col justify-between p-12">
-          <Link to="/" aria-label="SYSI TRAVEL Guinée — accueil" className="inline-flex w-fit items-center">
+          <Link to="/" aria-label="SYSI TRAVEL Guinée - accueil" className="inline-flex w-fit items-center">
             <img src={LOGO_INVERSE} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[5.26rem] w-auto object-contain" />
           </Link>
           <div className="max-w-md animate-fade-up">
@@ -25,7 +25,7 @@ export function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
 
       <main className="flex items-center justify-center px-5 py-10 sm:px-8">
         <div className="w-full max-w-md animate-fade-up">
-          <Link to="/" aria-label="SYSI TRAVEL Guinée — accueil" className="mb-8 inline-flex items-center lg:hidden">
+          <Link to="/" aria-label="SYSI TRAVEL Guinée - accueil" className="mb-8 inline-flex items-center lg:hidden">
             <img src={LOGO} alt="SYSI TRAVEL Guinée" width={1000} height={463} className="block h-[4rem] w-auto object-contain" />
           </Link>
           <div className="mb-8">

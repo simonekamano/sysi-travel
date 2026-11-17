@@ -14,7 +14,7 @@ export const Route = createFileRoute("/transfert-aeroport")({
   loader: () => getSiteContent(),
   head: () =>
     seo({
-      title: "Prise en charge à l'aéroport de Conakry — SYSI TRAVEL",
+      title: "Prise en charge à l'aéroport de Conakry - SYSI TRAVEL",
       description:
         "À votre arrivée à Conakry, un chauffeur SYSI TRAVEL vous attend à l'aéroport et vous conduit jusqu'à votre lieu de séjour. Service à la demande.",
       path: "/transfert-aeroport",

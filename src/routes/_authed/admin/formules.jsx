@@ -4,7 +4,7 @@ import FormulesPanel from "@/components/admin/FormulesPanel";
 
 export const Route = createFileRoute("/_authed/admin/formules")({
   loader: () => listFormules(),
-  head: () => ({ meta: [{ title: "Formules & prix — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "Formules & prix - Administration SYSI TRAVEL" }] }),
   component: AdminFormulesPage,
 });
 

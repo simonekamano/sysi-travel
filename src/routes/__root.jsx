@@ -20,14 +20,14 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
-        title: "SYSI TRAVEL — La Guinée comme vous ne l'avez jamais vécue",
+        title: "SYSI TRAVEL - La Guinée comme vous ne l'avez jamais vécue",
       },
       {
         name: "description",
         content:
           "SYSI TRAVEL, plateforme touristique dédiée à la Guinée : les plus beaux sites, des circuits authentiques et des partenaires locaux vérifiés.",
       },
-      { property: "og:title", content: "SYSI TRAVEL — Voyagez en Guinée autrement" },
+      { property: "og:title", content: "SYSI TRAVEL - Voyagez en Guinée autrement" },
       {
         property: "og:description",
         content: "Sites incontournables, circuits authentiques et partenaires locaux vérifiés.",

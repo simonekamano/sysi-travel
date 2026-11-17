@@ -21,7 +21,7 @@ export const Route = createFileRoute("/panier")({
   // ?paiement=annule: back from Stripe's page without paying (the cart is still there).
   validateSearch: (search) => ({ paiement: search.paiement === "annule" ? "annule" : undefined }),
   loader: () => getBoutiquePage(),
-  head: () => noindex("Mon panier — Boutique SYSI TRAVEL"),
+  head: () => noindex("Mon panier - Boutique SYSI TRAVEL"),
   // No cart and no order form while online sale is closed (VENTE_EN_LIGNE).
   component: VENTE_EN_LIGNE ? PanierPage : VenteBientot,
 });

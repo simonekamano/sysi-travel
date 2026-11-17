@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { safeReturnTo } from "@/lib/authReturnTo";
 
-// The /login page. ?returnTo= is where the visitor goes after signing in — the login
+// The /login page. ?returnTo= is where the visitor goes after signing in - the login
 // gate sends people here with it.
 export function LoginPage() {
   const returnTo = safeReturnTo();

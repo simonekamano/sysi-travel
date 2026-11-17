@@ -4,7 +4,7 @@ import FaqsPanel from "@/components/admin/FaqsPanel";
 
 export const Route = createFileRoute("/_authed/admin/faq")({
   loader: () => listFaqs(),
-  head: () => ({ meta: [{ title: "FAQ — Administration SYSI TRAVEL" }] }),
+  head: () => ({ meta: [{ title: "FAQ - Administration SYSI TRAVEL" }] }),
   component: AdminFaqPage,
 });
 
