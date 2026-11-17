@@ -36,15 +36,20 @@ function ProduitsPage() {
         <section className="bg-background pb-14 pt-36 lg:pb-20 lg:pt-40">
           <div className="mx-auto max-w-site px-6">
             <BackButton label="Retour" className="mb-8" />
-            <p className="eyebrow text-gold-deep">Artisanat de Guinée</p>
-            <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
-              Produits locaux
-            </h1>
-            <p className="mt-6 max-w-2xl text-[1rem] leading-relaxed text-petrol/70">
-              Pagnes, beurre de karité, jarres, calebasses, chaussures et sacs : ramenez un morceau de
-              Guinée chez vous. Cliquez sur un produit pour nous écrire sur WhatsApp : nous vous
-              envoyons les modèles disponibles et les prix.
-            </p>
+            {/* Title on the left, introduction on the right from 640 px: the band is filled. */}
+            <div className="grid gap-5 sm:grid-cols-2 sm:items-center sm:gap-8 md:gap-12">
+              <div>
+                <p className="eyebrow text-gold-deep">Artisanat de Guinée</p>
+                <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
+                  Produits locaux
+                </h1>
+              </div>
+              <p className="text-[1rem] leading-relaxed text-petrol/70">
+                Pagnes, beurre de karité, jarres, calebasses, chaussures et sacs : ramenez un morceau de
+                Guinée chez vous. Cliquez sur un produit pour nous écrire sur WhatsApp : nous vous
+                envoyons les modèles disponibles et les prix.
+              </p>
+            </div>
             <div className="mt-10">
               <ProductsShowcase />
             </div>

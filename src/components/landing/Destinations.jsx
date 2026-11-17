@@ -19,7 +19,7 @@ export default function Destinations({ destinations = [] }) {
           />
         </Reveal>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={`orphan-center mt-10 grid gap-6 sm:grid-cols-2 ${Math.min(destinations.length, HOME_LIMIT) > 2 ? "md:grid-cols-3" : ""}`}>
           {destinations.slice(0, HOME_LIMIT).map((destination, index) => (
             <Reveal key={destination.id || destination.name} delay={(index % 3) * 90}>
               <DestinationCard destination={destination} />

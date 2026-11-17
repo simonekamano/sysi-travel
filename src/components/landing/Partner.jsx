@@ -34,7 +34,7 @@ export default function Partner() {
               className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-gold/15 blur-3xl"
             />
 
-            <div className="relative grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
+            <div className="relative grid gap-10 md:grid-cols-2 md:items-center md:gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
               <div>
                 <span className="label-caps inline-flex items-center gap-2 rounded-full border border-gold/50 px-4 py-2 text-gold">
                   <BriefcaseBusiness className="h-4 w-4" />
@@ -43,7 +43,7 @@ export default function Partner() {
                 <h2 className="mt-6 text-[clamp(1.8rem,3.2vw,2.6rem)] font-bold leading-[1.1] tracking-[-0.015em] text-ivory">
                   Et si le voyage devenait aussi votre business ?
                 </h2>
-                <p className="mt-5 max-w-md text-[0.98rem] leading-relaxed text-ivory/75">
+                <p className="mt-5 text-[0.98rem] leading-relaxed text-ivory/75 lg:max-w-md">
                   Vous aimez voyager et en parler autour de vous ? Avec le programme MWR Life,
                   recommandez des offres de voyage, développez votre propre réseau et construisez
                   une activité complémentaire dans le tourisme.

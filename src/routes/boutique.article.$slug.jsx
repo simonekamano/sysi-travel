@@ -173,9 +173,9 @@ function ArticleDetail({ article }) {
         </nav>
       </div>
 
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-14">
+      <div className="grid gap-10 sm:grid-cols-2 sm:gap-6 md:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-14">
         {/* Photos of the chosen variant. */}
-        <div className="lg:sticky lg:top-28 lg:self-start">
+        <div className="sm:sticky sm:top-28 sm:self-start">
           <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-ivory-soft ring-1 ring-petrol/10">
             {current ? (
               <img key={current} src={current} alt={`${article.name}${variant ? ` — ${variant}` : ""}`} className="h-full w-full animate-fade-in object-cover" />
@@ -224,6 +224,7 @@ function ArticleDetail({ article }) {
               ))}
             </ul>
           ) : null}
+
         </div>
 
         <div>
@@ -366,42 +367,43 @@ function ArticleDetail({ article }) {
               ))}
             </div>
           ) : null}
-
-          <ul className="mt-8 space-y-4 rounded-2xl bg-ivory-soft p-6 text-[0.92rem] leading-relaxed text-petrol/75">
-            <li className="flex gap-3">
-              <Truck className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
-              <span>
-                <strong className="text-petrol">Livraison suivie</strong> : les frais et le délai vous sont confirmés avant le paiement,
-                puis vous suivez chaque étape par e-mail et dans votre compte.
-              </span>
-            </li>
-            <li className="flex gap-3">
-              <Mail className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
-              <span>
-                {VENTE_EN_LIGNE ? (
-                  <>
-                    <strong className="text-petrol">Rien n'est payé en ligne</strong> : nous vous contactons sous 72 h pour régler
-                    votre commande simplement.
-                  </>
-                ) : (
-                  <>
-                    <strong className="text-petrol">Paiement en ligne sécurisé</strong> : bientôt disponible. En attendant, réservez
-                    sur WhatsApp, nous vous répondons rapidement.
-                  </>
-                )}
-              </span>
-            </li>
-            {article.custom_made ? (
-              <li className="flex gap-3">
-                <Ruler className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
-                <span>
-                  <strong className="text-petrol">Sur mesure</strong> possible : choisissez « Sur mesure » comme taille.
-                </span>
-              </li>
-            ) : null}
-          </ul>
         </div>
       </div>
+
+      {/* Delivery and payment as a band across the width, under the photo and the details. */}
+      <ul className="orphan-span mt-10 grid gap-4 rounded-2xl bg-ivory-soft p-6 text-[0.92rem] leading-relaxed text-petrol/75 md:grid-cols-2 lg:flex lg:gap-8 lg:[&>li]:flex-1">
+        <li className="flex gap-3">
+          <Truck className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
+          <span>
+            <strong className="text-petrol">Livraison suivie</strong> : les frais et le délai vous sont confirmés avant le paiement,
+            puis vous suivez chaque étape par e-mail et dans votre compte.
+          </span>
+        </li>
+        <li className="flex gap-3">
+          <Mail className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
+          <span>
+            {VENTE_EN_LIGNE ? (
+              <>
+                <strong className="text-petrol">Rien n'est payé en ligne</strong> : nous vous contactons sous 72 h pour régler
+                votre commande simplement.
+              </>
+            ) : (
+              <>
+                <strong className="text-petrol">Paiement en ligne sécurisé</strong> : bientôt disponible. En attendant, réservez
+                sur WhatsApp, nous vous répondons rapidement.
+              </>
+            )}
+          </span>
+        </li>
+        {article.custom_made ? (
+          <li className="flex gap-3">
+            <Ruler className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
+            <span>
+              <strong className="text-petrol">Sur mesure</strong> possible : choisissez « Sur mesure » comme taille.
+            </span>
+          </li>
+        ) : null}
+      </ul>
     </div>
   );
 }

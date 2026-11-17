@@ -22,7 +22,7 @@ export default function Circuits({ circuits = [] }) {
           />
         </Reveal>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={`orphan-center mt-10 grid gap-6 sm:grid-cols-2 ${Math.min(circuits.length, HOME_LIMIT) > 2 ? "md:grid-cols-3" : ""}`}>
           {circuits.slice(0, HOME_LIMIT).map((circuit, index) => (
             <Reveal key={circuit.id} delay={(index % 3) * 90} className="h-full">
               <CircuitCard circuit={circuit} />

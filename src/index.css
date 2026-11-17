@@ -557,3 +557,30 @@ h4 {
 .cart-pop {
   animation: cart-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* A card grid on two columns (640 – 767 px): a last card alone on its row is centred instead of
+   leaving half of the row empty. From 768 px these grids have as many columns as cards. */
+@media (min-width: 640px) and (max-width: 767.98px) {
+  .orphan-center > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 0.75rem);
+  }
+}
+
+/* A grid of text boxes on two columns (from 640 px): a last box alone on its row takes the whole
+   row instead of leaving half of it empty. */
+@media (min-width: 640px) {
+  .orphan-span > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* A row of three articles on two columns (below 768 px): the third is centred under the others. */
+@media (max-width: 767.98px) {
+  .orphan-center-2 > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 0.75rem);
+  }
+}

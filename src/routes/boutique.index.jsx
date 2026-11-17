@@ -240,6 +240,14 @@ function ShelfLink({ active, search, children }) {
   );
 }
 
+// Columns of a row of articles: three articles fill a row of three (rather than leaving an empty
+// fourth place, or one article alone on a second row), two fill a row of two.
+const columnsFor = (count) => {
+  if (count === 2) return "";
+  if (count === 3) return "orphan-center-2 md:grid-cols-3";
+  return "lg:grid-cols-4";
+};
+
 // The items of one section: articles, or books for « livres ». `limit`: a preview on « Tout »;
 // without it, the section is shown PER_PAGE items at a time, with its pages below.
 function Shelf({ categorie, articles, livres, limit, page = 1 }) {
@@ -260,7 +268,7 @@ function Shelf({ categorie, articles, livres, limit, page = 1 }) {
           ))}
         </div>
       ) : (
-        <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
+        <div className={cn("mt-8 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6", columnsFor(visible.length))}>
           {visible.map((article, index) => (
             <Reveal key={article.id} delay={(index % 4) * 70} className="h-full">
               <ArticleCard article={article} />

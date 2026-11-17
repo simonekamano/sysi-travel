@@ -53,15 +53,20 @@ function TransfertPage() {
         <section className="bg-background pb-14 pt-36 lg:pb-20 lg:pt-40">
           <div className="mx-auto max-w-site px-6">
             <BackButton label="Retour" className="mb-8" />
-            <p className="eyebrow text-gold-deep">Service à la demande</p>
-            <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
-              Prise en charge à l'aéroport
-            </h1>
-            <p className="mt-6 max-w-2xl text-[1rem] leading-relaxed text-petrol/70">
-              Atterrissez à Conakry l'esprit léger : un chauffeur vous attend à votre arrivée et vous
-              conduit jusqu'à votre hôtel ou votre lieu de séjour. Le service se réserve seul, ou avec
-              un séjour ou un circuit.
-            </p>
+            {/* Title on the left, introduction on the right from 640 px: the band is filled. */}
+            <div className="grid gap-5 sm:grid-cols-2 sm:items-center sm:gap-8 md:gap-12">
+              <div>
+                <p className="eyebrow text-gold-deep">Service à la demande</p>
+                <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
+                  Prise en charge à l'aéroport
+                </h1>
+              </div>
+              <p className="text-[1rem] leading-relaxed text-petrol/70">
+                Atterrissez à Conakry l'esprit léger : un chauffeur vous attend à votre arrivée et vous
+                conduit jusqu'à votre hôtel ou votre lieu de séjour. Le service se réserve seul, ou avec
+                un séjour ou un circuit.
+              </p>
+            </div>
 
             <ol className="mt-12 grid gap-6 md:grid-cols-3">
               {STEPS.map(({ icon: Icon, title, text }, index) => (
@@ -82,17 +87,15 @@ function TransfertPage() {
               ))}
             </ol>
 
-            <Reveal className="mt-8">
-              <p className="max-w-2xl border-l-2 border-gold pl-4 text-[0.95rem] leading-relaxed text-petrol/75">
+            {/* The price note and the button on one line from 768 px. */}
+            <Reveal className="mt-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-10">
+              <p className="border-l-2 border-gold pl-4 text-[0.95rem] leading-relaxed text-petrol/75">
                 <strong className="text-petrol">Tarif :</strong> il dépend de votre lieu de séjour et du
                 nombre de voyageurs. Il vous est confirmé avant votre arrivée, sans engagement de votre part.
               </p>
-            </Reveal>
-
-            <Reveal className="mt-8">
               <a
                 href="#contact"
-                className="label-caps inline-flex items-center gap-2 rounded-full bg-petrol px-5 py-3 text-ivory transition-colors hover:bg-petrol-deep"
+                className="label-caps inline-flex w-fit shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-petrol px-5 py-3 text-ivory transition-colors hover:bg-petrol-deep"
               >
                 <Plane className="h-4 w-4 text-gold" /> Demander ma prise en charge
               </a>

@@ -8,7 +8,7 @@ const ICONS = { compass: Compass, badge: BadgeCheck, clock: Clock, headset: Life
 export default function Solution() {
   return (
     <section id="solution" className="bg-ivory-soft py-14 lg:py-20">
-      <div className="mx-auto grid max-w-site items-center gap-10 px-6 lg:grid-cols-2 lg:gap-16">
+      <div className="mx-auto grid max-w-site items-center gap-10 px-6 lg:grid-cols-2 lg:items-stretch lg:gap-16">
         <div>
           <Reveal>
             <SectionHeading
@@ -37,9 +37,11 @@ export default function Solution() {
           </div>
         </div>
 
-        <Reveal delay={120}>
-          <div className="relative mx-auto w-full max-w-[25.14rem] lg:ml-auto">
-            <div className="relative aspect-[4/5] overflow-hidden">
+        {/* The photo: a wide band under the text while the columns are stacked, then as tall as
+            the text beside it from 1024 px. */}
+        <Reveal delay={120} className="lg:h-full">
+          <div className="relative w-full lg:h-full">
+            <div className="relative aspect-[16/9] overflow-hidden lg:aspect-auto lg:h-full lg:min-h-[28rem]">
               <img
                 src={IMAGES.textile}
                 alt="Pile de pagnes tissés à la main en Guinée"
@@ -47,7 +49,7 @@ export default function Solution() {
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
-            <div className="mt-6 bg-petrol p-6 text-ivory sm:absolute sm:-bottom-8 sm:-left-8 sm:mt-0 sm:max-w-[14.29rem]">
+            <div className="mt-6 bg-petrol p-6 text-ivory sm:absolute sm:-bottom-6 sm:left-6 sm:mt-0 sm:max-w-[14.29rem] lg:-bottom-8 lg:-left-8">
               <p className="eyebrow text-gold">Un interlocuteur, pas une plateforme anonyme</p>
               <p className="mt-2 text-[0.84rem] leading-relaxed text-ivory/70">
                 Notre équipe est basée en Guinée, joignable avant, pendant et après votre séjour.

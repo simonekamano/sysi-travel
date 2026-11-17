@@ -126,9 +126,11 @@ function DestinationPage() {
           </div>
         </section>
 
+        {/* The text with the map beside it (stretched to the text's height), then the highlights
+            and « Préparer le voyage » across the width: no half-empty column. */}
         <section className="py-14 lg:py-20">
-          <div className="mx-auto grid max-w-site gap-12 px-6 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
-            <div>
+          <div className="mx-auto max-w-site px-6">
+            <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
               <Reveal>
                 <p className="eyebrow text-gold-deep">Pourquoi y aller</p>
                 <h2 className="mt-3 text-[clamp(1.6rem,3vw,2.4rem)] font-bold leading-tight tracking-[-0.015em] text-petrol">
@@ -140,49 +142,50 @@ function DestinationPage() {
                   ))}
                 </div>
               </Reveal>
-
-              {destination.highlights?.length ? (
-                <Reveal delay={80}>
-                  <h3 className="label-caps mt-12 text-gold-deep">Les temps forts</h3>
-                  <ul className="mt-5 grid gap-4 sm:grid-cols-2">
-                    {destination.highlights.map((item) => (
-                      <li key={item} className="flex gap-3 border-l-2 border-gold/60 bg-white px-4 py-3.5 text-[0.95rem] leading-snug text-petrol">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep" strokeWidth={2} />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </Reveal>
-              ) : null}
+              <Reveal delay={120} className="h-full">
+                <GuineaMap points={[destination]} single className="aspect-[16/10] lg:aspect-auto lg:h-full lg:min-h-[18rem]" />
+              </Reveal>
             </div>
 
-            <aside className="lg:sticky lg:top-28 lg:self-start">
-              <Reveal delay={120}>
-                <div className="border border-petrol/15 bg-white p-7 shadow-[0_30px_70px_-50px_rgba(18,61,67,0.7)]">
-                  <p className="label-caps text-gold-deep">Préparer le voyage</p>
-                  <dl className="mt-5 space-y-5">
-                    {destination.best_period ? (
-                      <div className="flex gap-3">
-                        <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
-                        <div>
-                          <dt className="label-caps text-petrol/45">Meilleure période</dt>
-                          <dd className="mt-1 text-[0.95rem] text-petrol">{destination.best_period}</dd>
-                        </div>
-                      </div>
-                    ) : null}
-                    {destination.access ? (
-                      <div className="flex gap-3">
-                        <RouteIcon className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
-                        <div>
-                          <dt className="label-caps text-petrol/45">Accès</dt>
-                          <dd className="mt-1 text-[0.95rem] text-petrol">{destination.access}</dd>
-                        </div>
-                      </div>
-                    ) : null}
-                  </dl>
+            {destination.highlights?.length ? (
+              <Reveal delay={80} className="mt-12">
+                <h3 className="label-caps text-gold-deep">Les temps forts</h3>
+                <ul className="orphan-span mt-5 grid gap-4 sm:grid-cols-2">
+                  {destination.highlights.map((item) => (
+                    <li key={item} className="flex gap-3 border-l-2 border-gold/60 bg-white px-4 py-3.5 text-[0.95rem] leading-snug text-petrol">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep" strokeWidth={2} />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            ) : null}
+
+            <Reveal className="mt-10">
+              <div className="grid gap-6 border border-petrol/15 bg-white p-6 shadow-[0_30px_70px_-50px_rgba(18,61,67,0.7)] sm:grid-cols-2 lg:flex lg:items-center lg:gap-8 lg:p-7">
+                <p className="label-caps text-gold-deep sm:col-span-2 lg:w-28 lg:shrink-0">Préparer le voyage</p>
+                {destination.best_period ? (
+                  <div className="flex gap-3 lg:flex-1">
+                    <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
+                    <div>
+                      <p className="label-caps text-petrol/45">Meilleure période</p>
+                      <p className="mt-1 text-[0.95rem] text-petrol">{destination.best_period}</p>
+                    </div>
+                  </div>
+                ) : null}
+                {destination.access ? (
+                  <div className="flex gap-3 lg:flex-1">
+                    <RouteIcon className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
+                    <div>
+                      <p className="label-caps text-petrol/45">Accès</p>
+                      <p className="mt-1 text-[0.95rem] text-petrol">{destination.access}</p>
+                    </div>
+                  </div>
+                ) : null}
+                <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row lg:flex-none lg:flex-col xl:flex-row">
                   <a
                     href="#contact"
-                    className="label-caps mt-7 flex w-full items-center justify-center rounded-full bg-petrol px-5 py-3 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol-deep"
+                    className="label-caps flex flex-1 items-center justify-center whitespace-nowrap rounded-full bg-petrol px-5 py-3 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol-deep"
                   >
                     Demander mon itinéraire
                   </a>
@@ -190,14 +193,13 @@ function DestinationPage() {
                     href={CONTACT.whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="label-caps mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-petrol/25 px-5 py-2.5 text-petrol transition-colors hover:border-[#25D366] hover:text-[#1a9e4b]"
+                    className="label-caps flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-petrol/25 px-5 py-2.5 text-petrol transition-colors hover:border-[#25D366] hover:text-[#1a9e4b]"
                   >
                     <MessageCircle className="h-4 w-4" /> Poser une question
                   </a>
                 </div>
-                <GuineaMap points={[destination]} single className="mt-5 aspect-[4/3]" />
-              </Reveal>
-            </aside>
+              </div>
+            </Reveal>
           </div>
         </section>
 

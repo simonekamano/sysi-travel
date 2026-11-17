@@ -15,19 +15,20 @@ export default function Pricing({ formules = [], onSelect }) {
           />
         </Reveal>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-3">
+        {/* The formulas side by side from 640 px (three from 768 px), rather than three large cards one under the other. */}
+        <div className={cn("mt-10 grid gap-6 md:gap-4 lg:gap-6", formules.length >= 3 ? "orphan-center sm:grid-cols-2 md:grid-cols-3" : formules.length === 2 ? "sm:grid-cols-2" : "")}>
           {formules.map((formule, index) => (
             <Reveal key={formule.id} delay={index * 90} className="h-full">
               <div
                 className={cn(
-                  "flex h-full flex-col border p-8 transition-all duration-500",
+                  "flex h-full flex-col border p-6 transition-all duration-500 md:p-5 lg:p-8",
                   formule.highlight
                     ? "border-petrol bg-petrol text-ivory shadow-[0_40px_80px_-50px_rgba(18,61,67,0.9)]"
                     : "border-petrol/15 bg-white text-petrol hover:border-gold"
                 )}
               >
                 {formule.image ? (
-                  <div className="-mx-8 -mt-8 mb-6 aspect-[16/10] overflow-hidden">
+                  <div className="-mx-6 -mt-6 mb-6 aspect-[16/10] overflow-hidden md:-mx-5 md:-mt-5 lg:-mx-8 lg:-mt-8">
                     <img
                       src={formule.image}
                       alt={formule.name}
@@ -58,7 +59,7 @@ export default function Pricing({ formules = [], onSelect }) {
                 </p>
 
                 <div className="mt-6 flex items-end gap-2">
-                  <span className="font-display text-[2.5rem] font-extrabold leading-none tracking-[-0.02em]">{formule.price}</span>
+                  <span className="font-display text-[2.5rem] font-extrabold leading-none tracking-[-0.02em] md:text-[2rem] lg:text-[2.5rem]">{formule.price}</span>
                   <span
                     className={cn(
                       "pb-1 text-[0.78rem]",

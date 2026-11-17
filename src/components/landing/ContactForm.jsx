@@ -94,53 +94,59 @@ export default function ContactForm({
   return (
     <section id="contact" className="bg-petrol py-14 text-ivory lg:py-20">
       <div className="mx-auto grid max-w-site gap-10 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-        <Reveal>
-          <div>
-            <p className="eyebrow text-gold">Prochaine étape</p>
-            <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.9rem)] font-bold leading-[1.1] tracking-[-0.015em] text-ivory">
-              Parlons de votre retour au pays
-            </h2>
-            <p className="mt-5 max-w-md text-[0.98rem] leading-relaxed text-ivory/70">
-              Décrivez votre projet en trois minutes. Un expert SYSI TRAVEL vous répond sous
-              72 heures avec un premier itinéraire et une estimation de budget claire.
-            </p>
-
-            <div className="mt-9 h-px w-16 bg-gold/60" />
-
-            <ul className="mt-9 space-y-3 text-[0.92rem] text-ivory/70">
-              <li>Aucun engagement, aucun frais de dossier.</li>
-              <li>Réponse personnalisée, jamais un message automatique.</li>
-              <li>Vos coordonnées restent confidentielles.</li>
-            </ul>
-
-            {showContactDetails ? (
-              <div className="mt-9 space-y-3 border-t border-ivory/15 pt-7 text-[0.95rem]">
-                <a
-                  href={CONTACT.phoneHref}
-                  className="flex items-center gap-3 text-ivory/85 transition-colors hover:text-gold"
-                >
-                  <Phone className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.8} />
-                  {CONTACT.phone}
-                </a>
-                <a
-                  href={`mailto:${CONTACT.email}`}
-                  className="flex items-center gap-3 text-ivory/85 transition-colors hover:text-gold"
-                >
-                  <Mail className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.8} />
-                  {CONTACT.email}
-                </a>
+        {/* The left column: on tablets its text sits on two columns above the form; from 1024 px
+            it stands beside the form and its photo stretches down to the form's end. */}
+        <Reveal className="h-full">
+          <div className="flex h-full flex-col">
+            <div className="md:grid md:grid-cols-2 md:gap-x-10 lg:block">
+              <div>
+                <p className="eyebrow text-gold">Prochaine étape</p>
+                <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.9rem)] font-bold leading-[1.1] tracking-[-0.015em] text-ivory">
+                  Parlons de votre retour au pays
+                </h2>
+                <p className="mt-5 text-[0.98rem] leading-relaxed text-ivory/70 lg:max-w-md">
+                  Décrivez votre projet en trois minutes. Un expert SYSI TRAVEL vous répond sous
+                  72 heures avec un premier itinéraire et une estimation de budget claire.
+                </p>
               </div>
-            ) : null}
 
-            <div className="mt-8 hidden lg:block">
-              <div className="relative aspect-[16/10] overflow-hidden">
-                <img
-                  src={IMAGES.sunset}
-                  alt="Coucher de soleil sur un fleuve en Guinée"
-                  loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
+              <div>
+                <div className="mt-9 h-px w-16 bg-gold/60 md:hidden lg:block" />
+
+                <ul className="mt-9 space-y-3 text-[0.92rem] text-ivory/70 md:mt-1 lg:mt-9">
+                  <li>Aucun engagement, aucun frais de dossier.</li>
+                  <li>Réponse personnalisée, jamais un message automatique.</li>
+                  <li>Vos coordonnées restent confidentielles.</li>
+                </ul>
+
+                {showContactDetails ? (
+                  <div className="mt-9 space-y-3 border-t border-ivory/15 pt-7 text-[0.95rem]">
+                    <a
+                      href={CONTACT.phoneHref}
+                      className="flex items-center gap-3 text-ivory/85 transition-colors hover:text-gold"
+                    >
+                      <Phone className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.8} />
+                      {CONTACT.phone}
+                    </a>
+                    <a
+                      href={`mailto:${CONTACT.email}`}
+                      className="flex items-center gap-3 text-ivory/85 transition-colors hover:text-gold"
+                    >
+                      <Mail className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.8} />
+                      {CONTACT.email}
+                    </a>
+                  </div>
+                ) : null}
               </div>
+            </div>
+
+            <div className="relative mt-8 hidden min-h-[13rem] flex-1 overflow-hidden lg:block">
+              <img
+                src={IMAGES.sunset}
+                alt="Coucher de soleil sur un fleuve en Guinée"
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
             </div>
           </div>
         </Reveal>

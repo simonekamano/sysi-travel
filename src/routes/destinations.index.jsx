@@ -37,15 +37,20 @@ function DestinationsPage() {
         <section className="bg-background pb-12 pt-36 lg:pb-16 lg:pt-40">
           <div className="mx-auto max-w-site px-6">
             <BackButton label="Retour" className="mb-8" />
-            <p className="eyebrow text-gold-deep">Découvrir la Guinée</p>
-            <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
-              Destinations iconiques
-            </h1>
-            <p className="mt-6 max-w-2xl text-[1rem] leading-relaxed text-petrol/70">
-              Des îles de l'Atlantique aux hauts plateaux du Fouta, des cascades de Pita aux forêts
-              classées du Nimba : chaque lieu a sa fiche, ses photos et ses informations pratiques,
-              et se visite dans nos circuits avec un guide local.
-            </p>
+            {/* Title on the left, introduction on the right from 640 px: the band is filled. */}
+            <div className="grid gap-5 sm:grid-cols-2 sm:items-center sm:gap-8 md:gap-12">
+              <div>
+                <p className="eyebrow text-gold-deep">Découvrir la Guinée</p>
+                <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
+                  Destinations iconiques
+                </h1>
+              </div>
+              <p className="text-[1rem] leading-relaxed text-petrol/70">
+                Des îles de l'Atlantique aux hauts plateaux du Fouta, des cascades de Pita aux forêts
+                classées du Nimba : chaque lieu a sa fiche, ses photos et ses informations pratiques,
+                et se visite dans nos circuits avec un guide local.
+              </p>
+            </div>
 
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {destinations.map((destination, index) => (

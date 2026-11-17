@@ -53,15 +53,20 @@ function ContactPage() {
         <section className="bg-background pb-12 pt-36 lg:pb-16 lg:pt-40">
           <div className="mx-auto max-w-site px-6">
             <BackButton label="Retour" className="mb-8" />
-            <p className="eyebrow text-gold-deep">Nous sommes joignables</p>
-            <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
-              Contactez SYSI TRAVEL
-            </h1>
-            <p className="mt-6 max-w-2xl text-[1rem] leading-relaxed text-petrol/70">
-              Une question sur un circuit, un projet de séjour en famille ou un retour au pays à
-              organiser ? Appelez-nous, écrivez-nous ou remplissez le formulaire : un expert vous
-              répond sous 72 heures.
-            </p>
+            {/* Title on the left, introduction on the right from 640 px: the band is filled. */}
+            <div className="grid gap-5 sm:grid-cols-2 sm:items-center sm:gap-8 md:gap-12">
+              <div>
+                <p className="eyebrow text-gold-deep">Nous sommes joignables</p>
+                <h1 className="mt-4 text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-petrol">
+                  Contactez SYSI TRAVEL
+                </h1>
+              </div>
+              <p className="text-[1rem] leading-relaxed text-petrol/70">
+                Une question sur un circuit, un projet de séjour en famille ou un retour au pays à
+                organiser ? Appelez-nous, écrivez-nous ou remplissez le formulaire : un expert vous
+                répond sous 72 heures.
+              </p>
+            </div>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {CHANNELS.map(({ icon: Icon, label, value, href }) => {

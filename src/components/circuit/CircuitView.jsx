@@ -14,7 +14,7 @@ import { CIRCUIT_KINDS, CONTACT } from "@/data/site";
 function Fact({ icon: Icon, label, value }) {
   if (!value) return null;
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 lg:flex-1">
       <Icon className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.6} />
       <div>
         <dt className="label-caps text-petrol/45">{label}</dt>
@@ -33,7 +33,8 @@ export default function CircuitView({ circuit, others, destinations, formules, r
     () => [{ id: circuit.id, name: circuit.title, duration: circuit.duration || CIRCUIT_KINDS[circuit.kind] }, ...formules],
     [circuit, formules],
   );
-  const paragraphs = circuit.description.split(/\n\s*\n/).filter(Boolean);
+  const description = circuit.description || "";
+  const paragraphs = description.split(/\n\s*\n/).filter(Boolean);
   const programme = circuit.programme || [];
 
   return (
@@ -90,41 +91,34 @@ export default function CircuitView({ circuit, others, destinations, formules, r
           </div>
         </section>
 
+        {/* The key facts as a band across the width, then the description (on two columns when
+            it is long): no column left half empty beside a taller one. */}
         <section className="py-14 lg:py-20">
-          <div className="mx-auto grid max-w-site gap-12 px-6 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
-            <div>
-              <Reveal>
-                <p className="eyebrow text-gold-deep">Le voyage</p>
-                <div className="mt-5 space-y-5 text-[1.02rem] leading-relaxed text-petrol/75">
-                  {(paragraphs.length ? paragraphs : [circuit.tagline].filter(Boolean)).map((paragraph) => (
-                    <p key={paragraph.slice(0, 40)}>{paragraph}</p>
-                  ))}
-                </div>
-              </Reveal>
-            </div>
-
-            <aside className="lg:sticky lg:top-28 lg:self-start">
-              <Reveal delay={120}>
-                <div className="border border-petrol/15 bg-white p-7 shadow-[0_30px_70px_-50px_rgba(18,61,67,0.7)]">
+          <div className="mx-auto max-w-site px-6">
+            <Reveal>
+              <div className="grid gap-6 border border-petrol/15 bg-white p-6 shadow-[0_30px_70px_-50px_rgba(18,61,67,0.7)] sm:grid-cols-2 lg:flex lg:items-center lg:gap-8 lg:p-7">
+                <div className="lg:flex-[1.3]">
                   <p className="label-caps text-gold-deep">En bref</p>
                   {circuit.price ? (
-                    <p className="mt-4 font-display text-[1.6rem] font-bold leading-tight text-petrol">{circuit.price}</p>
+                    <p className="mt-3 font-display text-[1.6rem] font-bold leading-tight text-petrol">{circuit.price}</p>
                   ) : (
-                    <p className="mt-4 font-display text-[1.25rem] font-bold leading-tight text-petrol">
+                    <p className="mt-3 font-display text-[1.25rem] font-bold leading-tight text-petrol">
                       Tarif sur demande
                       <span className="mt-1 block font-body text-[0.88rem] font-normal text-petrol/60">
                         Écrivez-nous : nous vous répondons avec un devis détaillé.
                       </span>
                     </p>
                   )}
-                  <dl className="mt-5 space-y-5">
-                    <Fact icon={Clock} label="Durée" value={circuit.duration} />
-                    <Fact icon={MapPin} label="Départ" value={circuit.departure} />
-                    <Fact icon={CalendarDays} label="Dates" value={circuit.dates} />
-                  </dl>
+                </div>
+                <dl className="contents">
+                  <Fact icon={Clock} label="Durée" value={circuit.duration} />
+                  <Fact icon={MapPin} label="Départ" value={circuit.departure} />
+                  <Fact icon={CalendarDays} label="Dates" value={circuit.dates} />
+                </dl>
+                <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row lg:flex-none lg:flex-col">
                   <a
                     href="#contact"
-                    className="label-caps mt-7 flex w-full items-center justify-center rounded-full bg-petrol px-5 py-3 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol-deep"
+                    className="label-caps flex flex-1 items-center justify-center whitespace-nowrap rounded-full bg-petrol px-5 py-3 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:bg-petrol-deep"
                   >
                     Réserver ce circuit
                   </a>
@@ -132,13 +126,26 @@ export default function CircuitView({ circuit, others, destinations, formules, r
                     href={CONTACT.whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="label-caps mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-petrol/25 px-5 py-2.5 text-petrol transition-colors hover:border-[#25D366] hover:text-[#1a9e4b]"
+                    className="label-caps flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-petrol/25 px-5 py-2.5 text-petrol transition-colors hover:border-[#25D366] hover:text-[#1a9e4b]"
                   >
                     <MessageCircle className="h-4 w-4" /> Poser une question
                   </a>
                 </div>
-              </Reveal>
-            </aside>
+              </div>
+            </Reveal>
+
+            <Reveal className="mt-12">
+              <p className="eyebrow text-gold-deep">Le voyage</p>
+              <div
+                className={`mt-5 text-[1.02rem] leading-relaxed text-petrol/75 [&>p]:mb-5 ${
+                  description.length > 500 ? "md:columns-2 md:gap-12" : ""
+                }`}
+              >
+                {(paragraphs.length ? paragraphs : [circuit.tagline].filter(Boolean)).map((paragraph) => (
+                  <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+                ))}
+              </div>
+            </Reveal>
           </div>
         </section>
 

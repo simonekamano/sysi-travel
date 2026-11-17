@@ -216,7 +216,7 @@ function HistoirePage() {
               </div>
             </div>
             {histoire.photo_portrait ? (
-              <Photo src={histoire.photo_portrait} alt={name} priority className="mx-auto w-full max-w-sm sm:max-w-none lg:mr-4" />
+              <Photo src={histoire.photo_portrait} alt={name} priority className="mx-auto w-full max-w-sm sm:max-w-none lg:mr-4 lg:max-w-[27rem] lg:justify-self-end" />
             ) : null}
           </div>
         </section>
