@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export default function Pricing({ formules = [], onSelect }) {
   return (
-    <section id="offre" className="bg-background py-14 lg:py-20">
+    <section id="offre" className="bg-background py-10 lg:py-12">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading
@@ -16,7 +16,7 @@ export default function Pricing({ formules = [], onSelect }) {
         </Reveal>
 
         {/* The formulas side by side from 640 px (three from 768 px), rather than three large cards one under the other. */}
-        <div className={cn("mt-10 grid gap-6 md:gap-4 lg:gap-6", formules.length >= 3 ? "orphan-center sm:grid-cols-2 md:grid-cols-3" : formules.length === 2 ? "sm:grid-cols-2" : "")}>
+        <div className={cn("mt-8 grid gap-6 md:gap-4 lg:gap-6", formules.length >= 3 ? "orphan-center sm:grid-cols-2 md:grid-cols-3" : formules.length === 2 ? "sm:grid-cols-2" : "")}>
           {formules.map((formule, index) => (
             <Reveal key={formule.id} delay={index * 90} className="h-full">
               <div
@@ -108,7 +108,7 @@ export default function Pricing({ formules = [], onSelect }) {
         </div>
 
         <Reveal delay={120}>
-          <p className="mt-10 text-center text-[0.95rem] text-petrol/60">
+          <p className="mt-8 text-center text-[0.95rem] text-petrol/60">
             Familles, groupes ou séjour entièrement sur mesure :{" "}
             <a href="#contact" className="text-gold-deep underline decoration-gold/60 underline-offset-4 hover:decoration-gold-deep">
               parlez-nous de votre projet

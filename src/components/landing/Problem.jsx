@@ -4,7 +4,7 @@ import { PAINS } from "@/data/site";
 
 export default function Problem() {
   return (
-    <section id="constat" className="bg-background py-14 lg:py-20">
+    <section id="constat" className="bg-background py-10 lg:py-12">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading
@@ -14,7 +14,7 @@ export default function Problem() {
           />
         </Reveal>
 
-        <div className="mt-10 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
           {PAINS.map((pain, index) => (
             <Reveal key={pain.n} delay={index * 90}>
               <div className="group border-t border-petrol/15 pt-6 transition-colors duration-500 hover:border-gold">
@@ -29,7 +29,7 @@ export default function Problem() {
         </div>
 
         <Reveal delay={120}>
-          <p className="mx-auto mt-10 w-fit max-w-full border-l-2 border-gold pl-6 font-script text-[clamp(1.4rem,2.2vw,2rem)] italic leading-snug text-petrol/80">
+          <p className="mx-auto mt-8 w-fit max-w-full border-l-2 border-gold pl-6 font-script text-[clamp(1.4rem,2.2vw,2rem)] italic leading-snug text-petrol/80">
             « La distance ne devrait jamais devenir une difficulté. »
           </p>
         </Reveal>

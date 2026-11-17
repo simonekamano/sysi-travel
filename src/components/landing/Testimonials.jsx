@@ -7,7 +7,7 @@ export default function Testimonials() {
   if (TESTIMONIALS.length === 0) return null;
 
   return (
-    <section className="bg-ivory-soft py-14 lg:py-20">
+    <section className="bg-ivory-soft py-10 lg:py-12">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading
@@ -17,7 +17,7 @@ export default function Testimonials() {
           />
         </Reveal>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-3">
+        <div className="mt-8 grid gap-6 lg:grid-cols-3">
           {TESTIMONIALS.map((item, index) => (
             <Reveal key={item.name} delay={index * 90} className="h-full">
               <figure className="flex h-full flex-col justify-between border border-petrol/12 bg-white p-8">

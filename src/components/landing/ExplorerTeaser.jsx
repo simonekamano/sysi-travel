@@ -42,7 +42,7 @@ export default function ExplorerTeaser({ sitesCount = 0 }) {
   }, []);
 
   return (
-    <section ref={root} className="overflow-hidden bg-petrol-deep py-14 text-ivory lg:py-20">
+    <section ref={root} className="overflow-hidden bg-petrol-deep py-10 text-ivory lg:py-12">
       <div className="mx-auto grid max-w-site items-center gap-10 px-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
         <div>
           <p className="eyebrow flex items-center gap-2 text-gold">

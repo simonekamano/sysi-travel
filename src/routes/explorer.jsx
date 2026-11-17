@@ -47,7 +47,7 @@ function ExplorerPage() {
         <h1 className="sr-only">Explorer la Guinée : carte des régions et des sites touristiques</h1>
         <Explorer sites={sites} destinations={destinations} onRequestTrip={requestTrip} />
 
-        <section className="bg-background py-14 lg:py-20">
+        <section className="bg-background py-10 lg:py-12">
           <div className="mx-auto max-w-site px-6">
             <Reveal>
               <SectionHeading

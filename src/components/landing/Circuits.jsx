@@ -12,7 +12,7 @@ export default function Circuits({ circuits = [] }) {
   if (circuits.length === 0) return null;
 
   return (
-    <section id="circuits" className="bg-white py-14 lg:py-20">
+    <section id="circuits" className="bg-white py-10 lg:py-12">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading
@@ -22,7 +22,7 @@ export default function Circuits({ circuits = [] }) {
           />
         </Reveal>
 
-        <div className={`orphan-center mt-10 grid gap-6 sm:grid-cols-2 ${Math.min(circuits.length, HOME_LIMIT) > 2 ? "md:grid-cols-3" : ""}`}>
+        <div className={`orphan-center mt-8 grid gap-6 sm:grid-cols-2 ${Math.min(circuits.length, HOME_LIMIT) > 2 ? "md:grid-cols-3" : ""}`}>
           {circuits.slice(0, HOME_LIMIT).map((circuit, index) => (
             <Reveal key={circuit.id} delay={(index % 3) * 90} className="h-full">
               <CircuitCard circuit={circuit} />
@@ -30,7 +30,7 @@ export default function Circuits({ circuits = [] }) {
           ))}
         </div>
 
-        <Reveal className="mt-10 flex justify-center">
+        <Reveal className="mt-8 flex justify-center">
           <Link
             to="/circuits"
             className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-5 py-3 text-petrol transition-colors duration-300 hover:border-gold hover:bg-petrol hover:text-ivory"

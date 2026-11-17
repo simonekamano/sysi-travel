@@ -128,7 +128,7 @@ function DestinationPage() {
 
         {/* The text with the map beside it (stretched to the text's height), then the highlights
             and « Préparer le voyage » across the width: no half-empty column. */}
-        <section className="py-14 lg:py-20">
+        <section className="py-10 lg:py-12">
           <div className="mx-auto max-w-site px-6">
             <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
               <Reveal>
@@ -204,7 +204,7 @@ function DestinationPage() {
         </section>
 
         {destination.gallery?.length ? (
-          <section className="bg-ivory-soft py-14 lg:py-20">
+          <section className="bg-ivory-soft py-10 lg:py-12">
             <div className="mx-auto max-w-site px-6">
               <Reveal>
                 <SectionHeading eyebrow="En images" title={`${destination.name} en photos`} />
@@ -217,7 +217,7 @@ function DestinationPage() {
         ) : null}
 
         {others.length ? (
-          <section className="py-14 lg:py-20">
+          <section className="py-10 lg:py-12">
             <div className="mx-auto max-w-site px-6">
               <Reveal>
                 <SectionHeading eyebrow="Prolonger le voyage" title="À combiner avec" />

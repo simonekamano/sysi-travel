@@ -9,7 +9,7 @@ const HOME_LIMIT = 3;
 
 export default function Destinations({ destinations = [] }) {
   return (
-    <section id="destinations" className="bg-background py-14 lg:py-20">
+    <section id="destinations" className="bg-background py-10 lg:py-12">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading
@@ -19,7 +19,7 @@ export default function Destinations({ destinations = [] }) {
           />
         </Reveal>
 
-        <div className={`orphan-center mt-10 grid gap-6 sm:grid-cols-2 ${Math.min(destinations.length, HOME_LIMIT) > 2 ? "md:grid-cols-3" : ""}`}>
+        <div className={`orphan-center mt-8 grid gap-6 sm:grid-cols-2 ${Math.min(destinations.length, HOME_LIMIT) > 2 ? "md:grid-cols-3" : ""}`}>
           {destinations.slice(0, HOME_LIMIT).map((destination, index) => (
             <Reveal key={destination.id || destination.name} delay={(index % 3) * 90}>
               <DestinationCard destination={destination} />
@@ -27,7 +27,7 @@ export default function Destinations({ destinations = [] }) {
           ))}
         </div>
 
-        <Reveal className="mt-10 flex justify-center">
+        <Reveal className="mt-8 flex justify-center">
           <Link
             to="/destinations"
             className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-5 py-3 text-petrol transition-colors duration-300 hover:border-gold hover:bg-petrol hover:text-ivory"

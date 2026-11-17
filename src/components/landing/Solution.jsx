@@ -7,7 +7,7 @@ const ICONS = { compass: Compass, badge: BadgeCheck, clock: Clock, headset: Life
 
 export default function Solution() {
   return (
-    <section id="solution" className="bg-ivory-soft py-14 lg:py-20">
+    <section id="solution" className="bg-ivory-soft py-10 lg:py-12">
       <div className="mx-auto grid max-w-site items-center gap-10 px-6 lg:grid-cols-2 lg:items-stretch lg:gap-16">
         <div>
           <Reveal>

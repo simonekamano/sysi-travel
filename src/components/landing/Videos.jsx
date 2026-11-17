@@ -20,7 +20,7 @@ export default function Videos({ videos = [] }) {
   const [featured, ...others] = videos.slice(0, HOME_LIMIT);
 
   return (
-    <section id="videos" className="relative isolate overflow-hidden bg-petrol-deep py-14 text-ivory lg:py-20">
+    <section id="videos" className="relative isolate overflow-hidden bg-petrol-deep py-10 text-ivory lg:py-12">
       <div
         aria-hidden="true"
         className="absolute -right-40 -top-40 -z-10 h-[29.71rem] w-[29.71rem] rounded-full bg-[radial-gradient(circle,hsl(var(--gold)/0.16),transparent_65%)]"
@@ -35,7 +35,7 @@ export default function Videos({ videos = [] }) {
           />
         </Reveal>
 
-        <div className={others.length ? "mt-10 grid gap-8 lg:grid-cols-3 lg:gap-10" : "mx-auto mt-10 max-w-4xl"}>
+        <div className={others.length ? "mt-8 grid gap-8 lg:grid-cols-3 lg:gap-10" : "mx-auto mt-10 max-w-4xl"}>
           <Reveal className={others.length ? "lg:col-span-2" : undefined}>
             <VideoPlayer key={featured.id} video={featured} frame="wide" className="w-full shadow-[0_30px_70px_-30px_rgba(0,0,0,0.8)]" />
             <div className={others.length ? "mt-5" : "mt-5 text-center"}>
@@ -58,7 +58,7 @@ export default function Videos({ videos = [] }) {
           ) : null}
         </div>
 
-        <Reveal className="mt-12 flex justify-center">
+        <Reveal className="mt-8 flex justify-center">
           <Link
             to="/videos"
             className="label-caps inline-flex items-center gap-2 rounded-full border border-ivory/25 px-5 py-3 text-ivory transition-colors duration-300 hover:border-gold hover:bg-gold hover:text-petrol-deep"

@@ -41,7 +41,7 @@ function VideosPage() {
       <Nav home={false} solid />
 
       <main>
-        <section className="bg-background pb-14 pt-36 lg:pb-20 lg:pt-40">
+        <section className="bg-background pb-10 pt-32 lg:pb-12 lg:pt-36">
           <div className="mx-auto max-w-site px-6">
             <BackButton label="Retour" className="mb-8" />
             {/* Title on the left, introduction on the right from 640 px: the band is filled. */}

@@ -103,7 +103,7 @@ export default function CircuitProgramme({ programme }) {
   );
 
   return (
-    <section className="py-14 lg:py-20">
+    <section className="py-10 lg:py-12">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <p className="eyebrow text-gold-deep">{withMap ? "L'itinéraire" : "Le programme"}</p>

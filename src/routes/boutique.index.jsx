@@ -88,7 +88,7 @@ function BoutiquePage() {
       <Nav home={false} solid bookingHref="/contact" />
 
       <main>
-        <section className="bg-background pb-14 pt-28 lg:pb-20 lg:pt-32">
+        <section className="bg-background pb-10 pt-28 lg:pb-12 lg:pt-32">
           <div className="mx-auto max-w-site px-6">
             {/* A compact header: the way back and where we are, then the title beside its text. */}
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">

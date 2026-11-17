@@ -92,7 +92,7 @@ export default function ContactForm({
   };
 
   return (
-    <section id="contact" className="bg-petrol py-14 text-ivory lg:py-20">
+    <section id="contact" className="bg-petrol py-10 text-ivory lg:py-12">
       <div className="mx-auto grid max-w-site gap-10 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         {/* The left column: on tablets its text sits on two columns above the form; from 1024 px
             it stands beside the form and its photo stretches down to the form's end. */}

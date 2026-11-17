@@ -34,7 +34,7 @@ function DestinationsPage() {
       <Nav home={false} solid />
 
       <main>
-        <section className="bg-background pb-12 pt-36 lg:pb-16 lg:pt-40">
+        <section className="bg-background pb-10 pt-32 lg:pb-12 lg:pt-36">
           <div className="mx-auto max-w-site px-6">
             <BackButton label="Retour" className="mb-8" />
             {/* Title on the left, introduction on the right from 640 px: the band is filled. */}
@@ -62,7 +62,7 @@ function DestinationsPage() {
           </div>
         </section>
 
-        <section className="bg-ivory-soft py-14 lg:py-20">
+        <section className="bg-ivory-soft py-10 lg:py-12">
           <div className="mx-auto max-w-site px-6">
             <Reveal>
               <div className="grid items-center gap-8 lg:grid-cols-[1fr_2fr]">

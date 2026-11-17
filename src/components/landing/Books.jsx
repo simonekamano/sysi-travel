@@ -12,7 +12,7 @@ export default function Books({ livres = [] }) {
   if (livres.length === 0) return null;
 
   return (
-    <section id="boutique" className="bg-white py-14 lg:py-20">
+    <section id="boutique" className="bg-white py-10 lg:py-12">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading
@@ -30,7 +30,7 @@ export default function Books({ livres = [] }) {
           ))}
         </div>
 
-        <Reveal className="mt-12 flex justify-center">
+        <Reveal className="mt-8 flex justify-center">
           <Link
             to="/boutique"
             className="label-caps inline-flex items-center gap-2 rounded-full border border-petrol/25 px-5 py-3 text-petrol transition-colors duration-300 hover:border-gold hover:bg-petrol hover:text-ivory"

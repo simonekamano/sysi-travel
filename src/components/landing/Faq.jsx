@@ -41,7 +41,7 @@ export default function Faq({ faqs = [] }) {
   };
 
   return (
-    <section id="faq" className="bg-background py-14 lg:py-20">
+    <section id="faq" className="bg-background py-10 lg:py-12">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <div className="grid gap-4 sm:grid-cols-2 sm:items-center sm:gap-8 md:gap-12">
@@ -58,7 +58,7 @@ export default function Faq({ faqs = [] }) {
           </div>
         </Reveal>
 
-        <Reveal delay={100} className="mt-10 grid lg:grid-cols-2 lg:gap-x-12">
+        <Reveal delay={100} className="mt-8 grid lg:grid-cols-2 lg:gap-x-12">
           {columns.map((column, i) =>
             column.length ? (
               <div key={i} className={i ? "max-lg:[&>div:first-child]:border-t-0" : undefined}>

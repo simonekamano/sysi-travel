@@ -11,7 +11,7 @@ export default function ShopTeaser({ articles = [], count = 0 }) {
   if (articles.length === 0) return null;
 
   return (
-    <section id="boutique" className="bg-white py-14 lg:py-20">
+    <section id="boutique" className="bg-white py-10 lg:py-12">
       <div className="mx-auto max-w-site px-6">
         <Reveal>
           <SectionHeading
@@ -25,7 +25,7 @@ export default function ShopTeaser({ articles = [], count = 0 }) {
           />
         </Reveal>
 
-        <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
           {articles.map((article, index) => (
             <Reveal key={article.id} delay={index * 80} className="h-full">
               <ArticleCard article={article} />
