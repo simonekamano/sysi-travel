@@ -275,12 +275,12 @@ function HistoirePage() {
         ) : null}
 
         <section className="bg-background py-16 lg:py-20">
-          <Reveal className="mx-auto max-w-3xl px-6 text-center">
+          <Reveal className="mx-auto max-w-5xl px-6 text-center">
             <p className="eyebrow text-gold-deep">Votre voyage</p>
-            <h2 className="mt-4 text-[clamp(1.8rem,3.4vw,2.7rem)] font-bold leading-[1.1] tracking-[-0.015em] text-petrol">
+            <h2 className="mt-4 text-[clamp(1.8rem,3.4vw,2.7rem)] font-bold leading-[1.1] tracking-[-0.015em] text-petrol [text-wrap:balance]">
               Et si votre histoire continuait en Guinée ?
             </h2>
-            <p className="mx-auto mt-5 max-w-xl text-[1.02rem] leading-relaxed text-petrol/70">
+            <p className="mx-auto mt-5 max-w-3xl text-[1.02rem] leading-relaxed text-petrol/70">
               Racontez-nous ce que vous aimeriez découvrir, retrouver ou transmettre : nous vous
               répondons sous 72 heures avec un itinéraire.
             </p>

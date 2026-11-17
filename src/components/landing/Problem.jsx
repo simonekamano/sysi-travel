@@ -29,7 +29,7 @@ export default function Problem() {
         </div>
 
         <Reveal delay={120}>
-          <p className="mx-auto mt-10 max-w-2xl border-l-2 border-gold pl-6 font-script text-[1.4rem] italic leading-snug text-petrol/80">
+          <p className="mx-auto mt-10 w-fit max-w-full border-l-2 border-gold pl-6 font-script text-[clamp(1.4rem,2.2vw,2rem)] italic leading-snug text-petrol/80">
             « La distance ne devrait jamais devenir une difficulté. »
           </p>
         </Reveal>

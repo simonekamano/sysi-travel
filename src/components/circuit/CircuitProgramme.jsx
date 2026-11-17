@@ -92,7 +92,7 @@ export default function CircuitProgramme({ programme }) {
                   src={item.image}
                   alt={item.place || item.title}
                   loading="lazy"
-                  className="mt-4 aspect-[16/9] w-full max-w-md rounded-2xl object-cover"
+                  className="mt-4 aspect-[16/9] w-full rounded-2xl object-cover"
                 />
               ) : null}
             </div>
@@ -120,7 +120,7 @@ export default function CircuitProgramme({ programme }) {
             <div>{timeline}</div>
           </div>
         ) : (
-          <div className="mt-8 max-w-3xl">{timeline}</div>
+          <div className="mx-auto mt-8 max-w-3xl">{timeline}</div>
         )}
       </div>
     </section>

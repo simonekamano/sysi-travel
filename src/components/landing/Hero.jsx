@@ -25,17 +25,17 @@ export default function Hero() {
       
 
       <div className="flex flex-1 items-center justify-center px-6 pb-10 pt-32 lg:pt-36">
-        <div className="mx-auto max-w-[62.86rem] text-center">
+        <div className="mx-auto w-full max-w-site text-center">
           <p className="eyebrow flex animate-fade-in items-center justify-center gap-2.5 text-gold">
             <GuineaFlag label="Drapeau de la Guinée" className="h-[1.1em]" />
             Bienvenue chez vous.
           </p>
 
-          <h1 className="mt-6 animate-fade-up text-[clamp(2rem,5vw,4.3rem)] font-extrabold leading-[1.06] tracking-[-0.02em] text-ivory">
+          <h1 className="mt-6 animate-fade-up text-[clamp(2rem,6.6vw,5.5rem)] font-extrabold leading-[1.04] tracking-[-0.02em] text-ivory [text-wrap:balance]">
             La Guinée comme vous ne l'avez jamais vécue.
           </h1>
 
-          <p className="mx-auto mt-7 max-w-2xl animate-fade-up text-[1.02rem] leading-relaxed text-ivory/80 [animation-delay:120ms]">
+          <p className="mx-auto mt-7 max-w-[62rem] animate-fade-up text-[clamp(1.02rem,1.4vw,1.22rem)] leading-relaxed text-ivory/80 [animation-delay:120ms] [text-wrap:balance]">
             Découvrez les plus beaux sites touristiques de Guinée, explorez des circuits
             authentiques et organisez votre séjour grâce à des partenaires locaux, depuis une
             plateforme simple et moderne.
