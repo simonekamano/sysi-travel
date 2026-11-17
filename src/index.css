@@ -584,3 +584,10 @@ h4 {
     width: calc(50% - 0.75rem);
   }
 }
+
+/* A card grid on three columns (from 1024 px): a last card alone on its row goes in the middle. */
+@media (min-width: 1024px) {
+  .orphan-center-3 > :last-child:nth-child(3n + 1) {
+    grid-column: 2;
+  }
+}

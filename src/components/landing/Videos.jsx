@@ -38,11 +38,11 @@ export default function Videos({ videos = [] }) {
         <div className={others.length ? "mt-10 grid gap-8 lg:grid-cols-3 lg:gap-10" : "mx-auto mt-10 max-w-4xl"}>
           <Reveal className={others.length ? "lg:col-span-2" : undefined}>
             <VideoPlayer key={featured.id} video={featured} frame="wide" className="w-full shadow-[0_30px_70px_-30px_rgba(0,0,0,0.8)]" />
-            <div className="mt-5">
+            <div className={others.length ? "mt-5" : "mt-5 text-center"}>
               <p className="label-caps text-gold">{VIDEO_CATEGORY_LABEL[featured.category]}</p>
               <h3 className="mt-1.5 font-display text-[1.35rem] font-bold leading-snug text-ivory">{featured.title}</h3>
               {featured.description ? (
-                <p className="mt-2 max-w-2xl text-[0.98rem] leading-relaxed text-ivory/70">{featured.description}</p>
+                <p className={`mt-2 max-w-2xl text-[0.98rem] leading-relaxed text-ivory/70 ${others.length ? "" : "mx-auto"}`}>{featured.description}</p>
               ) : null}
             </div>
           </Reveal>

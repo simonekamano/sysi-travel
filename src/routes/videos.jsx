@@ -79,8 +79,18 @@ function VideosPage() {
               </div>
             ) : null}
 
+            {/* As many columns as videos (up to three): one video alone is shown large and centred. */}
             {visible.length ? (
-              <div className="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+              <div
+                className={cn(
+                  "mt-10 grid gap-x-6 gap-y-10",
+                  visible.length === 1
+                    ? "mx-auto max-w-3xl"
+                    : visible.length === 2
+                      ? "sm:grid-cols-2"
+                      : "orphan-center orphan-center-3 sm:grid-cols-2 lg:grid-cols-3",
+                )}
+              >
                 {visible.map((video, index) => (
                   <Reveal key={video.id} delay={(index % 3) * 90} className="h-full">
                     <VideoCard video={video} onPlay={setOpen} />
