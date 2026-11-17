@@ -1,5 +1,6 @@
 import { ArrowRight, BriefcaseBusiness, Clock, LifeBuoy, MapPin, ShieldCheck } from "lucide-react";
 import { HERO_BADGES, IMAGES } from "@/data/site";
+import GuineaFlag from "@/components/GuineaFlag";
 
 const ICONS = [MapPin, Clock, ShieldCheck, LifeBuoy];
 
@@ -25,7 +26,10 @@ export default function Hero() {
 
       <div className="flex flex-1 items-center justify-center px-6 pb-10 pt-32 lg:pt-36">
         <div className="mx-auto max-w-[62.86rem] text-center">
-          <p className="eyebrow animate-fade-in text-gold">Bienvenue chez vous.</p>
+          <p className="eyebrow flex animate-fade-in items-center justify-center gap-2.5 text-gold">
+            <GuineaFlag label="Drapeau de la Guinée" className="h-[1.1em]" />
+            Bienvenue chez vous.
+          </p>
 
           <h1 className="mt-6 animate-fade-up text-[clamp(2rem,5vw,4.3rem)] font-extrabold leading-[1.06] tracking-[-0.02em] text-ivory">
             La Guinée comme vous ne l'avez jamais vécue.

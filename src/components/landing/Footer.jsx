@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUp, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import GuineaFlag from "@/components/GuineaFlag";
 import SocialLinks from "@/components/SocialLinks";
 import { CONTACT, LOGO_INVERSE } from "@/data/site";
 import { useLegalLinks } from "@/lib/legal";
@@ -124,7 +125,11 @@ export default function Footer({ destinations = [], reseaux = [] }) {
               </a>
             </li>
             <li className="flex items-start gap-3 text-[0.95rem] text-ivory/75">
-              <MapPin className="mt-1 h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} /> {CONTACT.address}
+              <MapPin className="mt-1 h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} />
+              <span className="inline-flex flex-wrap items-center gap-x-2">
+                {CONTACT.address}
+                <GuineaFlag className="h-[0.85em]" />
+              </span>
             </li>
             <li className="flex items-start gap-3 text-[0.95rem] text-ivory/75">
               <Clock className="mt-1 h-4 w-4 shrink-0 text-gold" strokeWidth={1.7} /> {CONTACT.hours}

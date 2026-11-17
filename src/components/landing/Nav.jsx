@@ -4,6 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { ChevronDown, ChevronRight, Menu, MessageCircle, Phone, UserRound, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import CartButton from "@/components/boutique/CartButton";
+import { GuineaStripe } from "@/components/GuineaFlag";
 import { CONTACT, LOGO_INVERSE, NAV_LINKS } from "@/data/site";
 
 // The section currently in the middle band of the screen, for the active link.
@@ -89,6 +90,8 @@ export default function Nav({ home = true, solid = false, bookingHref = "#contac
     <Dialog.Root open={open} onOpenChange={setOpen}>
       {/* The header lets clicks through its margins; only the bar takes them. */}
       <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
+        {/* The colours of the flag of Guinea along the top of the screen. */}
+        <GuineaStripe className="absolute inset-x-0 top-0" />
         <div className="pointer-events-auto mx-auto max-w-[82.29rem] px-3 pt-3 lg:px-8 lg:pt-4">
           <div
             className={cn(
