@@ -45,22 +45,27 @@ function tourOrder(sites) {
   return order;
 }
 
-// Room the panels take over the map, so the camera centres sites in the free part.
-const panelPadding = () =>
+// Room the panels take over the map, so the camera centres sites in the free part. On phones,
+// during the guided tour, the bottom sheet is lower (SHEET_TOURING) and only the small player
+// sits at the top: the map gets most of the screen.
+const SHEET = 0.46;
+const SHEET_TOURING = 0.32;
+const panelPadding = (tour) =>
   typeof window === "undefined"
     ? { top: 130, right: 0, bottom: 0, left: 0 }
     : window.innerWidth >= 1024
       ? { top: 140, right: 20, bottom: 20, left: 420 }
-      : { top: 150, right: 0, bottom: Math.round(window.innerHeight * 0.46), left: 0 };
+      : { top: tour ? 140 : 150, right: 0, bottom: Math.round(window.innerHeight * (tour ? SHEET_TOURING : SHEET)), left: 0 };
 
-function usePanelPadding() {
+function usePanelPadding(tour) {
   // Computed at once in the browser (the map is client only), so its first view is right.
-  const [padding, setPadding] = useState(panelPadding);
+  const [padding, setPadding] = useState(() => panelPadding(tour));
   useEffect(() => {
-    const update = () => setPadding(panelPadding());
+    const update = () => setPadding(panelPadding(tour));
+    update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
-  }, []);
+  }, [tour]);
   return padding;
 }
 
@@ -74,7 +79,8 @@ export default function Explorer({ sites, destinations, onRequestTrip }) {
   const [selected, setSelected] = useState(null);
   const [touring, setTouring] = useState(false);
   const [tourIndex, setTourIndex] = useState(-1);
-  const padding = usePanelPadding();
+  const inTour = tourIndex >= 0;
+  const padding = usePanelPadding(inTour);
   const panel = useRef(null);
 
   const inRegion = useMemo(() => (region ? sites.filter((site) => site.region === region) : sites), [sites, region]);
@@ -158,7 +164,7 @@ export default function Explorer({ sites, destinations, onRequestTrip }) {
       </div>
 
       {/* Regions */}
-      <div className="pointer-events-none absolute inset-x-0 top-[6.25rem] z-10 lg:top-[7.25rem]">
+      <div className={cn("pointer-events-none absolute inset-x-0 top-[6.25rem] z-10 lg:top-[7.25rem]", inTour && "max-lg:hidden")}>
         <div className="pointer-events-auto mx-auto flex max-w-site gap-2 overflow-x-auto px-4 pb-2 lg:pl-[26.5rem] lg:pr-6 [scrollbar-width:none]">
           {[null, ...EXPLORER_REGIONS.map((r) => r.key)].map((key) => {
             const info = key ? REGION_BY_KEY[key] : null;
@@ -170,11 +176,11 @@ export default function Explorer({ sites, destinations, onRequestTrip }) {
                 aria-pressed={active}
                 onClick={() => chooseRegion(key)}
                 className={cn(
-                  "label-caps inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 shadow-[0_10px_30px_-18px_rgba(18,61,67,0.8)] backdrop-blur transition-all duration-300",
+                  "label-caps inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 shadow-[0_10px_30px_-18px_rgba(18,61,67,0.8)] backdrop-blur transition-all duration-300 max-lg:!text-[0.64rem] max-lg:!tracking-[0.12em] lg:gap-2 lg:px-4 lg:py-2.5",
                   active ? "border-petrol bg-petrol text-ivory" : "border-white/70 bg-white/85 text-petrol hover:border-gold",
                 )}
               >
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: info?.color ?? "hsl(var(--gold))" }} />
+                <span className="h-2 w-2 rounded-full lg:h-2.5 lg:w-2.5" style={{ background: info?.color ?? "hsl(var(--gold))" }} />
                 {info ? info.label : "Toute la Guinée"}
                 <span className={cn("rounded-full px-1.5 text-[0.62rem]", active ? "bg-ivory/15" : "bg-petrol/10")}>
                   {key ? countOf(key) : sites.length}
@@ -185,36 +191,39 @@ export default function Explorer({ sites, destinations, onRequestTrip }) {
         </div>
       </div>
 
-      {/* Guided tour controls over the map on phones (the panel's own ones are below the card) */}
-      {tourIndex >= 0 ? (
-        <div className="absolute inset-x-4 top-[10rem] z-10 flex items-center gap-3 rounded-full bg-petrol/95 py-2 pl-2 pr-3 text-ivory shadow-xl backdrop-blur lg:hidden">
+      {/* Guided tour on phones: a small player in the regions' place (the panel's own controls are
+          below the site's card). */}
+      {inTour ? (
+        <div className="absolute left-4 top-[6.25rem] z-10 flex max-w-[calc(100%-2rem)] items-center gap-2 overflow-hidden rounded-full bg-petrol/90 py-1 pl-1 pr-1.5 text-ivory shadow-lg backdrop-blur lg:hidden">
           <button
             type="button"
             onClick={touring ? () => setTouring(false) : playTour}
             aria-label={touring ? "Mettre la visite en pause" : "Reprendre la visite"}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold text-petrol-deep"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold text-petrol-deep"
           >
-            {touring ? <Pause className="h-4 w-4" /> : <Play className="ml-0.5 h-4 w-4" />}
+            {touring ? <Pause className="h-3.5 w-3.5" /> : <Play className="ml-0.5 h-3.5 w-3.5" />}
           </button>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[0.82rem] font-semibold">{site?.name ?? "Visite guidée"}</p>
-            <div className="mt-1 h-1 overflow-hidden rounded-full bg-ivory/15">
-              <div className="h-full rounded-full bg-gold transition-[width] duration-700" style={{ width: `${((tourIndex + 1) / tour.length) * 100}%` }} />
-            </div>
-          </div>
-          <span className="text-[0.75rem] tabular-nums text-ivory/70">
+          <p className="min-w-0 truncate text-[0.78rem] font-semibold">{site?.name ?? "Visite guidée"}</p>
+          <span className="shrink-0 text-[0.7rem] tabular-nums text-ivory/65">
             {tourIndex + 1}/{tour.length}
           </span>
-          <button type="button" onClick={stopTour} aria-label="Arrêter la visite" className="p-1 text-ivory/70 hover:text-gold">
-            <X className="h-4 w-4" />
+          <button type="button" onClick={stopTour} aria-label="Arrêter la visite" className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-ivory/70 hover:text-gold">
+            <X className="h-3.5 w-3.5" />
           </button>
+          <span className="absolute inset-x-3 bottom-0 h-0.5 overflow-hidden rounded-full bg-ivory/10" aria-hidden="true">
+            <span className="block h-full bg-gold transition-[width] duration-700" style={{ width: `${((tourIndex + 1) / tour.length) * 100}%` }} />
+          </span>
         </div>
       ) : null}
 
       {/* Panel: left on computers, bottom sheet on phones */}
       <aside
         ref={panel}
-        className="absolute inset-x-0 bottom-0 z-10 max-h-[46svh] overflow-y-auto rounded-t-3xl bg-white/95 shadow-[0_-20px_60px_-30px_rgba(18,61,67,0.6)] backdrop-blur-md lg:inset-x-auto lg:bottom-6 lg:left-6 lg:top-[7.25rem] lg:max-h-none lg:w-[21.71rem] lg:rounded-3xl"
+        className={cn(
+          "absolute inset-x-0 bottom-0 z-10 overflow-y-auto rounded-t-3xl bg-white/95 shadow-[0_-20px_60px_-30px_rgba(18,61,67,0.6)] backdrop-blur-md transition-[max-height] duration-500 lg:inset-x-auto lg:bottom-6 lg:left-6 lg:top-[7.25rem] lg:max-h-none lg:w-[21.71rem] lg:rounded-3xl",
+          // Lower during the guided tour on phones: the map gets the room.
+          inTour ? "max-h-[32svh]" : "max-h-[46svh]",
+        )}
       >
         <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-petrol/15 lg:hidden" aria-hidden="true" />
 
@@ -230,7 +239,11 @@ export default function Explorer({ sites, destinations, onRequestTrip }) {
               <X className="h-4 w-4" />
             </button>
             {site.image ? (
-              <img src={site.image} alt={site.name} className="aspect-[16/10] w-full rounded-2xl object-cover" />
+              <img
+                src={site.image}
+                alt={site.name}
+                className={cn("w-full rounded-2xl object-cover", inTour ? "aspect-[5/2] lg:aspect-[16/10]" : "aspect-[16/10]")}
+              />
             ) : null}
             <p className="label-caps mt-4 flex flex-wrap items-center gap-2 pr-10" style={{ color: CATEGORY_BY_KEY[site.category]?.color }}>
               {CATEGORY_BY_KEY[site.category]?.label}
